@@ -2,7 +2,9 @@
 
 Private daily writing. Five hundred words. Same bones as [750 Words](https://750words.com): a month of boxes, a strike when you finish, confetti, badges, a bowling-style score, a free one-month challenge. No AI. No marketing homepage. Free.
 
-Live: [500words.vercel.app](https://500words.vercel.app)
+Live: [500words-inky.vercel.app](https://500words-inky.vercel.app)
+
+(`500words.vercel.app` is already taken on Vercel.)
 
 ## What you get
 
