@@ -1,0 +1,28 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+    function isSelf(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    match /users/{uid} {
+      allow read, write: if isSelf(uid);
+      match /{document=**} {
+        allow read, write: if isSelf(uid);
+      }
+    }
+
+    match /challenges/{month}/entrants/{uid} {
+      allow read: if signedIn();
+      allow create, update, delete: if isSelf(uid);
+    }
+
+    match /public/{month}/people/{uid} {
+      allow read: if signedIn();
+      allow create, update, delete: if isSelf(uid);
+    }
+  }
+}

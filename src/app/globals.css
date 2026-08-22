@@ -1,26 +1,191 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --paper: #ffffff;
+  --ink: #222222;
+  --muted: #888888;
+  --line: #d4d4d4;
+  --soft: #f4f4f4;
+  --good: #1f7a3a;
+  --header: #f7f7f7;
+  --strike: #222222;
+  --spare: #666666;
+  --chrome: "Lucida Grande", "Lucida Sans Unicode", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+[data-theme="dark"] {
+  --paper: #141414;
+  --ink: #ededed;
+  --muted: #9a9a9a;
+  --line: #3a3a3a;
+  --soft: #1c1c1c;
+  --good: #7dcc8e;
+  --header: #1a1a1a;
+  --strike: #f0f0f0;
+  --spare: #b0b0b0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  height: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--chrome);
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  font: inherit;
+}
+
+.font-georgia {
+  font-family: Georgia, "Times New Roman", Times, serif;
+}
+.font-palatino {
+  font-family: Palatino, "Palatino Linotype", "Book Antiqua", serif;
+}
+.font-times {
+  font-family: "Times New Roman", Times, serif;
+}
+.font-helvetica {
+  font-family: Helvetica, Arial, sans-serif;
+}
+.font-courier {
+  font-family: "Courier New", Courier, monospace;
+}
+
+.day-box {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--muted);
+  padding: 0;
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+
+.day-box .num {
+  position: absolute;
+  top: 1px;
+  left: 3px;
+  font-size: 9px;
+  line-height: 1;
+  font-family: var(--chrome);
+}
+
+.day-box.today {
+  border-color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--ink);
+}
+
+.day-box.future {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.day-box.selected {
+  background: var(--soft);
+}
+
+.day-box.dot::after {
+  content: "";
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--muted);
+  left: 50%;
+  top: 58%;
+  transform: translate(-50%, -50%);
+}
+
+.day-box.spare::before,
+.day-box.strike::before,
+.day-box.strike::after {
+  content: "";
+  position: absolute;
+  left: -12%;
+  top: 50%;
+  width: 124%;
+  height: 1.5px;
+  background: var(--spare);
+}
+
+.day-box.spare::before {
+  transform: rotate(32deg);
+}
+
+.day-box.strike::before,
+.day-box.strike::after {
+  background: var(--strike);
+  height: 2px;
+}
+
+.day-box.strike::before {
+  transform: rotate(42deg);
+}
+
+.day-box.strike::after {
+  transform: rotate(-42deg);
+}
+
+.day-box.madeup {
+  outline: 1px dashed var(--good);
+  outline-offset: -3px;
+}
+
+.write-area {
+  width: 100%;
+  min-height: calc(100vh - 150px);
+  border: 0;
+  resize: none;
+  outline: none;
+  background: transparent;
+  color: var(--ink);
+  padding: 28px 0 120px;
+  max-width: 42rem;
+  margin: 0 auto;
+  display: block;
+  caret-color: var(--ink);
+}
+
+.write-area:disabled {
+  opacity: 1;
+  color: var(--ink);
+}
+
+.chrome-link {
+  color: #555;
+  text-decoration: none;
+  font-size: 13px;
+}
+
+[data-theme="dark"] .chrome-link {
+  color: #c8c8c8;
+}
+
+.chrome-link:hover,
+.chrome-link.active {
+  text-decoration: underline;
+}
+
+.word-good {
+  color: var(--good);
+  font-weight: 700;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
 }

@@ -1,0 +1,125 @@
+"use client";
+
+import { useApp } from "@/components/AppProvider";
+import type { FontId, ThemeId } from "@/lib/types";
+
+const FONTS: { id: FontId; label: string }[] = [
+  { id: "georgia", label: "Georgia" },
+  { id: "palatino", label: "Palatino" },
+  { id: "times", label: "Times" },
+  { id: "helvetica", label: "Helvetica" },
+  { id: "courier", label: "Courier" },
+];
+
+export default function SettingsPage() {
+  const { settings, updateSettings, profile } = useApp();
+
+  return (
+    <main className="mx-auto max-w-xl px-6 py-8">
+      <h1 className="font-georgia text-3xl">Settings</h1>
+      <p className="mt-2 text-[14px] text-[var(--muted)]">
+        Signed in as {profile?.email}
+      </p>
+
+      <label className="mt-8 block text-[13px] text-[var(--muted)]">
+        Font
+        <select
+          className="mt-1 block w-full border border-[var(--line)] bg-[var(--paper)] px-2 py-2 text-[15px] text-[var(--ink)]"
+          value={settings.font}
+          onChange={(e) => updateSettings({ font: e.target.value as FontId })}
+        >
+          {FONTS.map((f) => (
+            <option key={f.id} value={f.id}>
+              {f.label}
+            </option>
+          ))}
+        </select>
+      </label>
+
+      <label className="mt-6 block text-[13px] text-[var(--muted)]">
+        Font size · {settings.fontSize}px
+        <input
+          type="range"
+          min={16}
+          max={36}
+          step={1}
+          value={settings.fontSize}
+          onChange={(e) => updateSettings({ fontSize: Number(e.target.value) })}
+          className="mt-2 block w-full"
+        />
+      </label>
+
+      <label className="mt-6 block text-[13px] text-[var(--muted)]">
+        Line height · {settings.lineHeight.toFixed(2)}
+        <input
+          type="range"
+          min={1.3}
+          max={2.2}
+          step={0.05}
+          value={settings.lineHeight}
+          onChange={(e) => updateSettings({ lineHeight: Number(e.target.value) })}
+          className="mt-2 block w-full"
+        />
+      </label>
+
+      <label className="mt-6 block text-[13px] text-[var(--muted)]">
+        Paragraph spacing · {settings.paragraphSpacing}
+        <input
+          type="range"
+          min={0}
+          max={4}
+          step={1}
+          value={settings.paragraphSpacing}
+          onChange={(e) =>
+            updateSettings({ paragraphSpacing: Number(e.target.value) })
+          }
+          className="mt-2 block w-full"
+        />
+      </label>
+
+      <fieldset className="mt-6">
+        <legend className="text-[13px] text-[var(--muted)]">Theme</legend>
+        <div className="mt-2 flex gap-4">
+          {(["light", "dark"] as ThemeId[]).map((theme) => (
+            <label key={theme} className="text-[15px]">
+              <input
+                type="radio"
+                name="theme"
+                checked={settings.theme === theme}
+                onChange={() => updateSettings({ theme })}
+                className="mr-2"
+              />
+              {theme}
+            </label>
+          ))}
+        </div>
+      </fieldset>
+
+      <label className="mt-6 flex items-center gap-2 text-[15px]">
+        <input
+          type="checkbox"
+          checked={settings.hideChrome}
+          onChange={(e) => updateSettings({ hideChrome: e.target.checked })}
+        />
+        Hide the header while typing
+      </label>
+
+      <label className="mt-6 block text-[13px] text-[var(--muted)]">
+        Timezone
+        <input
+          className="mt-1 block w-full border border-[var(--line)] bg-[var(--paper)] px-2 py-2 text-[15px] text-[var(--ink)]"
+          value={settings.timezone}
+          onChange={(e) => updateSettings({ timezone: e.target.value })}
+        />
+      </label>
+
+      <p
+        className={`mt-10 font-${settings.font} text-[var(--ink)]`}
+        style={{ fontSize: settings.fontSize, lineHeight: settings.lineHeight }}
+      >
+        The quick brown fox writes five hundred words and does not look at
+        Twitter until the strike is in the box.
+      </p>
+    </main>
+  );
+}
