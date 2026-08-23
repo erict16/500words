@@ -2,9 +2,9 @@
 
 Private daily writing. Five hundred words. Same bones as [750 Words](https://750words.com): a month of boxes, a strike when you finish, confetti, badges, a bowling-style score, a free one-month challenge. No AI. No marketing homepage. Free.
 
-Live: [500words-inky.vercel.app](https://500words-inky.vercel.app)
+Live: [500words-ink.vercel.app](https://500words-ink.vercel.app)
 
-(`500words.vercel.app` is already taken.) Firebase project: `simply-journal-474a1`.
+(`500words.vercel.app` is taken. `500words-inky` 404s unless re-aliased.) Firebase: `simply-journal-474a1`.
 
 ## What you get
 

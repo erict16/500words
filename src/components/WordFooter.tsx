@@ -16,7 +16,7 @@ export function WordFooter() {
       <div className="pointer-events-auto flex items-baseline justify-between gap-4 text-[13px] tabular-nums">
         {done ? (
           <Link href="/stats" className="word-good" data-testid="word-count">
-            {words} words
+            {words}. That’s a strike.
           </Link>
         ) : (
           <p data-testid="word-count">

@@ -9,7 +9,7 @@ export function MonthGrid() {
   const thisMonth = monthKey(today);
 
   return (
-    <div className="flex flex-col gap-2 px-4 py-2">
+    <div className="flex flex-col gap-1 px-4 py-3">
       <div className="flex items-baseline justify-between gap-4">
         <p className="text-[13px] text-[var(--muted)]">
           <button
@@ -38,7 +38,7 @@ export function MonthGrid() {
         </p>
         <p className="text-[13px] tabular-nums text-[var(--muted)]">{monthPoints} pts</p>
       </div>
-      <div className="flex flex-wrap gap-[3px]">
+      <div className="flex flex-wrap gap-[2px]" data-testid="month-grid">
         {monthDays.map((day) => {
           const future = day.date > today;
           const selected = day.date === date;

@@ -7,6 +7,7 @@ export function ThemeSync() {
   const { settings } = useApp();
   useEffect(() => {
     document.documentElement.dataset.theme = settings.theme;
+    document.documentElement.dataset.hydrated = "1";
     document.documentElement.style.colorScheme = settings.theme;
   }, [settings.theme]);
   return null;

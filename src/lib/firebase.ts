@@ -24,7 +24,12 @@ const firebaseConfig = {
 };
 
 export function isFirebaseConfigured(): boolean {
-  return Boolean(firebaseConfig.apiKey && firebaseConfig.projectId && firebaseConfig.appId);
+  return Boolean(
+    firebaseConfig.apiKey &&
+      firebaseConfig.authDomain &&
+      firebaseConfig.projectId &&
+      firebaseConfig.appId,
+  );
 }
 
 let app: FirebaseApp | null = null;
@@ -35,10 +40,14 @@ function getApp(): FirebaseApp {
   if (!isFirebaseConfigured()) {
     throw new Error("Firebase is not configured");
   }
-  if (!app) {
-    app = getApps()[0] ?? initializeApp(firebaseConfig);
+  try {
+    if (!app) {
+      app = getApps()[0] ?? initializeApp(firebaseConfig);
+    }
+    return app;
+  } catch (err) {
+    throw err instanceof Error ? err : new Error("Firebase failed to start");
   }
-  return app;
 }
 
 export function getFirebaseAuth(): Auth {

@@ -85,6 +85,7 @@ type AppContextValue = {
   newBadges: string[];
   error: string | null;
   signIn: () => Promise<void>;
+  startLocal: () => void;
   signOut: () => Promise<void>;
   setDate: (date: string) => void;
   setText: (text: string) => void;
@@ -101,7 +102,9 @@ const e2e = isE2E();
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const configured = isFirebaseConfigured() || e2e;
-  const [ready, setReady] = useState(e2e || !isFirebaseConfigured());
+  const [offline, setOffline] = useState(e2e);
+  const offlineRef = useRef(e2e);
+  const [ready, setReady] = useState(true);
   const [user, setUser] = useState<User | null>(e2e ? (localUser as unknown as User) : null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [settings, setSettings] = useState<Settings>(defaultSettings);
@@ -120,6 +123,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [justFinished, setJustFinished] = useState(false);
   const [newBadges, setNewBadges] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
+  offlineRef.current = offline;
   const textRef = useRef("");
   const sessionRef = useRef(emptySession());
   const saveTimer = useRef<number | null>(null);
@@ -145,32 +149,41 @@ export function AppProvider({ children }: { children: ReactNode }) {
       return () => window.cancelAnimationFrame(id);
     }
     if (!isFirebaseConfigured()) return;
-    const auth = getFirebaseAuth();
-    return onAuthStateChanged(auth, async (next) => {
-      setUser(next);
-      if (!next) {
-        setProfile(null);
-        setReady(true);
-        return;
-      }
-      try {
-        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        const ensured = await ensureUser(next, tz);
-        setProfile(ensured);
-        setSettings(ensured.settings);
-        const t = todayInZone(ensured.settings.timezone);
-        setToday(t);
-        setDateState(t);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Could not load your account.");
-      } finally {
-        setReady(true);
-      }
-    });
+    let unsub: (() => void) | undefined;
+    try {
+      const auth = getFirebaseAuth();
+      unsub = onAuthStateChanged(auth, async (next) => {
+        if (offlineRef.current && !next) return;
+        if (next) setOffline(false);
+        setUser(next);
+        if (!next) {
+          setProfile(null);
+          setReady(true);
+          return;
+        }
+        try {
+          const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+          const ensured = await ensureUser(next, tz);
+          setProfile(ensured);
+          setSettings(ensured.settings);
+          const t = todayInZone(ensured.settings.timezone);
+          setToday(t);
+          setDateState(t);
+        } catch (err) {
+          setError(err instanceof Error ? err.message : "Could not load your account.");
+        } finally {
+          setReady(true);
+        }
+      });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Google sign-in isn’t available.");
+      setReady(true);
+    }
+    return () => unsub?.();
   }, []);
 
   useEffect(() => {
-    if (e2e) {
+    if (e2e || offline) {
       if (dirtyRef.current) return;
       setEntry(localLoadDay(date));
       setMonthDays(localMonth(monthKey(date)));
@@ -197,7 +210,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       unsubLife();
       unsubChal();
     };
-  }, [user, date, today]);
+  }, [user, date, today, offline]);
 
   useEffect(() => {
     const onVis = () => {
@@ -215,7 +228,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setSaving(true);
       setError(null);
       try {
-        const result = e2e
+        const result = e2e || offline
           ? localSaveDay({
               date,
               today,
@@ -241,7 +254,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setLastSavedAt(Date.now());
         setSavedFlash(true);
         window.setTimeout(() => setSavedFlash(false), 900);
-        if (e2e) {
+        if (e2e || offline) {
           setMonthDays(localMonth(monthKey(date)));
           setBadges(localBadges());
           setLifetime(localLifetime());
@@ -259,7 +272,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setSaving(false);
       }
     },
-    [user, profile, date, today, settings.timezone],
+    [user, profile, date, today, settings.timezone, offline],
   );
 
   const setText = useCallback(
@@ -297,31 +310,65 @@ export function AppProvider({ children }: { children: ReactNode }) {
     (patch: Partial<Settings>) => {
       setSettings((prev) => {
         const next = { ...prev, ...patch };
-        if (e2e) localSaveSettings(next);
+        if (e2e || offline) localSaveSettings(next);
         else if (user) void saveSettings(user.uid, next);
         return next;
       });
     },
-    [user],
+    [user, offline],
   );
+
+  const bootLocal = useCallback(() => {
+    offlineRef.current = true;
+    setOffline(true);
+    setUser(localUser as unknown as User);
+    const ensured = localEnsureUser();
+    setProfile(ensured);
+    setSettings(ensured.settings);
+    const t = todayInZone(ensured.settings.timezone);
+    setToday(t);
+    setDateState(t);
+    setEntry(localLoadDay(t));
+    setMonthDays(localMonth(monthKey(t)));
+    setBadges(localBadges());
+    setLifetime(localLifetime());
+    setChallenge(localChallenge(monthKey(t)));
+    setReady(true);
+    setError(null);
+  }, []);
+
+  const startLocal = useCallback(() => {
+    bootLocal();
+  }, [bootLocal]);
 
   const signIn = useCallback(async () => {
     if (e2e) return;
     if (!isFirebaseConfigured()) {
-      setError("Firebase isn’t set up yet.");
+      setError("Google sign-in needs Firebase. Use “Write on this device” for now.");
       return;
     }
     setError(null);
-    await signInWithPopup(getFirebaseAuth(), googleProvider());
+    try {
+      await signInWithPopup(getFirebaseAuth(), googleProvider());
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Google sign-in failed.";
+      setError(message);
+    }
   }, []);
 
   const signOut = useCallback(async () => {
-    if (!e2e && isFirebaseConfigured()) await firebaseSignOut(getFirebaseAuth());
-  }, []);
+    if (offline) {
+      setOffline(false);
+      setUser(null);
+      setProfile(null);
+      return;
+    }
+    if (isFirebaseConfigured()) await firebaseSignOut(getFirebaseAuth());
+  }, [offline]);
 
   const joinThisMonth = useCallback(async () => {
     if (!profile) return;
-    if (e2e) {
+    if (e2e || offline) {
       localJoinChallenge(monthKey(today), today);
       setChallenge(localChallenge(monthKey(today)));
       return;
@@ -334,10 +381,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
       monthKey(today),
       today,
     );
-  }, [user, profile, today]);
+  }, [user, profile, today, offline]);
 
   const downloadExport = useCallback(async () => {
-    const body = e2e
+    const body = e2e || offline
       ? localExport()
       : user
         ? await exportEntries(user.uid)
@@ -349,7 +396,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     a.download = "500words-export.txt";
     a.click();
     URL.revokeObjectURL(url);
-  }, [user]);
+  }, [user, offline]);
 
   const monthPoints = useMemo(
     () => monthDays.reduce((sum, d) => sum + d.points, 0),
@@ -357,7 +404,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   );
 
   const joinedChallenge = Boolean(
-    (user || e2e) && challenge.some((p) => p.uid === (user?.uid ?? "local")),
+    (user || e2e || offline) && challenge.some((p) => p.uid === (user?.uid ?? "local")),
   );
 
   const value: AppContextValue = {
@@ -385,6 +432,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     newBadges,
     error,
     signIn,
+    startLocal,
     signOut,
     setDate: (next) => {
       setDateState(next);

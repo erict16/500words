@@ -2,14 +2,15 @@
 
 :root {
   --paper: #ffffff;
-  --ink: #222222;
+  --ink: #333333;
   --muted: #888888;
-  --line: #d4d4d4;
-  --soft: #f4f4f4;
+  --line: #c8c8c8;
+  --soft: #f3f3f3;
   --good: #1f7a3a;
-  --header: #f7f7f7;
+  --teal: #2bbbad;
+  --header: #2bbbad;
   --strike: #222222;
-  --spare: #666666;
+  --spare: #555555;
   --chrome: "Lucida Grande", "Lucida Sans Unicode", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
@@ -20,7 +21,8 @@
   --line: #3a3a3a;
   --soft: #1c1c1c;
   --good: #7dcc8e;
-  --header: #1a1a1a;
+  --teal: #1a8f84;
+  --header: #1a8f84;
   --strike: #f0f0f0;
   --spare: #b0b0b0;
 }
@@ -61,10 +63,57 @@ button {
   font-family: "Courier New", Courier, monospace;
 }
 
+.site-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 16px;
+  background: var(--header);
+  color: #fff;
+}
+
+.site-mark {
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: 20px;
+  font-style: italic;
+  color: #fff;
+  text-decoration: none;
+  letter-spacing: 0.01em;
+}
+
+.bar-link {
+  color: #fff;
+  text-decoration: none;
+  font-size: 13px;
+  opacity: 0.9;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+.bar-link:hover,
+.bar-link.active {
+  text-decoration: underline;
+  opacity: 1;
+}
+
+.btn-ink {
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+}
+.btn-ink:active {
+  transform: scale(0.98);
+}
+
 .day-box {
   position: relative;
-  width: 28px;
-  height: 28px;
+  width: 22px;
+  height: 22px;
   border: 1px solid var(--line);
   background: var(--paper);
   color: var(--muted);
@@ -75,20 +124,20 @@ button {
 
 .day-box .num {
   position: absolute;
-  top: 1px;
-  left: 3px;
-  font-size: 9px;
+  top: 0px;
+  left: 2px;
+  font-size: 8px;
   line-height: 1;
   font-family: var(--chrome);
 }
 
 .day-box.today {
-  border-color: var(--ink);
-  box-shadow: inset 0 0 0 1px var(--ink);
+  border-color: var(--teal);
+  box-shadow: inset 0 0 0 1px var(--teal);
 }
 
 .day-box.future {
-  opacity: 0.4;
+  opacity: 0.35;
   cursor: default;
 }
 
@@ -99,8 +148,8 @@ button {
 .day-box.dot::after {
   content: "";
   position: absolute;
-  width: 5px;
-  height: 5px;
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
   background: var(--muted);
   left: 50%;
@@ -113,15 +162,15 @@ button {
 .day-box.strike::after {
   content: "";
   position: absolute;
-  left: -12%;
+  left: -10%;
   top: 50%;
-  width: 124%;
-  height: 1.5px;
+  width: 120%;
+  height: 1.6px;
   background: var(--spare);
 }
 
 .day-box.spare::before {
-  transform: rotate(32deg);
+  transform: rotate(28deg);
 }
 
 .day-box.strike::before,
@@ -131,16 +180,16 @@ button {
 }
 
 .day-box.strike::before {
-  transform: rotate(42deg);
+  transform: rotate(40deg);
 }
 
 .day-box.strike::after {
-  transform: rotate(-42deg);
+  transform: rotate(-40deg);
 }
 
 .day-box.madeup {
   outline: 1px dashed var(--good);
-  outline-offset: -3px;
+  outline-offset: -2px;
 }
 
 .skip-link {
@@ -166,7 +215,7 @@ button {
   background: transparent;
   color: var(--ink);
   padding: 28px 0 120px;
-  max-width: 42rem;
+  max-width: 40rem;
   margin: 0 auto;
   display: block;
   caret-color: var(--ink);
@@ -193,6 +242,10 @@ input:focus-visible {
   color: #555;
   text-decoration: none;
   font-size: 13px;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
 }
 
 [data-theme="dark"] .chrome-link {

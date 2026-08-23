@@ -82,7 +82,7 @@ export type ChallengeEntrant = {
 
 export const defaultSettings = (): Settings => ({
   font: "georgia",
-  fontSize: 22,
+  fontSize: 21,
   paragraphSpacing: 1,
   lineHeight: 1.6,
   theme: "light",

@@ -49,33 +49,30 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
         Skip to writing
       </a>
       <header
-        className="sticky top-0 z-10 border-b border-[var(--line)] bg-[var(--header)]"
+        className="site-bar sticky top-0 z-10"
         style={{
           opacity: hidden ? 0 : 1,
-          transform: hidden ? "translateY(-8px)" : "none",
           pointerEvents: hidden ? "none" : "auto",
-          transition: "opacity 180ms cubic-bezier(0.23, 1, 0.32, 1), transform 180ms cubic-bezier(0.23, 1, 0.32, 1)",
+          transition: "opacity 160ms ease",
         }}
       >
-        <div className="flex items-center justify-between gap-4 px-4 py-2">
-          <Link href="/" className="font-georgia text-[18px] tracking-tight">
-            500 Words
-          </Link>
-          <nav className="flex flex-wrap items-center gap-x-4 gap-y-1">
-            {LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`chrome-link ${pathname === link.href ? "active" : ""}`}
-              >
-                {link.label}
-              </Link>
-            ))}
-            <button type="button" className="chrome-link" onClick={() => void signOut()}>
-              Sign out
-            </button>
-          </nav>
-        </div>
+        <Link href="/" className="site-mark">
+          500 Words
+        </Link>
+        <nav className="flex flex-wrap items-center gap-x-4 gap-y-1">
+          {LINKS.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={`bar-link ${pathname === link.href ? "active" : ""}`}
+            >
+              {link.label}
+            </Link>
+          ))}
+          <button type="button" className="bar-link" onClick={() => void signOut()}>
+            Sign out
+          </button>
+        </nav>
       </header>
       {children}
     </>
