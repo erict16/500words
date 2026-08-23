@@ -45,8 +45,8 @@ export default function SearchPage() {
           autoFocus
         />
       </label>
-      {busy ? <p className="mt-4 text-[13px] text-[var(--muted)]">Looking…</p> : null}
-      <ul className="archive mt-6" data-testid="search-hits">
+      {busy ? <p className="muted">Looking…</p> : null}
+      <ul className="archive" data-testid="search-hits">
         {hits.map((hit) => (
           <li key={hit.date}>
             <button
@@ -59,7 +59,7 @@ export default function SearchPage() {
             >
               <span>
                 <span className="archive-date">{prettyDate(hit.date)}</span>
-                <span className="mt-1 block text-[15px] leading-relaxed text-[var(--ink)]">
+                <span className="muted" style={{ display: "block", marginTop: 4 }}>
                   {hit.snippet}
                 </span>
               </span>
@@ -69,7 +69,7 @@ export default function SearchPage() {
         ))}
       </ul>
       {!busy && hits.length === 0 ? (
-        <p className="mt-6 text-[14px] text-[var(--muted)]" data-testid="search-empty">
+        <p className="muted" data-testid="search-empty">
           {query.trim() ? "Nothing matches." : "No entries yet."}
         </p>
       ) : null}

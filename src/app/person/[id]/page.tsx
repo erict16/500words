@@ -63,7 +63,7 @@ export default function PersonPage() {
 
   if (!score) {
     return (
-      <main className="page site-col text-[var(--muted)]" data-testid="person-waiting">
+      <main className="page site-col muted" data-testid="person-waiting">
         Looking up this month’s score…
       </main>
     );
@@ -74,26 +74,27 @@ export default function PersonPage() {
     .filter((b): b is NonNullable<typeof b> => Boolean(b));
 
   return (
-    <main className="page-wide site-col">
+    <main className="page site-col">
       <h1 className="page-title">{score.displayName}</h1>
-      <p className="mt-4 text-[16px] leading-relaxed" data-testid="person-score">
+      <p className="person-score" data-testid="person-score">
         {score.monthPoints} points this month · {score.daysCompleted}{" "}
         {score.daysCompleted === 1 ? "day" : "days"} of 500 · {score.monthWords} words · streak{" "}
         {score.streak}
       </p>
       {earned.length ? (
-        <ul className="badge-sheet" data-testid="person-badges">
+        <ul className="badge-list" data-testid="person-badges">
           {earned.map((badge) => (
-            <li key={badge.id} className="badge-tile">
+            <li key={badge.id} className="badge-row">
               <BadgeArt badge={badge} earned />
-              <h3>{badge.name}</h3>
+              <div className="badge-copy">
+                <h3>{badge.name}</h3>
+                <p>{badge.how}</p>
+              </div>
             </li>
           ))}
         </ul>
       ) : null}
-      <p className="page-kicker" style={{ marginTop: 32 }}>
-        Writing stays private. This page is only the scoreboard.
-      </p>
+      <p className="page-kicker">Writing stays private. This page is only the scoreboard.</p>
     </main>
   );
 }

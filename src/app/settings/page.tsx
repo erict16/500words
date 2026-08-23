@@ -117,15 +117,14 @@ export default function SettingsPage() {
 
       <fieldset className="field" style={{ border: 0, padding: 0 }}>
         <legend>Theme</legend>
-        <div className="mt-2 flex gap-4">
+        <div className="choice-row">
           {(["light", "dark", "sepia"] as ThemeId[]).map((theme) => (
-            <label key={theme} className="text-[15px]">
+            <label key={theme} className="check">
               <input
                 type="radio"
                 name="theme"
                 checked={settings.theme === theme}
                 onChange={() => updateSettings({ theme })}
-                className="mr-2"
                 data-testid={`theme-${theme}`}
               />
               {theme}
@@ -134,7 +133,7 @@ export default function SettingsPage() {
         </div>
       </fieldset>
 
-      <label className="mt-6 flex items-center gap-2 text-[15px]">
+      <label className="check">
         <input
           type="checkbox"
           checked={settings.hideChrome}
@@ -143,7 +142,7 @@ export default function SettingsPage() {
         Hide the header while typing
       </label>
 
-      <label className="mt-4 flex items-center gap-2 text-[15px]">
+      <label className="check">
         <input
           type="checkbox"
           checked={settings.lockEdits}
@@ -179,10 +178,10 @@ export default function SettingsPage() {
         </select>
       </label>
 
-      <div className="mt-8 flex flex-wrap gap-3">
+      <div className="btn-row">
         <button
           type="button"
-          className="border border-[var(--ink)] px-3 py-2 text-[14px] active:scale-[0.97]"
+          className="btn-quiet"
           onClick={() => void downloadExport()}
           data-testid="export"
         >
@@ -190,7 +189,7 @@ export default function SettingsPage() {
         </button>
         <button
           type="button"
-          className="border border-[var(--ink)] px-3 py-2 text-[14px] active:scale-[0.97]"
+          className="btn-quiet"
           onClick={() => window.print()}
           data-testid="print"
         >
@@ -198,13 +197,11 @@ export default function SettingsPage() {
         </button>
       </div>
 
-      <p className="page-kicker" style={{ marginTop: 36 }}>
-        Typing autosaves. ⌘S (or Ctrl-S) saves now.
-      </p>
+      <p className="page-kicker">Typing autosaves. ⌘S (or Ctrl-S) saves now.</p>
 
       <p
-        className={`mt-10 font-${settings.font} text-[var(--ink)]`}
-        style={{ fontSize: settings.fontSize, lineHeight: settings.lineHeight }}
+        className={`font-${settings.font}`}
+        style={{ fontSize: settings.fontSize, lineHeight: settings.lineHeight, marginTop: 36 }}
         data-testid="font-preview"
       >
         The quick brown fox writes five hundred words and does not look at

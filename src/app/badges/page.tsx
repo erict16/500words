@@ -19,20 +19,20 @@ export default function BadgesPage() {
   const earned = new Set(badges.map((b) => b.id));
 
   return (
-    <main className="page-wide site-col">
+    <main className="page site-col">
       <h1 className="page-title">Badges</h1>
       <p className="page-kicker">
-        Ink-and-wash animals for showing up. They don’t mean you’re a good writer. They mean you wrote.
+        Little animals for showing up. They don’t mean you’re a good writer. They mean you wrote.
       </p>
       {newBadges.length ? (
-        <p className="mt-4 text-[15px]" data-testid="new-badges">
+        <p className="page-kicker" data-testid="new-badges">
           New: {newBadges.join(", ")}
         </p>
       ) : null}
       {GROUPS.map((group) => (
         <section key={group.id}>
           <h2 className="page-h2">{group.label}</h2>
-          <ul className="badge-sheet">
+          <ul className="badge-list">
             {BADGES.filter((b) => b.group === group.id).map((badge) => {
               const got = earned.has(badge.id);
               const when = badges.find((b) => b.id === badge.id);
@@ -40,14 +40,16 @@ export default function BadgesPage() {
                 <li
                   key={badge.id}
                   data-testid={`badge-${badge.id}`}
-                  className="badge-tile"
+                  className={`badge-row ${got ? "" : "is-dim"}`}
                 >
                   <BadgeArt badge={badge} earned={got} />
-                  <h3>{badge.name}</h3>
-                  <p>{badge.how}</p>
-                  {when ? (
-                    <p>{new Date(when.earnedAt).toLocaleDateString()}</p>
-                  ) : null}
+                  <div className="badge-copy">
+                    <h3>{badge.name}</h3>
+                    <p>{badge.how}</p>
+                    {when ? (
+                      <p className="badge-when">{new Date(when.earnedAt).toLocaleDateString()}</p>
+                    ) : null}
+                  </div>
                 </li>
               );
             })}

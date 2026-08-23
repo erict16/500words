@@ -26,10 +26,10 @@ export default function StatsPage() {
       <p className="page-kicker">Time, words, points. Not what the words were about.</p>
 
       <h2 className="page-h2">Today</h2>
-      <p className={`font-georgia text-5xl tabular-nums ${done ? "word-good" : ""}`} data-testid="stat-words">
+      <p className={`stat-hero ${done ? "word-good" : ""}`} data-testid="stat-words">
         {words}
       </p>
-      <p className="mt-1 text-[15px] text-[var(--muted)]" data-testid="stat-goal">
+      <p className="stat-goal" data-testid="stat-goal">
         {done ? "Strike" : `${WORD_GOAL - words} to go`}
       </p>
       <dl className="stat-dl">
@@ -54,10 +54,10 @@ export default function StatsPage() {
       {tags.length ? (
         <section>
           <h2 className="page-h2">Notes you tagged</h2>
-          <ul className="mt-2 space-y-1 text-[15px]">
+          <ul className="board">
             {tags.map(([k, v]) => (
               <li key={k}>
-                <span className="text-[var(--muted)]">{k}:</span> {v}
+                <span className="muted">{k}:</span> {v}
               </li>
             ))}
           </ul>
@@ -70,16 +70,14 @@ export default function StatsPage() {
       )}
 
       <section>
-        <div className="month-head" style={{ marginTop: "2.2em" }}>
-          <h2 className="page-h2" style={{ margin: 0 }}>
-            This month
-          </h2>
-          <p className="month-pts">{monthPoints}</p>
+        <div className="month-head">
+          <h2 className="page-h2">This month</h2>
+          <p className="month-pts">{monthPoints} pts</p>
         </div>
-        <p className="mt-1 text-[15px]" data-testid="stat-month">
+        <p className="muted" data-testid="stat-month">
           {monthPoints} points · {completed} strikes · {started} days started
         </p>
-        <div className="scorecard mt-3" data-testid="stats-month">
+        <div className="scorecard" data-testid="stats-month">
           {monthDays.map((day) => {
             const future = day.date > today;
             return (
@@ -103,7 +101,7 @@ export default function StatsPage() {
             );
           })}
         </div>
-        <div className="score-bars mt-6" data-testid="word-bars">
+        <div className="score-bars" data-testid="word-bars">
           {monthDays.map((day) => (
             <span
               key={day.date}
@@ -116,18 +114,18 @@ export default function StatsPage() {
             />
           ))}
         </div>
-        <p className="mt-1 text-[12px] text-[var(--muted)]">Words per day. Height is 500.</p>
+        <p className="muted">Words per day. Height is 500.</p>
       </section>
 
       <section>
         <h2 className="page-h2">All time</h2>
-        <p className="text-[16px]" data-testid="stat-alltime">
+        <p data-testid="stat-alltime">
           {lifetime?.totalWords ?? 0} words · {lifetime?.completedEver ?? 0} days finished ·{" "}
           {lifetime?.currentStreak ?? 0} day streak
         </p>
         {profile ? (
-          <p className="mt-4 text-[14px]">
-            <Link href={`/person/${profile.uid}`} className="underline" data-testid="public-link">
+          <p className="page-kicker">
+            <Link href={`/person/${profile.uid}`} className="ink-link" data-testid="public-link">
               Public page
             </Link>{" "}
             (words and badges, never the writing)

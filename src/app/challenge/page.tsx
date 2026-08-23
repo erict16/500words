@@ -16,12 +16,12 @@ export default function ChallengePage() {
   const daysLeft = monthDates.filter((d) => d >= today).length;
 
   return (
-    <main className="page-wide site-col">
-      <div className="flex items-start gap-5">
+    <main className="page site-col">
+      <div className="challenge-head">
         {horse ? <BadgeArt badge={horse} earned /> : null}
         <div>
           <h1 className="page-title">One month</h1>
-          <p className="mt-3 max-w-xl text-[16px] leading-relaxed">
+          <p className="challenge-copy">
             Write {WORD_GOAL} words every day in {monthLabel(today)}. Free. Miss a day after you
             join and your name goes on the wall of shame. Finish the month: wall of awesomeness,
             and a turquoise horse. Days before you joined don’t count against you.
@@ -32,32 +32,32 @@ export default function ChallengePage() {
         <button
           type="button"
           onClick={() => void joinThisMonth()}
-          className="btn-ink mt-6"
+          className="btn-teal"
           data-testid="join-challenge"
         >
           I’m in
         </button>
       ) : (
-        <p className="mt-6 text-[15px]" data-testid="joined-challenge">
+        <p className="page-kicker" data-testid="joined-challenge">
           You’re in this month.
         </p>
       )}
       {joinedChallenge ? (
-        <p className="mt-2 text-[14px] text-[var(--muted)]" data-testid="challenge-progress">
+        <p className="muted" data-testid="challenge-progress">
           {you?.completedDays ?? 0} {(you?.completedDays ?? 0) === 1 ? "day" : "days"} done ·{" "}
           {daysLeft} left in {monthLabel(today)}. Days before you joined don’t count against you.
         </p>
       ) : null}
 
-      <div className="walls mt-4">
+      <div className="walls">
         <section>
           <h2 className="page-h2">Wall of awesomeness</h2>
           {awesome.length === 0 ? (
-            <p className="mt-2 text-[14px] text-[var(--muted)]">Nobody here yet.</p>
+            <p className="muted">Nobody here yet.</p>
           ) : (
             <ul className="wall-list">
               {awesome.map((p) => (
-                <li key={p.uid} className={p.uid === user?.uid ? "font-medium" : ""}>
+                <li key={p.uid} className={p.uid === user?.uid ? "you" : ""}>
                   {p.displayName} · {p.completedDays} days
                 </li>
               ))}
@@ -68,11 +68,11 @@ export default function ChallengePage() {
         <section>
           <h2 className="page-h2">Wall of shame</h2>
           {shame.length === 0 ? (
-            <p className="mt-2 text-[14px] text-[var(--muted)]">Empty. Keep it that way.</p>
+            <p className="muted">Empty. Keep it that way.</p>
           ) : (
             <ul className="wall-list">
               {shame.map((p) => (
-                <li key={p.uid}>
+                <li key={p.uid} className={p.uid === user?.uid ? "you" : ""}>
                   {p.displayName} · missed {p.missedDays}
                 </li>
               ))}

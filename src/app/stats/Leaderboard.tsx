@@ -21,11 +21,11 @@ export function Leaderboard() {
   return (
     <section>
       <h2 className="page-h2">This month’s points</h2>
-      <ol className="mt-3 space-y-1 text-[15px]">
+      <ol className="board">
         {rows.slice(0, 20).map((row, i) => (
-          <li key={String(row.uid)} className={row.uid === user?.uid ? "font-medium" : ""}>
+          <li key={String(row.uid)} className={row.uid === user?.uid ? "you" : ""}>
             {i + 1}.{" "}
-            <Link href={`/person/${row.uid}`} className="underline">
+            <Link href={`/person/${row.uid}`} className="ink-link">
               {String(row.displayName || "Anonymous")}
             </Link>{" "}
             · {String(row.monthPoints ?? 0)} pts

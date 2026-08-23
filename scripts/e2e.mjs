@@ -158,8 +158,10 @@ try {
   await page.goto(SITE + "/badges", { waitUntil: "domcontentloaded" });
   await page.waitForSelector("[data-badge]", { timeout: 10000 });
   const badgeCount = await page.locator("[data-badge]").count();
-  console.log("badges=" + badgeCount);
+  const badgeRows = await page.locator(".badge-row").count();
+  console.log("badges=" + badgeCount + " rows=" + badgeRows);
   if (badgeCount < 20) fail("expected animal badges, got " + badgeCount);
+  if (badgeRows < 20) fail("badges page should be a catalog of rows, got " + badgeRows);
 
   await page.goto(SITE + "/challenge", { waitUntil: "domcontentloaded" });
   await page.waitForSelector('[data-testid="join-challenge"], [data-testid="joined-challenge"]', {
