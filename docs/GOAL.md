@@ -3,7 +3,7 @@
 Keep going until an independent check can sit down, sign in, type, hit 500, and see the same ritual as 750 Words. Stop only then.
 
 Repo: `/Users/youming/Github/500words`
-Live (must 200): `https://500words-ink.vercel.app` (also keep `500words-inky.vercel.app` aliased)
+Live (must 200): `https://500words-ink.vercel.app` (also keep `500words-inky.vercel.app` aliased if Vercel will take it)
 Firebase: `simply-journal-474a1`
 
 ## Explicitly not in the product
@@ -61,7 +61,7 @@ This is the original bowling calendar, not a green check-mark month view.
 
 ## Login look
 
-Not a landing page. Same teal bar. Georgia title. One Google button. One quiet local fallback. No marketing copy.
+Not a landing page. Same teal bar. Georgia title. One Google button. One quiet local fallback. No tagline, no “what is this”, no marketing copy.
 
 ## Tests (must exist in this repo)
 

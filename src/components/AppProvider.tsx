@@ -123,11 +123,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [justFinished, setJustFinished] = useState(false);
   const [newBadges, setNewBadges] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
-  offlineRef.current = offline;
   const textRef = useRef("");
   const sessionRef = useRef(emptySession());
   const saveTimer = useRef<number | null>(null);
   const dirtyRef = useRef(false);
+
+  useEffect(() => {
+    offlineRef.current = offline;
+  }, [offline]);
 
   useEffect(() => {
     if (e2e) {
@@ -176,8 +179,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
         }
       });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Google sign-in isn’t available.");
-      setReady(true);
+      const message = err instanceof Error ? err.message : "Google sign-in isn’t available.";
+      queueMicrotask(() => {
+        setError(message);
+        setReady(true);
+      });
     }
     return () => unsub?.();
   }, []);

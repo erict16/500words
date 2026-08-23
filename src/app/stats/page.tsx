@@ -19,7 +19,7 @@ export default function StatsPage() {
     <main className="mx-auto max-w-2xl px-6 py-8">
       <h1 className="font-georgia text-3xl">Stats</h1>
       <p className="mt-2 text-[14px] text-[var(--muted)]">
-        How the session went. Not what you wrote about.
+        Time, words, points. Not what the words were about.
       </p>
 
       <section className="mt-8">

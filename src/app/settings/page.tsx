@@ -46,6 +46,7 @@ export default function SettingsPage() {
           value={settings.fontSize}
           onChange={(e) => updateSettings({ fontSize: Number(e.target.value) })}
           className="mt-2 block w-full"
+          data-testid="font-size"
         />
       </label>
 

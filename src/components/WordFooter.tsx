@@ -6,22 +6,21 @@ import { WORD_GOAL } from "@/lib/types";
 import { useApp } from "./AppProvider";
 
 export function WordFooter() {
-  const { entry, saving, savedFlash, isToday } = useApp();
+  const { entry, saving, savedFlash } = useApp();
   const words = countWords(entry.text);
   const done = words >= WORD_GOAL || entry.locked;
   const saved = saving ? "saving…" : savedFlash ? "saved" : "";
 
   return (
-    <footer className="pointer-events-none fixed bottom-0 left-0 right-0 px-4 py-3">
+    <footer className="pointer-events-none fixed bottom-0 left-0 right-0 px-5 py-3">
       <div className="pointer-events-auto flex items-baseline justify-between gap-4 text-[13px] tabular-nums">
         {done ? (
           <Link href="/stats" className="word-good" data-testid="word-count">
-            {words}. That’s a strike.
+            {words}
           </Link>
         ) : (
           <p data-testid="word-count">
             {words} / {WORD_GOAL}
-            {isToday ? ` · ${Math.max(0, WORD_GOAL - words)} to go` : ""}
           </p>
         )}
         {savedFlash ? (

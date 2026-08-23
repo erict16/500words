@@ -21,7 +21,7 @@ service cloud.firestore {
     }
 
     match /public/{month}/people/{uid} {
-      allow read: if signedIn();
+      allow read: if true;
       allow create, update, delete: if isSelf(uid);
     }
   }

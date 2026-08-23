@@ -1,6 +1,8 @@
 "use client";
 
+import { BadgeArt } from "@/components/BadgeArt";
 import { useApp } from "@/components/AppProvider";
+import { BADGE_MAP } from "@/lib/badges";
 import { monthLabel } from "@/lib/dates";
 import { WORD_GOAL } from "@/lib/types";
 
@@ -8,25 +10,34 @@ export default function ChallengePage() {
   const { today, challenge, joinedChallenge, joinThisMonth, user } = useApp();
   const awesome = challenge.filter((p) => p.status === "won" || (p.status === "in" && p.missedDays === 0));
   const shame = challenge.filter((p) => p.status === "shame");
+  const horse = BADGE_MAP["turquoise-horse"];
 
   return (
     <main className="mx-auto max-w-2xl px-6 py-8">
-      <h1 className="font-georgia text-3xl">One month challenge</h1>
-      <p className="mt-3 text-[16px] leading-relaxed">
-        Write {WORD_GOAL} words every day in {monthLabel(today)}. Free. If you miss
-        a day your name goes on the wall of shame. If you finish the month, wall
-        of awesomeness, and a turquoise horse.
-      </p>
+      <div className="flex items-start gap-4">
+        {horse ? <BadgeArt badge={horse} earned /> : null}
+        <div>
+          <h1 className="font-georgia text-3xl">One month</h1>
+          <p className="mt-3 text-[16px] leading-relaxed">
+            Write {WORD_GOAL} words every day in {monthLabel(today)}. Free. Miss a day after you
+            join and your name goes on the wall of shame. Finish the month: wall of awesomeness,
+            and a turquoise horse. Days before you joined don’t count against you.
+          </p>
+        </div>
+      </div>
       {!joinedChallenge ? (
         <button
           type="button"
           onClick={() => void joinThisMonth()}
-          className="mt-6 border border-[var(--ink)] bg-[var(--ink)] px-4 py-2 text-[14px] text-[var(--paper)] active:scale-[0.97]"
+          className="btn-ink mt-6"
+          data-testid="join-challenge"
         >
           I’m in
         </button>
       ) : (
-        <p className="mt-6 text-[15px]">You’re in this month.</p>
+        <p className="mt-6 text-[15px]" data-testid="joined-challenge">
+          You’re in this month.
+        </p>
       )}
 
       <section className="mt-10">

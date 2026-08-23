@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { AppProvider } from "@/components/AppProvider";
-import { AppChrome } from "@/components/AppChrome";
-import { SignInGate } from "@/components/SignInGate";
+import { Shell } from "@/components/Shell";
 import { ThemeSync } from "@/components/ThemeSync";
 import "./globals.css";
 
@@ -17,9 +16,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full">
         <AppProvider>
           <ThemeSync />
-          <SignInGate>
-            <AppChrome>{children}</AppChrome>
-          </SignInGate>
+          <Shell>{children}</Shell>
         </AppProvider>
       </body>
     </html>

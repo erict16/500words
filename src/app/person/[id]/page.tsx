@@ -30,6 +30,14 @@ export default function PersonPage() {
     );
   }
 
+  if (!isFirebaseConfigured()) {
+    return (
+      <main className="px-6 py-10">
+        <p>Public stats live on the signed-in site.</p>
+      </main>
+    );
+  }
+
   if (!row) {
     return (
       <main className="px-6 py-10 text-[var(--muted)]">Loading…</main>

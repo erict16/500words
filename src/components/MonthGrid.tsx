@@ -9,7 +9,7 @@ export function MonthGrid() {
   const thisMonth = monthKey(today);
 
   return (
-    <div className="flex flex-col gap-1 px-4 py-3">
+    <div className="month-wrap">
       <div className="flex items-baseline justify-between gap-4">
         <p className="text-[13px] text-[var(--muted)]">
           <button
@@ -38,7 +38,7 @@ export function MonthGrid() {
         </p>
         <p className="text-[13px] tabular-nums text-[var(--muted)]">{monthPoints} pts</p>
       </div>
-      <div className="flex flex-wrap gap-[2px]" data-testid="month-grid">
+      <div className="month-grid" data-testid="month-grid">
         {monthDays.map((day) => {
           const future = day.date > today;
           const selected = day.date === date;
@@ -58,6 +58,7 @@ export function MonthGrid() {
               type="button"
               className={cls}
               data-date={day.date}
+              data-mark={day.mark}
               data-testid={day.date === today ? "today-box" : undefined}
               disabled={future}
               title={
@@ -70,6 +71,18 @@ export function MonthGrid() {
               aria-current={selected ? "date" : undefined}
             >
               <span className="num">{day.day}</span>
+              {day.mark === "spare" || day.mark === "strike" ? (
+                <svg className="mark" viewBox="0 0 28 28" aria-hidden>
+                  {day.mark === "spare" ? (
+                    <line x1="5" y1="23" x2="23" y2="5" />
+                  ) : (
+                    <>
+                      <line x1="5" y1="5" x2="23" y2="23" />
+                      <line x1="23" y1="5" x2="5" y2="23" />
+                    </>
+                  )}
+                </svg>
+              ) : null}
             </button>
           );
         })}
