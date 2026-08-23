@@ -4,7 +4,7 @@ Private daily writing. Five hundred words. Same bones as [750 Words](https://750
 
 Live: [500words-inky.vercel.app](https://500words-inky.vercel.app)
 
-(`500words.vercel.app` is already taken on Vercel.)
+(`500words.vercel.app` is already taken.) Firebase project: `simply-journal-474a1`.
 
 ## What you get
 
@@ -23,7 +23,7 @@ Live: [500words-inky.vercel.app](https://500words-inky.vercel.app)
 1. Create a Firebase project (Auth → Google, Firestore).
 2. Copy `.env.example` to `.env.local` and fill the `NEXT_PUBLIC_FIREBASE_*` keys.
 3. Deploy `firestore.rules`.
-4. Add `localhost` and `500words.vercel.app` under Auth → authorized domains.
+4. Auth authorized domains already include `localhost` and `500words-inky.vercel.app`.
 
 ```bash
 npm install
