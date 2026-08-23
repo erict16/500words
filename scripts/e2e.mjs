@@ -21,9 +21,11 @@ const { chromium } = require(playwrightPath);
 const PORT = 3017;
 const SITE = `http://localhost:${PORT}`;
 
+const env = { ...process.env };
+delete env.NEXT_PUBLIC_E2E;
 const child = spawn("npx", ["next", "dev", "-p", String(PORT)], {
   cwd: root,
-  env: { ...process.env, NEXT_PUBLIC_E2E: "1" },
+  env,
   stdio: ["ignore", "pipe", "pipe"],
 });
 
@@ -50,6 +52,7 @@ try {
     try {
       if (!sessionStorage.getItem("e2e-cleared")) {
         localStorage.removeItem("fivehundred-local-v1");
+        localStorage.removeItem("fivehundred-local-session");
         sessionStorage.setItem("e2e-cleared", "1");
       }
     } catch {
@@ -60,6 +63,11 @@ try {
   page.on("pageerror", (err) => errors.push(String(err)));
   await page.goto(SITE, { waitUntil: "domcontentloaded", timeout: 30000 });
   await page.waitForSelector("html[data-hydrated='1']", { timeout: 20000 });
+  await page.waitForSelector('[data-testid="local-write"]', { timeout: 10000 });
+  const google = await page.locator('[data-testid="google-signin"]').count();
+  console.log("googleButton=" + google);
+  if (!google) fail("missing Continue with Google");
+  await page.locator('[data-testid="local-write"]').click();
   await page.waitForSelector('[data-testid="editor"]', { timeout: 10000 });
   const boxes = await page.locator(".day-box").count();
   console.log("dayBoxes=" + boxes);
@@ -92,6 +100,22 @@ try {
   const count = await page.locator('[data-testid="word-count"]').textContent();
   console.log("count=" + count);
 
+  await page.keyboard.press("Meta+s");
+  await page.waitForSelector('[data-testid="saved-flash"]', { timeout: 5000 });
+  console.log("savedFlash=1");
+
+  await page.reload({ waitUntil: "domcontentloaded" });
+  await page.waitForSelector('[data-testid="editor"]', { timeout: 10000 });
+  const kept = (await page.locator('[data-testid="editor"]').inputValue())
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean).length;
+  console.log("reloadWords=" + kept);
+  if (kept < 500) fail("reload lost the words, got " + kept);
+  const afterReload = await page.locator('[data-testid="today-box"]').getAttribute("class");
+  console.log("reloadClass=" + afterReload);
+  if (!afterReload?.includes("strike")) fail("reload lost the strike");
+
   await page.goto(SITE + "/settings", { waitUntil: "domcontentloaded" });
   await page.waitForSelector('[data-testid="font-size"]');
   await page.locator('[data-testid="font-size"]').fill("28");
@@ -102,13 +126,21 @@ try {
   if (size !== "28px") fail("font-size did not apply, got " + size);
 
   await page.goto(SITE + "/badges", { waitUntil: "domcontentloaded" });
+  await page.waitForSelector("[data-badge]", { timeout: 10000 });
   const badgeCount = await page.locator("[data-badge]").count();
   console.log("badges=" + badgeCount);
   if (badgeCount < 20) fail("expected animal badges, got " + badgeCount);
 
   await page.goto(SITE + "/challenge", { waitUntil: "domcontentloaded" });
+  await page.waitForSelector('[data-testid="join-challenge"], [data-testid="joined-challenge"]', {
+    timeout: 10000,
+  });
   await page.locator('[data-testid="join-challenge"]').click();
   await page.waitForSelector('[data-testid="joined-challenge"]');
+  const progress = await page.locator('[data-testid="challenge-progress"]').textContent();
+  console.log("challengeProgress=" + progress);
+  if (!progress?.includes("left")) fail("missing challenge progress");
+  if (!progress?.includes("1 day")) fail("joining after a strike should count today");
 
   await page.goto(SITE + "/stats", { waitUntil: "domcontentloaded" });
   await page.waitForFunction(

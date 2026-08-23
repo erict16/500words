@@ -5,14 +5,17 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
   type ReactNode,
 } from "react";
 import {
+  getRedirectResult,
   onAuthStateChanged,
   signInWithPopup,
+  signInWithRedirect,
   signOut as firebaseSignOut,
   type User,
 } from "firebase/auth";
@@ -44,6 +47,8 @@ import {
   localSaveDay,
   localSaveSettings,
   localUser,
+  hasLocalSession,
+  setLocalSession,
 } from "@/lib/local-store";
 import { hideSession, showSession, touchSession } from "@/lib/session";
 import { tipForAccountDay } from "@/lib/tips";
@@ -132,32 +137,49 @@ export function AppProvider({ children }: { children: ReactNode }) {
     offlineRef.current = offline;
   }, [offline]);
 
+  const bootLocal = useCallback(() => {
+    offlineRef.current = true;
+    setLocalSession(true);
+    setOffline(true);
+    setUser(localUser as unknown as User);
+    const ensured = localEnsureUser();
+    setProfile(ensured);
+    setSettings(ensured.settings);
+    const t = todayInZone(ensured.settings.timezone);
+    setToday(t);
+    setDateState(t);
+    setEntry(localLoadDay(t));
+    setMonthDays(localMonth(monthKey(t)));
+    setBadges(localBadges());
+    setLifetime(localLifetime());
+    setChallenge(localChallenge(monthKey(t)));
+    setReady(true);
+    setError(null);
+  }, []);
+
+  useLayoutEffect(() => {
+    if (e2e) return;
+    if (!hasLocalSession()) return;
+    const id = window.requestAnimationFrame(() => bootLocal());
+    return () => window.cancelAnimationFrame(id);
+  }, [bootLocal]);
+
   useEffect(() => {
     if (e2e) {
-      const boot = () => {
-        const ensured = localEnsureUser();
-        setProfile(ensured);
-        setSettings(ensured.settings);
-        const t = todayInZone(ensured.settings.timezone);
-        setToday(t);
-        setDateState(t);
-        setEntry(localLoadDay(t));
-        setMonthDays(localMonth(monthKey(t)));
-        setBadges(localBadges());
-        setLifetime(localLifetime());
-        setChallenge(localChallenge(monthKey(t)));
-        setReady(true);
-      };
-      const id = window.requestAnimationFrame(boot);
+      const id = window.requestAnimationFrame(() => bootLocal());
       return () => window.cancelAnimationFrame(id);
     }
     if (!isFirebaseConfigured()) return;
     let unsub: (() => void) | undefined;
     try {
       const auth = getFirebaseAuth();
+      void getRedirectResult(auth).catch(() => undefined);
       unsub = onAuthStateChanged(auth, async (next) => {
         if (offlineRef.current && !next) return;
-        if (next) setOffline(false);
+        if (next) {
+          setLocalSession(false);
+          setOffline(false);
+        }
         setUser(next);
         if (!next) {
           setProfile(null);
@@ -186,7 +208,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       });
     }
     return () => unsub?.();
-  }, []);
+  }, [bootLocal]);
 
   useEffect(() => {
     if (e2e || offline) {
@@ -328,25 +350,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
     [user, offline],
   );
 
-  const bootLocal = useCallback(() => {
-    offlineRef.current = true;
-    setOffline(true);
-    setUser(localUser as unknown as User);
-    const ensured = localEnsureUser();
-    setProfile(ensured);
-    setSettings(ensured.settings);
-    const t = todayInZone(ensured.settings.timezone);
-    setToday(t);
-    setDateState(t);
-    setEntry(localLoadDay(t));
-    setMonthDays(localMonth(monthKey(t)));
-    setBadges(localBadges());
-    setLifetime(localLifetime());
-    setChallenge(localChallenge(monthKey(t)));
-    setReady(true);
-    setError(null);
-  }, []);
-
   const startLocal = useCallback(() => {
     bootLocal();
   }, [bootLocal]);
@@ -362,6 +365,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
       await signInWithPopup(getFirebaseAuth(), googleProvider());
     } catch (err) {
       const raw = err instanceof Error ? err.message : "Google sign-in failed.";
+      const code = typeof err === "object" && err && "code" in err ? String(err.code) : "";
+      if (/popup/i.test(code + raw)) {
+        try {
+          await signInWithRedirect(getFirebaseAuth(), googleProvider());
+          return;
+        } catch {
+          /* fall through */
+        }
+      }
       const message = /unauthorized-domain/i.test(raw)
         ? "Google isn’t allowed on this domain yet. Use “Write on this device”."
         : raw;
@@ -370,6 +382,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signOut = useCallback(async () => {
+    setLocalSession(false);
     if (offline) {
       setOffline(false);
       setUser(null);

@@ -151,6 +151,19 @@ test("emptyMonth has the right number of August days", () => {
   assert.equal(emptyMonth("2026-08")[0].date, "2026-08-01");
 });
 
+test("joining today after a strike counts the day", () => {
+  const month = emptyMonth("2026-08").map((d) => d.date);
+  const result = applyChallenge({
+    monthDates: month,
+    today: "2026-08-22",
+    joinDate: "2026-08-22",
+    wordsByDate: { "2026-08-22": 500 },
+  });
+  assert.equal(result.completedDays, 1);
+  assert.equal(result.missedDays, 0);
+  assert.equal(result.status, "in");
+});
+
 test("publicScore never includes writing", () => {
   const month = emptyMonth("2026-08");
   month[0].wordCount = 500;

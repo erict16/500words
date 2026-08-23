@@ -1,5 +1,6 @@
 "use client";
 
+import { BadgeToast } from "@/components/BadgeToast";
 import { ConfettiBurst } from "@/components/ConfettiBurst";
 import { Editor } from "@/components/Editor";
 import { MonthGrid } from "@/components/MonthGrid";
@@ -17,6 +18,7 @@ export default function WritePage() {
       <Editor />
       <WordFooter />
       <ConfettiBurst />
+      <BadgeToast />
     </main>
   );
 }

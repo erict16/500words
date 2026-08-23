@@ -66,7 +66,7 @@ Not a landing page. Same teal bar. Georgia title. One Google button. One quiet l
 ## Tests (must exist in this repo)
 
 - Unit: word count, spare/strike marks, bowling points, makeup streak, challenge join date
-- Playwright with `NEXT_PUBLIC_E2E=1`: page opens, 31-ish day boxes, type 500 words, today-box gets `strike`, banner “500. That’s a strike.”, font-size changes, no pageerror
+- Playwright: sign-in screen (Google + Write on this device), 31-ish day boxes, type 500 words, today-box gets `strike`, banner “500. That’s a strike.”, Cmd-S flashes saved, reload keeps the words, font-size changes, no pageerror
 - `npm test`, `npm run e2e`, `npx tsc --noEmit`, `npm run build` green
 
 ## Done means

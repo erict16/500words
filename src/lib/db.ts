@@ -454,13 +454,22 @@ export async function joinChallenge(
   month: string,
   today: string,
 ) {
+  const daySnaps = await getDocs(collection(getDb(), "users", uid, "days"));
+  const wordsByDate: Record<string, number> = {};
+  daySnaps.forEach((d) => {
+    if (d.id.startsWith(month)) wordsByDate[d.id] = asNumber(d.data().wordCount);
+  });
+  const next = applyChallenge({
+    monthDates: datesInMonth(month),
+    today,
+    joinDate: today,
+    wordsByDate,
+  });
   await setDoc(challengeRef(month, uid), {
     uid,
     displayName,
     photoURL,
-    completedDays: 0,
-    missedDays: 0,
-    status: "in" as ChallengeStatus,
+    ...next,
     joinedAt: Date.now(),
     joinDate: today,
   });

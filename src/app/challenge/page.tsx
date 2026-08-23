@@ -3,7 +3,7 @@
 import { BadgeArt } from "@/components/BadgeArt";
 import { useApp } from "@/components/AppProvider";
 import { BADGE_MAP } from "@/lib/badges";
-import { monthLabel } from "@/lib/dates";
+import { datesInMonth, monthKey, monthLabel } from "@/lib/dates";
 import { WORD_GOAL } from "@/lib/types";
 
 export default function ChallengePage() {
@@ -11,6 +11,9 @@ export default function ChallengePage() {
   const awesome = challenge.filter((p) => p.status === "won" || (p.status === "in" && p.missedDays === 0));
   const shame = challenge.filter((p) => p.status === "shame");
   const horse = BADGE_MAP["turquoise-horse"];
+  const you = challenge.find((p) => p.uid === user?.uid);
+  const monthDates = datesInMonth(monthKey(today));
+  const daysLeft = monthDates.filter((d) => d >= today).length;
 
   return (
     <main className="mx-auto max-w-2xl px-6 py-8">
@@ -39,6 +42,12 @@ export default function ChallengePage() {
           You’re in this month.
         </p>
       )}
+      {joinedChallenge ? (
+        <p className="mt-2 text-[14px] text-[var(--muted)]" data-testid="challenge-progress">
+          {you?.completedDays ?? 0} {(you?.completedDays ?? 0) === 1 ? "day" : "days"} done ·{" "}
+          {daysLeft} left in {monthLabel(today)}. Days before you joined don’t count against you.
+        </p>
+      ) : null}
 
       <section className="mt-10">
         <h2 className="font-georgia text-2xl">Wall of awesomeness</h2>

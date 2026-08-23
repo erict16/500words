@@ -22,6 +22,26 @@ import {
 import { markForWords } from "./words";
 
 const KEY = "fivehundred-local-v1";
+export const SESSION_KEY = "fivehundred-local-session";
+
+export function hasLocalSession(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    return window.localStorage.getItem(SESSION_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+export function setLocalSession(on: boolean) {
+  if (typeof window === "undefined") return;
+  try {
+    if (on) window.localStorage.setItem(SESSION_KEY, "1");
+    else window.localStorage.removeItem(SESSION_KEY);
+  } catch {
+    /* ignore */
+  }
+}
 
 type DB = {
   profile: UserProfile;
@@ -187,13 +207,21 @@ export function localLifetime(): Lifetime {
 
 export function localJoinChallenge(month: string, today: string) {
   const db = load();
+  const wordsByDate: Record<string, number> = {};
+  for (const [d, entry] of Object.entries(db.days)) {
+    if (d.startsWith(month)) wordsByDate[d] = entry.wordCount;
+  }
+  const next = applyChallenge({
+    monthDates: datesInMonth(month),
+    today,
+    joinDate: today,
+    wordsByDate,
+  });
   db.challenges[month] = {
     uid: "local",
     displayName: db.profile.displayName,
     photoURL: "",
-    completedDays: 0,
-    missedDays: 0,
-    status: "in",
+    ...next,
     joinDate: today,
   };
   persist(db);
