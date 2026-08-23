@@ -61,20 +61,25 @@ export default function SettingsPage() {
         />
       </label>
 
-      <label className="field">
-        Font
-        <select
-          value={settings.font}
-          onChange={(e) => updateSettings({ font: e.target.value as FontId })}
-          data-testid="font"
-        >
+      <div className="field font-picker" data-testid="font">
+        <p className="field-hint">Font</p>
+        <div className="font-picker-list">
           {FONTS.map((f) => (
-            <option key={f.id} value={f.id}>
-              {f.label}
-            </option>
+            <button
+              key={f.id}
+              type="button"
+              className={`font-menu-item ${settings.font === f.id ? "is-active" : ""}`}
+              onClick={() => updateSettings({ font: f.id as FontId })}
+              aria-pressed={settings.font === f.id}
+            >
+              <span className={`font-title font-${f.id}`}>{f.label}</span>
+              <span className={`font-sample-text font-${f.id}`}>
+                The quick brown fox writes five hundred words.
+              </span>
+            </button>
           ))}
-        </select>
-      </label>
+        </div>
+      </div>
 
       <label className="field">
         Font size · {settings.fontSize}px

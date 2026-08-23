@@ -189,6 +189,20 @@ try {
   });
   console.log("themeActivator=" + JSON.stringify(themeActivator));
   if (themeActivator.height !== 48) fail("theme activator not 48px, got " + themeActivator.height);
+  const fontItem = await page.locator(".font-menu-item").first().evaluate((el) => {
+    const s = getComputedStyle(el);
+    const title = el.querySelector(".font-title");
+    const sample = el.querySelector(".font-sample-text");
+    return {
+      minHeight: Math.round(el.getBoundingClientRect().height),
+      titleSize: title ? getComputedStyle(title).fontSize : "",
+      sampleSize: sample ? getComputedStyle(sample).fontSize : "",
+    };
+  });
+  console.log("fontItem=" + JSON.stringify(fontItem));
+  if (fontItem.minHeight < 80) fail("font picker item shorter than 80px, got " + fontItem.minHeight);
+  if (fontItem.titleSize !== "16px") fail("font title not 16px, got " + fontItem.titleSize);
+  if (fontItem.sampleSize !== "14px") fail("font sample not 14px, got " + fontItem.sampleSize);
   if (themeActivator.radius !== "4px") fail("theme activator radius not 4px, got " + themeActivator.radius);
   if (!themeActivator.border.includes("204, 204, 204") && !themeActivator.border.includes("0, 200, 83")) {
     fail("theme activator border not #ccc, got " + themeActivator.border);
