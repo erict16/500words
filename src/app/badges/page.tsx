@@ -19,10 +19,10 @@ export default function BadgesPage() {
   const earned = new Set(badges.map((b) => b.id));
 
   return (
-    <main className="mx-auto max-w-3xl px-6 py-8">
+    <main className="mx-auto max-w-3xl px-7 py-8">
       <h1 className="font-georgia text-3xl">Badges</h1>
       <p className="mt-2 text-[14px] text-[var(--muted)]">
-        Little animals for showing up. They don’t mean you’re a good writer. They mean you wrote.
+        Ink-and-wash animals for showing up. They don’t mean you’re a good writer. They mean you wrote.
       </p>
       {newBadges.length ? (
         <p className="mt-4 text-[15px]" data-testid="new-badges">
@@ -32,12 +32,12 @@ export default function BadgesPage() {
       {GROUPS.map((group) => (
         <section key={group.id} className="mt-10">
           <h2 className="font-georgia text-xl">{group.label}</h2>
-          <ul className="mt-4 grid grid-cols-2 gap-6 sm:grid-cols-3">
+          <ul className="mt-4 grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-3">
             {BADGES.filter((b) => b.group === group.id).map((badge) => {
               const got = earned.has(badge.id);
               const when = badges.find((b) => b.id === badge.id);
               return (
-                <li key={badge.id} data-testid={`badge-${badge.id}`} className={got ? "" : "opacity-80"}>
+                <li key={badge.id} data-testid={`badge-${badge.id}`} className={got ? "" : "opacity-70"}>
                   <BadgeArt badge={badge} earned={got} />
                   <h3 className="mt-2 text-[15px]">{badge.name}</h3>
                   <p className="text-[13px] text-[var(--muted)]">{badge.how}</p>

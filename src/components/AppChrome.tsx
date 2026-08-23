@@ -60,7 +60,7 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
         <Link href="/" className="site-mark">
           500 Words
         </Link>
-        <nav className="flex flex-wrap items-center gap-x-4 gap-y-1">
+        <nav className="bar-nav">
           {LINKS.map((link) => (
             <Link
               key={link.href}

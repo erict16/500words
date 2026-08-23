@@ -11,8 +11,8 @@ export function MonthGrid() {
 
   return (
     <div className="month-wrap">
-      <div className="flex items-baseline justify-between gap-4">
-        <p className="text-[13px] text-[var(--muted)]">
+      <div className="month-head">
+        <p className="month-name">
           <button
             type="button"
             className="chrome-link mr-2"
@@ -37,7 +37,7 @@ export function MonthGrid() {
           ) : null}
           {lifetime?.currentStreak ? ` · ${lifetime.currentStreak} day streak` : ""}
         </p>
-        <p className="text-[13px] tabular-nums text-[var(--muted)]">{monthPoints} pts</p>
+        <p className="month-pts">{monthPoints}</p>
       </div>
       <div className="month-grid" data-testid="month-grid">
         {monthDays.map((day) => {

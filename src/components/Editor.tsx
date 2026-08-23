@@ -37,7 +37,7 @@ export function Editor() {
   }, []);
 
   return (
-    <div className="px-6">
+    <div className="px-7">
       {!isToday ? (
         <p className="mx-auto mb-2 max-w-2xl text-[13px] text-[var(--muted)]">
           {entry.date} is closed. You can read it. You can’t add words to a past day.
@@ -70,7 +70,7 @@ export function Editor() {
         autoCapitalize="sentences"
         autoCorrect="on"
         name="entry"
-        placeholder={isToday ? "Write…" : ""}
+        placeholder=""
         data-testid="editor"
         style={{
           fontSize: `${settings.fontSize}px`,

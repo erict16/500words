@@ -10,7 +10,7 @@ import { useApp } from "@/components/AppProvider";
 export default function WritePage() {
   const { error } = useApp();
   return (
-    <main className="pb-16" data-ready="write">
+    <main className="write-page" data-ready="write">
       <MonthGrid />
       {error ? (
         <p className="px-4 text-[13px] text-red-700">{error}</p>

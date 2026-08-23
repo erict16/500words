@@ -62,7 +62,11 @@ export default function PersonPage() {
   }
 
   if (!score) {
-    return <main className="px-6 py-10 text-[var(--muted)]">Loading…</main>;
+    return (
+      <main className="px-7 py-10 text-[var(--muted)]" data-testid="person-waiting">
+        Looking up this month’s score…
+      </main>
+    );
   }
 
   const earned = score.badgeIds
@@ -70,7 +74,7 @@ export default function PersonPage() {
     .filter((b): b is NonNullable<typeof b> => Boolean(b));
 
   return (
-    <main className="mx-auto max-w-xl px-6 py-10">
+    <main className="mx-auto max-w-xl px-7 py-10">
       <h1 className="font-georgia text-3xl">{score.displayName}</h1>
       <p className="mt-4 text-[16px] leading-relaxed" data-testid="person-score">
         {score.monthPoints} points this month · {score.daysCompleted}{" "}
@@ -78,7 +82,7 @@ export default function PersonPage() {
         {score.streak}
       </p>
       {earned.length ? (
-        <ul className="mt-8 flex flex-wrap gap-4" data-testid="person-badges">
+        <ul className="mt-8 grid grid-cols-3 gap-4 sm:grid-cols-4" data-testid="person-badges">
           {earned.map((badge) => (
             <li key={badge.id}>
               <BadgeArt badge={badge} earned />
@@ -87,7 +91,7 @@ export default function PersonPage() {
           ))}
         </ul>
       ) : null}
-      <p className="mt-6 text-[13px] text-[var(--muted)]">
+      <p className="mt-8 text-[13px] text-[var(--muted)]">
         Writing stays private. This page is only the scoreboard.
       </p>
     </main>

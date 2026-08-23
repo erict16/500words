@@ -18,7 +18,7 @@ export default function StatsPage() {
   const done = words >= WORD_GOAL || entry.locked;
 
   return (
-    <main className="mx-auto max-w-2xl px-6 py-8">
+    <main className="mx-auto max-w-2xl px-7 py-8">
       <h1 className="font-georgia text-3xl">Stats</h1>
       <p className="mt-2 text-[14px] text-[var(--muted)]">
         Time, words, points. Not what the words were about.
@@ -26,7 +26,7 @@ export default function StatsPage() {
 
       <section className="mt-8">
         <h2 className="text-[13px] uppercase tracking-wide text-[var(--muted)]">Today</h2>
-        <p className={`mt-3 font-georgia text-5xl tabular-nums ${done ? "word-good" : ""}`} data-testid="stat-words">
+        <p className={`mt-2 font-georgia text-5xl tabular-nums ${done ? "word-good" : ""}`} data-testid="stat-words">
           {words}
         </p>
         <p className="mt-1 text-[15px] text-[var(--muted)]" data-testid="stat-goal">
@@ -71,11 +71,14 @@ export default function StatsPage() {
       )}
 
       <section className="mt-10">
-        <h2 className="text-[13px] uppercase tracking-wide text-[var(--muted)]">This month</h2>
-        <p className="mt-3 text-[16px]" data-testid="stat-month">
+        <div className="month-head">
+          <h2 className="text-[13px] uppercase tracking-wide text-[var(--muted)]">This month</h2>
+          <p className="month-pts">{monthPoints}</p>
+        </div>
+        <p className="mt-2 text-[15px]" data-testid="stat-month">
           {monthPoints} points · {completed} strikes · {started} days started
         </p>
-        <div className="scorecard mt-4" data-testid="stats-month">
+        <div className="scorecard mt-3" data-testid="stats-month">
           {monthDays.map((day) => (
             <div key={day.date} className="score-cell">
               <span

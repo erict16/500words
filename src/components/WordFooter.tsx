@@ -22,14 +22,14 @@ export function WordFooter() {
         : "";
 
   return (
-    <footer className="pointer-events-none fixed bottom-0 left-0 right-0 px-5 py-3">
-      <div className="pointer-events-auto flex items-baseline justify-between gap-4 text-[13px] tabular-nums">
+    <footer className="pointer-events-none fixed bottom-0 left-0 right-0 px-7 py-3">
+      <div className="pointer-events-auto mx-auto flex max-w-[960px] items-baseline justify-between gap-4">
         {done ? (
-          <Link href="/stats" className="word-good" data-testid="word-count">
+          <Link href="/stats" className="word-count word-good" data-testid="word-count" title="Today’s stats">
             {words}
           </Link>
         ) : (
-          <p data-testid="word-count">
+          <p className="word-count" data-testid="word-count">
             {words} / {WORD_GOAL}
           </p>
         )}

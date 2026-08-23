@@ -16,8 +16,8 @@ export default function ChallengePage() {
   const daysLeft = monthDates.filter((d) => d >= today).length;
 
   return (
-    <main className="mx-auto max-w-2xl px-6 py-8">
-      <div className="flex items-start gap-4">
+    <main className="mx-auto max-w-3xl px-7 py-8">
+      <div className="flex items-start gap-5">
         {horse ? <BadgeArt badge={horse} earned /> : null}
         <div>
           <h1 className="font-georgia text-3xl">One month</h1>
@@ -49,35 +49,37 @@ export default function ChallengePage() {
         </p>
       ) : null}
 
-      <section className="mt-10">
-        <h2 className="font-georgia text-2xl">Wall of awesomeness</h2>
-        {awesome.length === 0 ? (
-          <p className="mt-2 text-[14px] text-[var(--muted)]">Nobody here yet.</p>
-        ) : (
-          <ul className="mt-3 space-y-1">
-            {awesome.map((p) => (
-              <li key={p.uid} className={p.uid === user?.uid ? "font-medium" : ""}>
-                {p.displayName} · {p.completedDays} days
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+      <div className="walls mt-12">
+        <section>
+          <h2 className="font-georgia text-2xl">Wall of awesomeness</h2>
+          {awesome.length === 0 ? (
+            <p className="mt-2 text-[14px] text-[var(--muted)]">Nobody here yet.</p>
+          ) : (
+            <ul className="wall-list">
+              {awesome.map((p) => (
+                <li key={p.uid} className={p.uid === user?.uid ? "font-medium" : ""}>
+                  {p.displayName} · {p.completedDays} days
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
 
-      <section className="mt-10">
-        <h2 className="font-georgia text-2xl">Wall of shame</h2>
-        {shame.length === 0 ? (
-          <p className="mt-2 text-[14px] text-[var(--muted)]">Empty. Keep it that way.</p>
-        ) : (
-          <ul className="mt-3 space-y-1">
-            {shame.map((p) => (
-              <li key={p.uid}>
-                {p.displayName} · missed {p.missedDays}
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+        <section>
+          <h2 className="font-georgia text-2xl">Wall of shame</h2>
+          {shame.length === 0 ? (
+            <p className="mt-2 text-[14px] text-[var(--muted)]">Empty. Keep it that way.</p>
+          ) : (
+            <ul className="wall-list">
+              {shame.map((p) => (
+                <li key={p.uid}>
+                  {p.displayName} · missed {p.missedDays}
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      </div>
     </main>
   );
 }
