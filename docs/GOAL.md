@@ -24,9 +24,11 @@ Everything else 750 Words has after login is in.
 
 ## Writing page (the original 750 ritual, 500 instead of 750)
 
-This is the original bowling calendar, not a green check-mark month view.
+This is the original bowling calendar (`original.750words.com`), not Nuxt V2 and not a green check-mark month view.
 
-- Teal top bar (`#2bbbad`), white “500 Words”, white links: Write · Stats · Badges · One month · Settings · Sign out
+Live CSS tokens: `docs/750-source.md`. Prefer those over screenshots.
+
+- Header from original CSS: 800px, 30px bree/sniglet (Helvetica fallback) “500 Words”, black links (Write · Stats · Badges · One month · Search · Settings · Sign out). Do not copy 750words.com Nuxt teal/Vuetify.
 - Under that: month name on the left, month points on the right
 - **31 (or 28–31) boxes in a wrapping row.** Day number tiny in the top-left of each box.
   - empty = blank box
