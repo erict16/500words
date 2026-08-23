@@ -922,6 +922,9 @@ input:focus-visible {
   border-radius: 8px;
   font-family: var(--font-sans-metadata);
 }
+.participant-card:hover {
+  border-color: var(--border-medium);
+}
 
 .participant-name {
   font-weight: 500;
@@ -1282,6 +1285,11 @@ label {
   margin-right: 8px;
   accent-color: var(--brand-green);
 }
+@media (max-width: 768px) {
+  .check {
+    min-height: 48px;
+  }
+}
 
 .btn-row {
   display: flex;
@@ -1509,7 +1517,183 @@ label {
   font-weight: 500;
   letter-spacing: 0;
   text-transform: none;
+  cursor: pointer;
+}
+.search-btn:disabled {
+  opacity: 0.6;
   cursor: default;
+}
+
+.options-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+  position: relative;
+}
+.search-page.has-results .options-row {
+  border-bottom: 1px solid var(--border-light);
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+.options-left,
+.options-dropdowns {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+}
+
+.result-count {
+  color: var(--text-muted);
+  font-family: var(--font-sans-metadata);
+  font-size: 0.85rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.control-select {
+  max-width: 13rem;
+  min-width: 9rem;
+  height: 32px;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-base);
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans-metadata);
+  font-size: 0.8rem;
+}
+.control-select:hover {
+  border-color: var(--border-medium);
+}
+
+.tips-link {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-family: var(--font-sans-metadata);
+  font-size: 0.8rem;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 2px;
+  white-space: nowrap;
+  padding: 0;
+}
+.tips-link:hover {
+  color: var(--text-secondary);
+}
+
+.tips-card {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 8;
+  min-width: 220px;
+  background: var(--paper);
+  border: 1px solid var(--border-medium);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px #0000001f;
+}
+
+.tips-content {
+  color: var(--text-secondary);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-sans-metadata);
+  font-size: 0.8rem;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+}
+
+.tip strong {
+  color: var(--ink);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-right: 0.25rem;
+}
+
+.sparkline-container {
+  margin-bottom: 0.75rem;
+}
+
+.sparkline-bars {
+  align-items: flex-end;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  gap: 1px;
+  height: 32px;
+  width: 100%;
+}
+
+.sparkline-bar-wrapper {
+  align-items: flex-end;
+  cursor: pointer;
+  display: flex;
+  flex: 1;
+  height: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+.sparkline-bar-wrapper.is-empty {
+  cursor: default;
+}
+
+.sparkline-bar {
+  background-color: var(--brand-green);
+  border-radius: 1px 1px 0 0;
+  opacity: 0.35;
+  transition: opacity 0.15s ease;
+  width: 100%;
+  display: block;
+  min-height: 0;
+}
+.sparkline-bar-wrapper:hover .sparkline-bar {
+  opacity: 0.7;
+}
+.sparkline-bar-wrapper.is-active .sparkline-bar {
+  opacity: 1;
+}
+.sparkline-bar-wrapper.is-dimmed .sparkline-bar {
+  opacity: 0.12;
+}
+.sparkline-bar-wrapper.is-dimmed:hover .sparkline-bar {
+  opacity: 0.4;
+}
+
+.sparkline-label {
+  align-items: center;
+  color: var(--text-muted);
+  display: flex;
+  font-family: var(--font-sans-metadata);
+  font-size: 0.75rem;
+  gap: 0.35rem;
+  line-height: 1.4;
+  margin-top: 0.25rem;
+}
+
+.sparkline-clear {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.9rem;
+  line-height: 1;
+  opacity: 0.6;
+  padding: 0 0.15rem;
+}
+.sparkline-clear:hover {
+  color: var(--ink);
+  opacity: 1;
 }
 
 .results-list {
@@ -1577,10 +1761,26 @@ label {
   color: var(--text-secondary);
   margin: 0;
 }
+.result-snippet b {
+  background: var(--border-light);
+  border-radius: 3px;
+  color: var(--ink);
+  font-weight: 700;
+  padding: 0.1em 0.25em;
+}
 
 .empty-state {
   padding: 3rem 1rem;
   text-align: center;
+}
+
+.empty-icon {
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+  opacity: 0.5;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .empty-title {

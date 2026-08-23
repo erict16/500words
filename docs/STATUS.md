@@ -9,10 +9,11 @@ STOP only when that is true.
 - Live `500words-ink.vercel.app`
 - Google + Write on this device
 - Copied tokens from `750words.com/_nuxt/entry` CSS: `ui-serif, Georgia, Cambria, Times`, `#4caf50`, `#00c853`
-- Write page: long date heading, Jul | Aug, 18px rounded squares, green check at 500, placeholder, tagline
+- Write page: long date heading, Jul | Aug, 18px rounded squares, green check at 500, placeholder, tagline. No app nav. Wordmark 400. Type first; Sign in is optional.
 - Inner pages: serif ink titles (1.875rem), 48px outlined fields, full-width search, no mint person header, no #45DED7 challenge pills, no Georgia #d4eef7 notices
 - Badges: current-750 card grid (2/3/4 cols, 280px cards, green check, 18px serif titles). Tag Savage PNGs still 404; keep SVG drawings.
 - Search: 48px Search button + result cards (0.8rem green date, 1.05rem serif title). Settings: 48px theme activators. Challenge walls: participant cards.
+- Search: Tips dotted-link, 0.8rem sort, result count, snippet `<b>` highlight, monthly sparkline (`_query_.D7Zt-hjq`). Settings checkboxes 48px on small screens.
 - Stats browse list matches `/account/browse` month-entry rows. Sign-in Google is a 48px primary button (no 350px Rails box).
 - Person page: sans month summary (“This month, … completed 500 words”), DAY N OF MONTH kicker, CURRENT BADGES — no Rails two-column table.
 - Stats month is current-750 mini-calendar dots (#00c853 completed, 7-col grid). Write page still 18px green-check squares.

@@ -503,11 +503,40 @@ try {
   const searchBtn = await page.locator(".search-btn").evaluate((el) => Math.round(el.getBoundingClientRect().height));
   console.log("searchBtn=" + searchBtn);
   if (searchBtn < 44) fail("search button shorter than 48px, got " + searchBtn);
+  const tipsLink = await page.locator('[data-testid="search-tips"]').evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { size: s.fontSize, deco: s.textDecorationStyle, color: s.color };
+  });
+  console.log("tipsLink=" + JSON.stringify(tipsLink));
+  if (tipsLink.size !== "12.8px") fail("tips-link not 0.8rem, got " + tipsLink.size);
+  if (tipsLink.deco !== "dotted") fail("tips-link not dotted underline, got " + tipsLink.deco);
+  if (!tipsLink.color.includes("136, 136, 136")) fail("tips-link not #888, got " + tipsLink.color);
+  const sortSelect = await page.locator('[data-testid="search-sort"]').evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { size: s.fontSize, height: Math.round(el.getBoundingClientRect().height) };
+  });
+  console.log("searchSort=" + JSON.stringify(sortSelect));
+  if (sortSelect.size !== "12.8px") fail("search sort not 0.8rem, got " + sortSelect.size);
   await page.locator('[data-testid="search-input"]').fill("word0");
   await page.waitForSelector('[data-testid="search-hits"] button', { timeout: 10000 });
   const hitCount = await page.locator('[data-testid="search-hits"] button').count();
   console.log("searchHits=" + hitCount);
   if (hitCount < 1) fail("search did not find the entry");
+  const resultCount = (await page.locator('[data-testid="result-count"]').textContent()) ?? "";
+  console.log("resultCount=" + resultCount.trim());
+  if (!/entry/i.test(resultCount)) fail("search missing result count, got " + resultCount);
+  const highlight = (await page.locator(".result-snippet b").first().textContent()) ?? "";
+  console.log("snippetMark=" + highlight);
+  if (!/word0/i.test(highlight)) fail("search snippet missing <b> highlight, got " + highlight);
+  const markStyle = await page.locator(".result-snippet b").first().evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { weight: s.fontWeight, radius: s.borderTopLeftRadius };
+  });
+  console.log("snippetMarkStyle=" + JSON.stringify(markStyle));
+  if (markStyle.weight !== "700" && markStyle.weight !== "bold") {
+    fail("snippet highlight not weight 700, got " + markStyle.weight);
+  }
+  if (markStyle.radius !== "3px") fail("snippet highlight radius not 3px, got " + markStyle.radius);
   const resultDate = await page.locator(".result-date").first().evaluate((el) => {
     const s = getComputedStyle(el);
     return { size: s.fontSize, weight: s.fontWeight, color: s.color };

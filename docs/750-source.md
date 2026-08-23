@@ -83,6 +83,11 @@ search-btn                     48px, sans 0.9rem / 500, primary fill
 search result date             sans 0.8rem / 600 / primary
 search result title            serif 1.05rem / 500
 search result snippet          sans 0.85rem / #666 / 1.6
+search snippet b               bg #e0e0e0, radius 3px, weight 700
+search tips-link               sans 0.8rem, #888, dotted underline
+search tips-card               8px radius, 1px #ccc, 0.8rem sans
+search control-select          0.8rem, min 9rem / max 13rem
+search result-count            sans 0.85rem / 500 / #888
 sparkline-bars                 32px tall, 1px gap, primary fill opacity .35 / 1
 base-checkbox wrapper          min-height 44px (48px on small screens)
 theme-activator                48px, min-width 200px, 1px #ccc, radius 4px
