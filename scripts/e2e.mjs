@@ -20,7 +20,7 @@ const { chromium } = require(playwrightPath);
 
 const PORT = 3017;
 const SITE = `http://localhost:${PORT}`;
-const SERIF = /source serif|ui-serif|iowan|palatino|georgia|cambria|times/i;
+const SERIF = /bitter|ui-serif|iowan|palatino|georgia|cambria|times/i;
 
 const env = { ...process.env };
 delete env.NEXT_PUBLIC_E2E;

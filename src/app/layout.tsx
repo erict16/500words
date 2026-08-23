@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
-import { Source_Serif_4 } from "next/font/google";
+import { Bitter } from "next/font/google";
 import { AppProvider } from "@/components/AppProvider";
 import { Shell } from "@/components/Shell";
 import { ThemeSync } from "@/components/ThemeSync";
 import "./globals.css";
 import "@/styles/app.css";
 
-const sourceSerif = Source_Serif_4({
+const serif = Bitter({
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-source-serif",
+  variable: "--font-serif",
 });
 
 export const metadata: Metadata = {
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`h-full ${sourceSerif.variable}`}>
+    <html lang="en" className={`h-full ${serif.variable}`}>
       <body className="min-h-full">
         <AppProvider>
           <ThemeSync />

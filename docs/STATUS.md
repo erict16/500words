@@ -24,7 +24,7 @@ STOP only when that is true.
 - Write footer: 820px column, serif 14px tagline, 16px padding (`WritePageFooter`). Hide chrome while typing uses 750 focus mode (header/calendar/footer out, Menu exit). Inner h2 is 700.
 - Inner footer is current-750 (20px serif 700, not Rails 45px). Stats/challenge leads are serif page-description. Dead Rails `table.entry-stats` CSS is gone.
 - Badge cards use 12px image padding and 12px grid gap (no extra card margin). Dead Rails chrome (`bowling-score-tally`, `chrome-link`, `scorecard`, `stat-dl`) is gone.
-- Default serif is Source Serif 4 + ui-serif (not Georgia-first). Wordmark/footer hovers use ink, not Rails `#000`. Placeholder opacity ~0.3.
+- Default serif is Bitter (Sentinel-class slab). 750’s real face is paid Sentinel SSm. Wordmark/footer hovers use ink. Placeholder opacity ~0.3.
 
 ## Next
 
