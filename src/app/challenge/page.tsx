@@ -47,10 +47,10 @@ export default function ChallengePage() {
       ) : null}
 
       <div className="walls">
-        <section>
-          <h2 className="page-h2">Wall of awesomeness</h2>
+        <section className="group-card">
+          <h2 className="group-name">Wall of awesomeness</h2>
           {awesome.length === 0 ? (
-            <p className="notice">Nobody here yet.</p>
+            <p className="text-muted">Nobody here yet.</p>
           ) : (
             <ul className="wall-list">
               {awesome.map((p) => (
@@ -63,10 +63,10 @@ export default function ChallengePage() {
           )}
         </section>
 
-        <section>
-          <h2 className="page-h2">Wall of shame</h2>
+        <section className="group-card">
+          <h2 className="group-name">Wall of shame</h2>
           {shame.length === 0 ? (
-            <p className="notice" data-testid="shame-empty">
+            <p className="text-muted" data-testid="shame-empty">
               Empty. Keep it that way.
             </p>
           ) : (

@@ -66,6 +66,13 @@ try {
   await page.waitForSelector('[data-testid="local-write"]', { timeout: 10000 });
   const google = await page.locator('[data-testid="google-signin"]').count();
   console.log("googleButton=" + google);
+  const loginTitle = await page.locator(".login-title").evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { size: s.fontSize, weight: s.fontWeight, font: s.fontFamily };
+  });
+  console.log("loginTitle=" + JSON.stringify(loginTitle));
+  if (loginTitle.size !== "18px") fail("login-title not 1.125rem, got " + loginTitle.size);
+  if (!/georgia|ui-serif|cambria|times/i.test(loginTitle.font)) fail("login-title not serif, got " + loginTitle.font);
   if (!google) fail("missing Continue with Google");
   await page.locator('[data-testid="local-write"]').click();
   await page.waitForSelector('[data-testid="editor"]', { timeout: 10000 });
@@ -291,14 +298,28 @@ try {
   if (!progress?.includes("1 day")) fail("joining after a strike should count today");
   const noticeStyle = await page.locator('[data-testid="shame-empty"]').evaluate((el) => {
     const s = getComputedStyle(el);
-    return { bg: s.backgroundColor, font: s.fontFamily, size: s.fontSize, radius: s.borderTopLeftRadius };
+    return { bg: s.backgroundColor, font: s.fontFamily, size: s.fontSize };
   });
   console.log("notice=" + JSON.stringify(noticeStyle));
   if (noticeStyle.bg.includes("212, 238, 247")) fail("notice still Rails #d4eef7");
   if (/georgia/i.test(noticeStyle.font) && !/ui-sans|system-ui|segoe|helvetica|arial/i.test(noticeStyle.font)) {
     fail("notice still Georgia, got " + noticeStyle.font);
   }
-  if (noticeStyle.radius !== "4px") fail("notice radius not 4px, got " + noticeStyle.radius);
+  const groupCard = await page.locator(".group-card").first().evaluate((el) => {
+    const s = getComputedStyle(el);
+    const name = el.querySelector(".group-name");
+    return {
+      border: s.borderTopWidth,
+      radius: s.borderTopLeftRadius,
+      nameSize: name ? getComputedStyle(name).fontSize : "",
+      nameFont: name ? getComputedStyle(name).fontFamily : "",
+    };
+  });
+  console.log("groupCard=" + JSON.stringify(groupCard));
+  if (groupCard.border !== "1px") fail("group-card missing 1px border, got " + groupCard.border);
+  if (groupCard.radius !== "4px") fail("group-card radius not 4px, got " + groupCard.radius);
+  if (groupCard.nameSize !== "18px") fail("group-name not 1.125rem, got " + groupCard.nameSize);
+  if (!/georgia|ui-serif|cambria|times/i.test(groupCard.nameFont)) fail("group-name not serif, got " + groupCard.nameFont);
   const joined = await page.locator('[data-testid="joined-challenge"] strong').evaluate((el) => {
     const s = getComputedStyle(el);
     return { color: s.color, border: s.borderTopColor, radius: s.borderRadius, pad: s.paddingTop };

@@ -93,6 +93,9 @@ account-browse .month-entry    padding 16px 0, 1px #e0e0e0
 month-title a/strong           sans 600, primary #00c853
 month-stats                    sans 0.875rem #666
 login primary button           48px, brand-green fill, white text
+login-title                    serif 1.125rem / 400
+group-card                     1px #e0e0e0, elevated, hover border-medium
+group-name                     serif 1.125rem / 600
 person page                    no #DCFFFD mint card; ink serif
 person summary                 sans 1rem; “This month, {handle} has written…”
 person kicker                  sans “DAY N OF MONTH”

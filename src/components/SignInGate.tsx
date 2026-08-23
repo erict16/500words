@@ -16,13 +16,14 @@ export function SignInGate({ children }: { children: React.ReactNode }) {
         </div>
       </header>
       <main className="site-col">
-        <div className="sign-page" data-testid="signin-form">
-          {configured ? (
-            <button type="button" onClick={() => void signIn()} className="btn-google" data-testid="google-signin">
-              Continue with Google
-            </button>
-          ) : null}
-          <div>
+        <div className="sign-page login-form" data-testid="signin-form">
+          <h1 className="login-title">Sign in</h1>
+          <div className="login-actions">
+            {configured ? (
+              <button type="button" onClick={() => void signIn()} className="btn-google" data-testid="google-signin">
+                Continue with Google
+              </button>
+            ) : null}
             <button type="button" onClick={startLocal} className="subdued" data-testid="local-write">
               Write on this device
             </button>

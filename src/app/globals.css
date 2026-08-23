@@ -51,10 +51,10 @@
   --muted: #8a7460;
   --line: #d4c4a8;
   --soft: #efe3cc;
-  --good: green;
-  --stat: #4db559;
-  --link: #000099;
-  --notice: #d4eef7;
+  --good: #4caf50;
+  --stat: #4caf50;
+  --link: #00a844;
+  --notice: #efe3cc;
   --strike: #3b2f23;
   --spare: #6a5848;
 }
@@ -220,6 +220,22 @@ button {
   margin: 0;
   padding: 8px 0 48px;
   font-family: var(--font-serif-primary);
+}
+
+.login-title {
+  color: var(--ink);
+  font-family: var(--font-serif-primary);
+  font-size: 1.125rem;
+  font-weight: 400;
+  line-height: 1.4;
+  margin: 0 0 1.5rem;
+}
+
+.login-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 20px;
 }
 
 .sign-page .btn-google {
@@ -853,16 +869,36 @@ input:focus-visible {
 }
 
 .walls {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
   margin-top: 28px;
 }
-@media (min-width: 720px) {
-  .walls {
-    grid-template-columns: 1fr 1fr;
-    gap: 48px;
-  }
+
+.group-card {
+  background: var(--paper);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-base);
+  padding: 16px;
+}
+
+.group-card:hover {
+  border-color: var(--border-medium);
+}
+
+.group-name {
+  font-family: var(--font-serif-primary);
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0 0 8px;
+}
+
+.text-muted {
+  font-family: var(--font-sans-metadata);
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: 0;
 }
 
 .wall-list {

@@ -445,8 +445,8 @@ function Oxalis({ p, earned }: { p: Palette; earned: boolean }) {
 }
 
 function Horse({ p, earned }: { p: Palette; earned: boolean }) {
-  const coat = hue(earned, "#45ded7");
-  const mane = hue(earned, "#1a7f78");
+  const coat = hue(earned, "#00bfa5");
+  const mane = hue(earned, "#00796b");
   return (
     <>
       <ellipse cx="35" cy="71" rx="17" ry="3.4" fill={p.ink} opacity="0.08" />
