@@ -90,6 +90,9 @@ month-title a/strong           sans 600, primary #00c853
 month-stats                    sans 0.875rem #666
 login primary button           48px, brand-green fill, white text
 person page                    no #DCFFFD mint card; ink serif
+person summary                 sans 1rem; “This month, {handle} has written…”
+person kicker                  sans “DAY N OF MONTH”
+CURRENT BADGES                 sans 1.125rem / 600 heading + wrapping tiles
 v-alert / notice               sans, 1px #ccc, 4px radius — not Georgia #d4eef7
 challenge pills                not #45DED7; primary green / #ccc
 ```

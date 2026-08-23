@@ -1222,77 +1222,68 @@ label {
   margin-bottom: 0.5rem;
 }
 
-.persons-header .person-score,
-.persons-header .big {
-  margin: 8px 0 0;
-  font-family: var(--font-serif-primary);
-  font-size: 1.125rem;
-  color: var(--ink);
-  line-height: 1.4;
+.person-kicker {
+  font-family: var(--font-sans-metadata);
+  font-size: 0.875rem;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+  margin: 0 0 0.75rem;
 }
 
-.persons-header .big strong {
+.person-summary {
+  font-family: var(--font-sans-metadata);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--ink);
+  margin: 0 0 1.5rem;
+}
+
+.person-summary strong {
   color: var(--ink);
   font-weight: 700;
 }
 
-.person-score {
-  margin: 14px 0 0;
-  font-size: 1rem;
-  line-height: 1.55;
-}
-
-table.person-stats {
-  width: 100%;
-  border-collapse: collapse;
+.person-stat-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 24px;
   margin: 0 0 1.5em;
 }
 
-table.person-stats td.stat-key {
-  font-family: var(--font-sans-metadata);
-  font-size: 1rem;
-  padding: 8px 8px 8px 0;
-  border-bottom: 1px solid var(--border-light);
+.stats-cell {
+  flex: 1 1 8rem;
+  text-align: center;
 }
 
-table.person-stats td.score {
+.stats-cell .stat-key {
+  font-family: var(--font-sans-metadata);
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.stats-cell .score {
   font-family: var(--font-serif-primary);
   font-size: 1.5rem;
   color: var(--ink);
   font-weight: 700;
-  padding: 8px 0;
-  text-align: right;
-  border-bottom: 1px solid var(--border-light);
   font-variant-numeric: tabular-nums;
+  margin-top: 4px;
 }
 
-table.person-stats .stat {
-  text-align: center;
-  padding: 5px;
-  color: #fff;
-}
-
-table.person-stats .positive {
-  background-color: var(--good);
-}
-
-table.person-stats .negative {
-  background-color: #b30909;
+.badge-group-label {
+  font-family: var(--font-sans-metadata);
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 1.5rem 0 0.5rem;
+  letter-spacing: 0.04em;
 }
 
 [data-theme="dark"] .persons-header {
   background: transparent;
   box-shadow: none;
 }
-[data-theme="dark"] .persons-header .person-score,
-[data-theme="dark"] .persons-header .big {
-  color: var(--ink);
-}
-[data-theme="dark"] table.person-stats td.stat-key,
-[data-theme="dark"] table.person-stats td.score {
-  border-bottom-color: var(--line);
-}
-[data-theme="dark"] table.person-stats td.score {
+[data-theme="dark"] .stats-cell .score {
   color: var(--ink);
 }
 [data-theme="dark"] .foot-logo,

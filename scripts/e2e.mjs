@@ -405,12 +405,15 @@ try {
     const s = getComputedStyle(el);
     const strong = el.querySelector("strong");
     const sc = strong ? getComputedStyle(strong) : null;
-    return { fontSize: s.fontSize, color: s.color, strong: sc?.color };
+    return { fontSize: s.fontSize, color: s.color, strong: sc?.color, font: s.fontFamily };
   });
   console.log("personBig=" + JSON.stringify(personBig));
-  if (personBig.fontSize !== "18px") fail("person header .big not 18px, got " + personBig.fontSize);
+  if (personBig.fontSize !== "16px") fail("person summary not 1rem, got " + personBig.fontSize);
+  if (!/ui-sans|system-ui|segoe|helvetica|arial/i.test(personBig.font)) {
+    fail("person summary not sans, got " + personBig.font);
+  }
   if (personBig.strong?.includes("67, 146, 241")) fail("person strong still Rails #4392F1");
-  const personScoreCell = await page.locator("[data-testid='person-stats'] td.score").first().evaluate((el) => {
+  const personScoreCell = await page.locator("[data-testid='person-stats'] .score").first().evaluate((el) => {
     const s = getComputedStyle(el);
     return { fontSize: s.fontSize, color: s.color, fontWeight: s.fontWeight };
   });

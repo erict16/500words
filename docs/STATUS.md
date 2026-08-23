@@ -14,6 +14,7 @@ STOP only when that is true.
 - Badges: current-750 card grid (2/3/4 cols, 280px cards, green check, 18px serif titles). Tag Savage PNGs still 404; keep SVG drawings.
 - Search: 48px Search button + result cards (0.8rem green date, 1.05rem serif title). Settings: 48px theme activators. Challenge walls: participant cards.
 - Stats browse list matches `/account/browse` month-entry rows. Sign-in Google is a 48px primary button (no 350px Rails box).
+- Person page: sans month summary (“This month, … completed 500 words”), DAY N OF MONTH kicker, CURRENT BADGES — no Rails two-column table.
 
 ## Next
 
