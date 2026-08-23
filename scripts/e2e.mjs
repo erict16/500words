@@ -357,6 +357,12 @@ try {
   const bars = await page.locator("[data-testid='word-bars'] .score-bar").count();
   console.log("wordBars=" + bars);
   if (bars < 28) fail("stats word bars missing");
+  const spark = await page.locator("[data-testid='word-bars']").evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { height: s.height, gap: s.columnGap || s.gap };
+  });
+  console.log("spark=" + JSON.stringify(spark));
+  if (spark.height !== "32px") fail("word bars not 32px sparkline, got " + spark.height);
   await page.waitForSelector("[data-testid='archive'] [data-testid='archive-hit']", { timeout: 10000 });
   const archive = await page.locator("[data-testid='archive'] [data-testid='archive-hit']").count();
   const archiveText = (await page.locator("[data-testid='archive'] [data-testid='archive-hit']").first().textContent()) ?? "";

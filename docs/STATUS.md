@@ -19,6 +19,7 @@ STOP only when that is true.
 - Settings font picker: 80px items, 16px titles, 14px samples (FontPicker._nuxt). Logo 20px serif 700.
 - Stats Today/All-time are centered stats-cells (no Rails 5-col table). Header nav is 16px sans with a green active underline.
 - Sign-in: serif 1.125rem “Sign in” title. Challenge walls: stacked group-cards (serif names). Sepia no longer uses Rails #000099.
+- Stats word bars are 32px sparklines (1px gap, #00c853). Settings checkboxes are 44px with green accent.
 
 ## Next
 

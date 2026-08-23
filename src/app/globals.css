@@ -1270,14 +1270,17 @@ label {
 }
 
 .check {
-  display: block;
-  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  margin-top: 8px;
   font-size: 15px;
   font-family: var(--font-sans-metadata);
   color: var(--ink);
 }
 .check input {
   margin-right: 8px;
+  accent-color: var(--brand-green);
 }
 
 .btn-row {
@@ -1466,6 +1469,7 @@ label {
   border: 0;
   padding: 8px 0;
   background: transparent;
+  accent-color: var(--brand-green);
 }
 .field input[type="checkbox"],
 .field input[type="radio"] {
@@ -1740,23 +1744,31 @@ label {
   color: var(--ink);
 }
 [data-theme="dark"] .bar-link.active {
-  border-bottom-color: var(--ink);
+  border-bottom-color: var(--brand-green);
 }
 
 .score-bars {
   display: flex;
   align-items: flex-end;
-  gap: 2px;
-  height: 72px;
-  margin-top: 20px;
-  border-bottom: 1px solid var(--line);
+  gap: 1px;
+  height: 32px;
+  width: 100%;
+  margin-top: 12px;
+  border-bottom: 1px solid var(--border-light);
 }
 
 .score-bar {
   flex: 1;
-  min-width: 4px;
+  min-width: 0;
   background: var(--brand-green);
+  border-radius: 1px 1px 0 0;
+  opacity: 0.35;
   display: block;
+  transition: opacity 0.15s ease;
+}
+
+.score-bar.is-active {
+  opacity: 1;
 }
 
 .saved-flash {

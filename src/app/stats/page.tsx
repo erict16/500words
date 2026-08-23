@@ -137,11 +137,10 @@ export default function StatsPage() {
           {monthDays.map((day) => (
             <span
               key={day.date}
-              className="score-bar"
+              className={`score-bar ${day.wordCount >= WORD_GOAL ? "is-active" : ""}`}
               title={`${day.date}: ${day.wordCount} words`}
               style={{
                 height: `${Math.min(100, (day.wordCount / WORD_GOAL) * 100)}%`,
-                opacity: day.wordCount >= WORD_GOAL ? 1 : 0.45,
               }}
             />
           ))}

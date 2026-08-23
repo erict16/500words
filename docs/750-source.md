@@ -83,6 +83,8 @@ search-btn                     48px, sans 0.9rem / 500, primary fill
 search result date             sans 0.8rem / 600 / primary
 search result title            serif 1.05rem / 500
 search result snippet          sans 0.85rem / #666 / 1.6
+sparkline-bars                 32px tall, 1px gap, primary fill opacity .35 / 1
+base-checkbox wrapper          min-height 44px (48px on small screens)
 theme-activator                48px, min-width 200px, 1px #ccc, radius 4px
 font-menu-item                 min-height 80px, 16px title / 600, 14px sample
 logo-link / site-mark          serif 20px / 700
