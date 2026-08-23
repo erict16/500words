@@ -115,6 +115,15 @@ v-alert / notice               sans, 1px #ccc, 4px radius — not Georgia #d4eef
 challenge pills                not #45DED7; primary green / #ccc
 ```
 
+Write footer (`WritePageFooter.Dbeovq_b.css`):
+
+```
+.write-footer .footer-content   max-width 820px, padding 16px, font-size 14px
+.footer-text                    serif, color-text-secondary, top 3px
+.write-footer--focus            opacity 0, pointer-events none, translateY(100%)
+.exit-focus-btn                 fixed 20px/20px, elevated, 36px on small screens
+```
+
 Do not copy AI chunks (`EntryMindset`, Silly Robot, donut “analysis”).
 
 ## What we still cannot download

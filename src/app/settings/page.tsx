@@ -147,6 +147,7 @@ export default function SettingsPage() {
           type="checkbox"
           checked={settings.hideChrome}
           onChange={(e) => updateSettings({ hideChrome: e.target.checked })}
+          data-testid="hide-chrome"
         />
         Hide the header while typing
       </label>

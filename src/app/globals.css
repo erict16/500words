@@ -13,7 +13,7 @@
   --strike: #4caf50;
   --spare: #c8e6c9;
   --brand-green: #00c853;
-  --brand-green-dark: #00a844;
+  --brand-green-dark: #00a047;
   --text-secondary: #666;
   --text-muted: #888;
   --border-light: #e0e0e0;
@@ -103,6 +103,12 @@ button {
   margin-right: auto;
   font-size: 16px;
   text-align: left;
+}
+
+.write-page.site-col,
+.write-top-inner.site-col,
+.write-foot-bar.site-col {
+  width: 820px;
 }
 
 .site-bar {
@@ -272,6 +278,71 @@ button {
   padding: 0;
 }
 
+.write-top,
+.write-head,
+.guest-kicker,
+.word-foot {
+  transition:
+    opacity 200ms cubic-bezier(0.23, 1, 0.32, 1),
+    transform 200ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+html[data-write-focus="1"] .write-top,
+html[data-write-focus="1"] .write-head,
+html[data-write-focus="1"] .guest-kicker {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-8px);
+}
+
+html[data-write-focus="1"] .word-foot {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(100%);
+}
+
+.exit-focus-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  right: 20px;
+  top: 20px;
+  z-index: 30;
+  min-height: 36px;
+  padding: 8px 12px;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-base);
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  font-family: var(--font-sans-metadata);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.9;
+}
+html[data-write-focus="1"] .exit-focus-btn {
+  display: flex;
+  pointer-events: auto;
+}
+.exit-focus-btn:active {
+  transform: scale(0.97);
+}
+@media (hover: hover) and (pointer: fine) {
+  .exit-focus-btn:hover {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+@media (max-width: 800px) {
+  .exit-focus-btn {
+    right: 10px;
+    top: 10px;
+  }
+}
+
 .write-top {
   padding: 0;
 }
@@ -420,7 +491,7 @@ button {
 
 .page,
 .page-wide {
-  padding: 0 0 72px;
+  padding: 16px 0 72px;
 }
 
 .page-title {
@@ -474,7 +545,7 @@ a.subdued:hover {
 .page-h2 {
   font-family: var(--font-serif-primary);
   font-size: 1.5rem;
-  font-weight: 400;
+  font-weight: 700;
   margin: 1.4em 0 0.5rem;
   color: var(--ink);
 }
@@ -773,11 +844,13 @@ input:focus-visible {
 
 .foot-tagline {
   margin: 0;
-  font-family: var(--font-sans-metadata);
+  font-family: var(--font-serif-primary);
   font-size: 14px;
   line-height: 20px;
-  color: #9e9e9e;
+  color: var(--text-secondary);
   font-weight: 400;
+  position: relative;
+  top: 3px;
 }
 
 .foot-bar {
@@ -842,8 +915,13 @@ input:focus-visible {
   justify-content: space-between;
   gap: 16px;
   min-height: 48px;
-  padding: 8px 0 12px;
+  padding: 16px 0;
   font-weight: 400;
+}
+@media (max-width: 800px) {
+  .write-foot-bar {
+    padding: 12px 0;
+  }
 }
 
 .word-foot-inner {

@@ -98,6 +98,9 @@ try {
     fail("editor is not the 750 serif stack, got " + editorStyle.fontFamily);
   }
   if (editorStyle.borderTopWidth !== "0px") fail("editor should have no border");
+  if (editorStyle.width < 800 || editorStyle.width > 840) {
+    fail("write column not ~820px, got " + editorStyle.width);
+  }
   const placeholder = await editor.getAttribute("placeholder");
   console.log("placeholder=" + placeholder);
   if (placeholder !== "Write something here...") fail("missing 750 placeholder");
@@ -107,6 +110,13 @@ try {
   const tagline = await page.locator(".foot-tagline").textContent();
   console.log("tagline=" + tagline);
   if (!tagline?.includes("Private, unfiltered")) fail("missing 750 tagline");
+  const tagStyle = await page.locator(".foot-tagline").evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { font: s.fontFamily, size: s.fontSize, color: s.color };
+  });
+  console.log("tagStyle=" + JSON.stringify(tagStyle));
+  if (!/georgia|ui-serif|cambria|times/i.test(tagStyle.font)) fail("tagline not serif, got " + tagStyle.font);
+  if (tagStyle.size !== "14px") fail("tagline not 14px, got " + tagStyle.size);
   const mark = await page.locator(".site-mark").evaluate((el) => {
     const s = getComputedStyle(el);
     return { font: s.fontFamily, weight: s.fontWeight, size: s.fontSize };
@@ -409,6 +419,9 @@ try {
     return { fontSize: s.fontSize, color: s.color };
   });
   console.log("statHero=" + JSON.stringify(statHero));
+  const innerH2 = await page.locator(".page-h2").first().evaluate((el) => getComputedStyle(el).fontWeight);
+  console.log("innerH2=" + innerH2);
+  if (innerH2 !== "700" && innerH2 !== "bold") fail("inner h2 not 700, got " + innerH2);
   if (statHero.fontSize !== "30px") fail("stats number not 1.875rem, got " + statHero.fontSize);
   if (statHero.color.includes("77, 181, 89")) fail("stats number still Rails #4DB559");
   if (!statHero.color.includes("26, 26, 26") && !statHero.color.includes("0, 0, 0")) {
@@ -604,6 +617,33 @@ try {
   const tzCount = await page.locator('[data-testid="timezone"] option').count();
   console.log("timezones=" + tzCount);
   if (tzCount < 8) fail("timezone list too short");
+  await page.locator('[data-testid="hide-chrome"]').check();
+  await page.goto(SITE, { waitUntil: "domcontentloaded" });
+  await page.waitForSelector('[data-testid="editor"]');
+  await page.locator('[data-testid="editor"]').focus();
+  await page.waitForFunction(
+    () =>
+      document.documentElement.dataset.writeFocus === "1" &&
+      getComputedStyle(document.querySelector(".write-top")).opacity === "0",
+    null,
+    { timeout: 5000 },
+  );
+  const focusTop = await page.locator(".write-top").evaluate((el) => getComputedStyle(el).opacity);
+  const focusExit = await page.locator('[data-testid="exit-focus"]').evaluate((el) => getComputedStyle(el).display);
+  console.log("focusTop=" + focusTop + " focusExit=" + focusExit);
+  if (focusTop !== "0") fail("hide chrome did not hide the write header, opacity " + focusTop);
+  if (focusExit === "none") fail("hide chrome missing exit control");
+  await page.locator('[data-testid="exit-focus"]').click();
+  await page.waitForFunction(
+    () =>
+      document.documentElement.dataset.writeFocus !== "1" &&
+      getComputedStyle(document.querySelector(".write-top")).opacity === "1",
+    null,
+    { timeout: 5000 },
+  );
+  const afterExit = await page.locator(".write-top").evaluate((el) => getComputedStyle(el).opacity);
+  console.log("afterExit=" + afterExit);
+  if (afterExit !== "1") fail("exit focus did not restore the write header, opacity " + afterExit);
 
   console.log("pageErrors=" + errors.length);
   if (errors.length) fail(errors.join("\n"));

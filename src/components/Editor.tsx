@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { countWords } from "@/lib/words";
 import { WORD_GOAL } from "@/lib/types";
 import { useApp } from "./AppProvider";
@@ -9,8 +9,30 @@ export function Editor() {
   const { entry, isToday, setText, settings, missedYesterday } = useApp();
   const locked = !isToday || (settings.lockEdits && entry.locked);
   const ref = useRef<HTMLTextAreaElement>(null);
+  const [focused, setFocused] = useState(false);
+  const [paused, setPaused] = useState(false);
   const words = countWords(entry.text);
   const className = `write-area font-${settings.font}`;
+  const hideChrome = settings.hideChrome && focused && !paused && words > 0;
+
+  useEffect(() => {
+    if (hideChrome) document.documentElement.dataset.writeFocus = "1";
+    else delete document.documentElement.dataset.writeFocus;
+    return () => {
+      delete document.documentElement.dataset.writeFocus;
+    };
+  }, [hideChrome]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape" || !document.documentElement.dataset.writeFocus) return;
+      setPaused(true);
+      setFocused(false);
+      ref.current?.blur();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   useEffect(() => {
     ref.current?.focus();
@@ -60,6 +82,11 @@ export function Editor() {
         className={className}
         value={entry.text}
         onChange={(e) => setText(e.target.value)}
+        onFocus={() => {
+          setPaused(false);
+          setFocused(true);
+        }}
+        onBlur={() => setFocused(false)}
         readOnly={locked}
         spellCheck
         autoCapitalize="sentences"
@@ -73,6 +100,22 @@ export function Editor() {
         }}
         aria-label="Daily writing"
       />
+      {settings.hideChrome ? (
+        <button
+          type="button"
+          className="exit-focus-btn"
+          data-testid="exit-focus"
+          aria-label="Show header and menu"
+          onMouseDown={(e) => {
+            e.preventDefault();
+            setPaused(true);
+            setFocused(false);
+            ref.current?.blur();
+          }}
+        >
+          Menu
+        </button>
+      ) : null}
       <span className="sr-only">
         {words} of {WORD_GOAL} words
       </span>
