@@ -138,7 +138,7 @@ button {
   flex-shrink: 0;
 }
 .site-mark:hover {
-  color: #000;
+  color: var(--ink);
   text-decoration: none;
 }
 
@@ -699,7 +699,8 @@ span.day-box {
   font-family: var(--font-serif-primary);
 }
 .write-area::placeholder {
-  color: #bdbdbd;
+  color: var(--ink);
+  opacity: 0.3;
   font-family: var(--font-serif-primary);
 }
 .write-area:focus-visible {
@@ -756,24 +757,8 @@ input:focus-visible {
   font-size: 20px;
 }
 .foot-logo:hover {
-  color: #000;
+  color: var(--ink);
   text-decoration: none;
-}
-
-.foot-link,
-.site-foot a.foot-link {
-  padding: 10px;
-  font-size: 16px;
-  color: #000;
-  text-decoration: none;
-  background: none;
-  border: 0;
-  cursor: pointer;
-  font-weight: 400;
-}
-.foot-link:hover,
-.site-foot a.foot-link:hover {
-  color: #000;
 }
 
 .word-foot {
@@ -1397,8 +1382,7 @@ label {
 [data-theme="dark"] .stats-cell .score {
   color: var(--ink);
 }
-[data-theme="dark"] .foot-logo,
-[data-theme="dark"] .foot-link {
+[data-theme="dark"] .foot-logo {
   color: var(--ink);
 }
 [data-theme="dark"] .challenge-nav button,

@@ -20,6 +20,7 @@ const { chromium } = require(playwrightPath);
 
 const PORT = 3017;
 const SITE = `http://localhost:${PORT}`;
+const SERIF = /source serif|ui-serif|iowan|palatino|georgia|cambria|times/i;
 
 const env = { ...process.env };
 delete env.NEXT_PUBLIC_E2E;
@@ -94,7 +95,7 @@ try {
     };
   });
   console.log("editorStyle=" + JSON.stringify(editorStyle));
-  if (!/source serif|ui-serif|iowan|palatino|georgia|cambria|times/i.test(editorStyle.fontFamily)) {
+  if (!SERIF.test(editorStyle.fontFamily)) {
     fail("editor is not the 750 serif stack, got " + editorStyle.fontFamily);
   }
   if (editorStyle.borderTopWidth !== "0px") fail("editor should have no border");
@@ -115,14 +116,14 @@ try {
     return { font: s.fontFamily, size: s.fontSize, color: s.color };
   });
   console.log("tagStyle=" + JSON.stringify(tagStyle));
-  if (!/georgia|ui-serif|cambria|times/i.test(tagStyle.font)) fail("tagline not serif, got " + tagStyle.font);
+  if (!SERIF.test(tagStyle.font)) fail("tagline not serif, got " + tagStyle.font);
   if (tagStyle.size !== "14px") fail("tagline not 14px, got " + tagStyle.size);
   const mark = await page.locator(".site-mark").evaluate((el) => {
     const s = getComputedStyle(el);
     return { font: s.fontFamily, weight: s.fontWeight, size: s.fontSize };
   });
   console.log("mark=" + JSON.stringify(mark));
-  if (!/georgia|ui-serif|cambria|times/i.test(mark.font)) fail("wordmark not serif, got " + mark.font);
+  if (!SERIF.test(mark.font)) fail("wordmark not serif, got " + mark.font);
   if (!(mark.weight === "400" || mark.weight === "normal")) fail("wordmark should be 400, got " + mark.weight);
   const align = await page.locator(".write-top-inner").evaluate((el) => {
     const markEl = el.querySelector(".site-mark");
@@ -196,7 +197,7 @@ try {
   });
   console.log("settingsH1=" + JSON.stringify(settingsH1));
   if (settingsH1.fontSize !== "30px") fail("inner h1 not 1.875rem, got " + settingsH1.fontSize);
-  if (!/georgia|ui-serif|cambria|times/i.test(settingsH1.fontFamily)) {
+  if (!SERIF.test(settingsH1.fontFamily)) {
     fail("inner h1 not serif, got " + settingsH1.fontFamily);
   }
   if (settingsH1.color.includes("77, 181, 89")) fail("inner h1 still Rails #4DB559");
@@ -227,7 +228,7 @@ try {
   if (footLogo.size !== "20px") fail("inner footer logo not 20px, got " + footLogo.size);
   if (footLogo.weight !== "700" && footLogo.weight !== "bold") fail("inner footer logo not 700, got " + footLogo.weight);
   if (footLogo.line === "45px") fail("inner footer still Rails 45px line-height");
-  if (!/georgia|ui-serif|cambria|times/i.test(footLogo.font)) fail("inner footer logo not serif, got " + footLogo.font);
+  if (!SERIF.test(footLogo.font)) fail("inner footer logo not serif, got " + footLogo.font);
   const themeActivator = await page.locator(".theme-activator").first().evaluate((el) => {
     const s = getComputedStyle(el);
     return {
@@ -326,7 +327,7 @@ try {
   });
   console.log("challengeCopy=" + JSON.stringify(challengeCopy));
   if (challengeCopy.size !== "16px") fail("challenge copy not 1rem, got " + challengeCopy.size);
-  if (!/georgia|ui-serif|cambria|times/i.test(challengeCopy.font)) fail("challenge copy not serif, got " + challengeCopy.font);
+  if (!SERIF.test(challengeCopy.font)) fail("challenge copy not serif, got " + challengeCopy.font);
   if (!challengeCopy.color.includes("102, 102, 102")) fail("challenge copy not #666, got " + challengeCopy.color);
   const joinStyle = await page.locator('[data-testid="join-challenge"]').evaluate((el) => {
     const s = getComputedStyle(el);
@@ -380,7 +381,7 @@ try {
   if (groupCard.border !== "1px") fail("group-card missing 1px border, got " + groupCard.border);
   if (groupCard.radius !== "4px") fail("group-card radius not 4px, got " + groupCard.radius);
   if (groupCard.nameSize !== "18px") fail("group-name not 1.125rem, got " + groupCard.nameSize);
-  if (!/georgia|ui-serif|cambria|times/i.test(groupCard.nameFont)) fail("group-name not serif, got " + groupCard.nameFont);
+  if (!SERIF.test(groupCard.nameFont)) fail("group-name not serif, got " + groupCard.nameFont);
   const joined = await page.locator('[data-testid="joined-challenge"] strong').evaluate((el) => {
     const s = getComputedStyle(el);
     return { color: s.color, border: s.borderTopColor, radius: s.borderRadius, pad: s.paddingTop };
@@ -452,7 +453,7 @@ try {
   console.log("statsLead=" + JSON.stringify(statsLead));
   if (statsLead.cls !== "page-description") fail("stats lead not page-description, got " + statsLead.cls);
   if (statsLead.size !== "16px") fail("stats lead not 1rem, got " + statsLead.size);
-  if (!/georgia|ui-serif|cambria|times/i.test(statsLead.font)) fail("stats lead not serif, got " + statsLead.font);
+  if (!SERIF.test(statsLead.font)) fail("stats lead not serif, got " + statsLead.font);
   const innerH2 = await page.locator(".page-h2").first().evaluate((el) => getComputedStyle(el).fontWeight);
   console.log("innerH2=" + innerH2);
   if (innerH2 !== "700" && innerH2 !== "bold") fail("inner h2 not 700, got " + innerH2);
@@ -630,7 +631,7 @@ try {
   });
   console.log("resultTitle=" + JSON.stringify(resultTitle));
   if (resultTitle.size !== "16.8px") fail("result title not 1.05rem, got " + resultTitle.size);
-  if (!/georgia|ui-serif|cambria|times/i.test(resultTitle.font)) fail("result title not serif, got " + resultTitle.font);
+  if (!SERIF.test(resultTitle.font)) fail("result title not serif, got " + resultTitle.font);
   await page.locator('[data-testid="search-hits"] button').first().click();
   await page.waitForSelector('[data-testid="editor"]');
   const fromSearch = (await page.locator('[data-testid="editor"]').inputValue())
