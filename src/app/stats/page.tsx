@@ -26,30 +26,41 @@ export default function StatsPage() {
       <p className="page-kicker">Time, words, points. Not what the words were about.</p>
 
       <h2 className="page-h2">Today</h2>
-      <p className="stat-hero" data-testid="stat-words">
-        {words}
-      </p>
-      <p className="stat-goal" data-testid="stat-goal">
-        {done ? "Strike" : `${WORD_GOAL - words} to go`}
-      </p>
-      <dl className="stat-dl">
-        <div>
-          <dt>Active time</dt>
-          <dd data-testid="stat-time">{formatDuration(entry.session.activeMs)}</dd>
-        </div>
-        <div>
-          <dt>Breaks</dt>
-          <dd data-testid="stat-pauses">{entry.session.pauseCount}</dd>
-        </div>
-        <div>
-          <dt>Words / min</dt>
-          <dd data-testid="stat-wpm">{wpm || "—"}</dd>
-        </div>
-        <div>
-          <dt>Points</dt>
-          <dd data-testid="stat-points">{entry.points}</dd>
-        </div>
-      </dl>
+      <table className="entry-stats">
+        <tbody>
+          <tr>
+            <td>
+              <div className="stat-head">Words</div>
+              <strong className="stat-hero" data-testid="stat-words">
+                {words}
+              </strong>
+              <span className="stat-goal" data-testid="stat-goal">
+                {done ? "Strike" : `${WORD_GOAL - words} to go`}
+              </span>
+            </td>
+            <td>
+              <div className="stat-head">Active time</div>
+              <strong data-testid="stat-time">{formatDuration(entry.session.activeMs)}</strong>
+              <span>this session</span>
+            </td>
+            <td>
+              <div className="stat-head">Breaks</div>
+              <strong data-testid="stat-pauses">{entry.session.pauseCount}</strong>
+              <span>pauses</span>
+            </td>
+            <td>
+              <div className="stat-head">Words / min</div>
+              <strong data-testid="stat-wpm">{wpm || "—"}</strong>
+              <span>pace</span>
+            </td>
+            <td>
+              <div className="stat-head">Points</div>
+              <strong data-testid="stat-points">{entry.points}</strong>
+              <span>today</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
       {tags.length ? (
         <section>
@@ -119,10 +130,24 @@ export default function StatsPage() {
 
       <section>
         <h2 className="page-h2">All time</h2>
-        <p data-testid="stat-alltime">
-          {lifetime?.totalWords ?? 0} words · {lifetime?.completedEver ?? 0} days finished ·{" "}
-          {lifetime?.currentStreak ?? 0} day streak
-        </p>
+        <table className="lifetime-stats" data-testid="stat-alltime">
+          <tbody>
+            <tr>
+              <td>
+                words
+                <strong>{lifetime?.totalWords ?? 0}</strong>
+              </td>
+              <td>
+                days finished
+                <strong>{lifetime?.completedEver ?? 0}</strong>
+              </td>
+              <td>
+                day streak
+                <strong>{lifetime?.currentStreak ?? 0}</strong>
+              </td>
+            </tr>
+          </tbody>
+        </table>
         {profile ? (
           <p className="page-kicker">
             <Link href={`/person/${profile.uid}`} className="ink-link" data-testid="public-link">

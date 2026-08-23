@@ -1,6 +1,7 @@
 "use client";
 
 import { useApp } from "./AppProvider";
+import { SiteFooter } from "./SiteFooter";
 
 export function SignInGate({ children }: { children: React.ReactNode }) {
   const { configured, user, signIn, startLocal, error } = useApp();
@@ -29,6 +30,7 @@ export function SignInGate({ children }: { children: React.ReactNode }) {
           {error ? <p className="mt-4 text-[14px] text-red-700">{error}</p> : null}
         </div>
       </main>
+      <SiteFooter />
     </>
   );
 }

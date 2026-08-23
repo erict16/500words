@@ -53,7 +53,7 @@ export default function ChallengePage() {
         <section>
           <h2 className="page-h2">Wall of awesomeness</h2>
           {awesome.length === 0 ? (
-            <p className="muted">Nobody here yet.</p>
+            <p className="notice">Nobody here yet.</p>
           ) : (
             <ul className="wall-list">
               {awesome.map((p) => (
@@ -68,7 +68,9 @@ export default function ChallengePage() {
         <section>
           <h2 className="page-h2">Wall of shame</h2>
           {shame.length === 0 ? (
-            <p className="muted">Empty. Keep it that way.</p>
+            <p className="notice" data-testid="shame-empty">
+              Empty. Keep it that way.
+            </p>
           ) : (
             <ul className="wall-list">
               {shame.map((p) => (

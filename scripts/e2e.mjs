@@ -132,6 +132,15 @@ try {
   if (countStyle.fontSize !== "14px") fail("count not 14px, got " + countStyle.fontSize);
   if (/georgia/i.test(countStyle.fontFamily)) fail("count should not be Georgia");
   if (!countStyle.color.includes("102, 102, 102")) fail("count not #666, got " + countStyle.color);
+  const footLogo = await page.locator(".foot-logo").evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { lineHeight: s.lineHeight, fontSize: s.fontSize, color: s.color };
+  });
+  console.log("footLogo=" + JSON.stringify(footLogo));
+  if (footLogo.lineHeight !== "45px") fail("footer logo line-height not 45px, got " + footLogo.lineHeight);
+  const footLink = await page.locator("footer .foot-link").evaluate((el) => getComputedStyle(el).fontSize);
+  console.log("footLink=" + footLink);
+  if (footLink !== "16px") fail("footer link not 16px, got " + footLink);
   const daysLeft = await page.locator('[data-testid="days-left"]').textContent();
   console.log("daysLeft=" + daysLeft);
   if (!daysLeft?.includes("left")) fail("missing days left");
@@ -212,6 +221,13 @@ try {
   console.log("challengeProgress=" + progress);
   if (!progress?.includes("left")) fail("missing challenge progress");
   if (!progress?.includes("1 day")) fail("joining after a strike should count today");
+  const shameEmpty = await page.locator('[data-testid="shame-empty"]').evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { fontFamily: s.fontFamily, fontSize: s.fontSize, background: s.backgroundColor };
+  });
+  console.log("shameEmpty=" + JSON.stringify(shameEmpty));
+  if (!/georgia/i.test(shameEmpty.fontFamily)) fail("challenge empty is not Georgia notice");
+  if (!shameEmpty.background.includes("212, 238, 247")) fail("notice not #d4eef7, got " + shameEmpty.background);
 
   await page.goto(SITE + "/stats", { waitUntil: "domcontentloaded" });
   await page.waitForFunction(
@@ -244,6 +260,19 @@ try {
   console.log("statHero=" + JSON.stringify(statHero));
   if (statHero.fontSize !== "40px") fail("stats number not 40px, got " + statHero.fontSize);
   if (!statHero.color.includes("77, 181, 89")) fail("stats number not #4DB559, got " + statHero.color);
+  const statLabel = await page.locator('[data-testid="stat-goal"]').evaluate((el) => getComputedStyle(el).fontSize);
+  const statHead = await page.locator(".stat-head").first().evaluate((el) => getComputedStyle(el).fontSize);
+  const lifeCell = await page.locator(".lifetime-stats td").first().evaluate((el) => getComputedStyle(el).fontSize);
+  const timeHero = await page.locator('[data-testid="stat-time"]').evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { fontSize: s.fontSize, color: s.color };
+  });
+  console.log("statLabel=" + statLabel + " statHead=" + statHead + " lifeCell=" + lifeCell + " timeHero=" + JSON.stringify(timeHero));
+  if (statLabel !== "11px") fail("stats label not 11px, got " + statLabel);
+  if (statHead !== "12px") fail("stats table header not 12px, got " + statHead);
+  if (lifeCell !== "12px") fail("stats table cell not 12px, got " + lifeCell);
+  if (timeHero.fontSize !== "40px") fail("stats time not 40px, got " + timeHero.fontSize);
+  if (!timeHero.color.includes("77, 181, 89")) fail("stats time not #4DB559, got " + timeHero.color);
 
   await page.goto(SITE + "/person/local", { waitUntil: "domcontentloaded" });
   await page.waitForSelector('[data-testid="person-score"]', { timeout: 10000 });
@@ -260,6 +289,27 @@ try {
   if (egg < 1) fail("person page missing egg badge");
   const leaked = await page.locator("textarea, [data-testid='editor']").count();
   if (leaked) fail("person page leaked writing");
+  const personHead = await page.locator(".persons-header").evaluate((el) => {
+    const s = getComputedStyle(el);
+    return {
+      background: s.backgroundColor,
+      paddingTop: s.paddingTop,
+      radius: s.borderRadius,
+      shadow: s.boxShadow,
+    };
+  });
+  console.log("personHead=" + JSON.stringify(personHead));
+  if (!personHead.background.includes("220, 255, 253")) fail("persons-header not #DCFFFD, got " + personHead.background);
+  if (personHead.paddingTop !== "15px") fail("persons-header padding not 15px, got " + personHead.paddingTop);
+  if (personHead.radius !== "5px") fail("persons-header radius not 5px, got " + personHead.radius);
+  if (!personHead.shadow.includes("0, 0, 0")) fail("persons-header missing box-shadow");
+  const personH1 = await page.locator(".page-title").evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { fontSize: s.fontSize, color: s.color };
+  });
+  console.log("personH1=" + JSON.stringify(personH1));
+  if (personH1.fontSize !== "35px") fail("person h1 not 35px, got " + personH1.fontSize);
+  if (!personH1.color.includes("77, 181, 89")) fail("person h1 not #4DB559, got " + personH1.color);
 
   await page.goto(SITE + "/search", { waitUntil: "domcontentloaded" });
   await page.waitForSelector('[data-testid="search-input"]');

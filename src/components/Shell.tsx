@@ -4,10 +4,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AppChrome } from "./AppChrome";
 import { SignInGate } from "./SignInGate";
+import { SiteFooter } from "./SiteFooter";
 
 export function Shell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isPublic = pathname.startsWith("/person/");
+  const onWrite = pathname === "/";
 
   if (isPublic) {
     return (
@@ -20,13 +22,17 @@ export function Shell({ children }: { children: React.ReactNode }) {
           </div>
         </header>
         {children}
+        <SiteFooter />
       </>
     );
   }
 
   return (
     <SignInGate>
-      <AppChrome>{children}</AppChrome>
+      <AppChrome>
+        {children}
+        {onWrite ? null : <SiteFooter />}
+      </AppChrome>
     </SignInGate>
   );
 }

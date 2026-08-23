@@ -22,14 +22,13 @@ export function WordFooter() {
         : "";
 
   return (
-    <footer className="word-foot">
-      <div className="site-col word-foot-inner">
-        <div className="flex items-baseline gap-3">
-          <button
-            type="button"
-            className="chrome-link no-print"
-            onClick={() => window.print()}
-          >
+    <footer className="site-foot word-foot">
+      <div className="site-col foot-bar">
+        <Link href="/" className="foot-logo">
+          500 Words
+        </Link>
+        <div className="word-foot-inner">
+          <button type="button" className="foot-link no-print" onClick={() => window.print()}>
             Print
           </button>
           {savedFlash ? (
@@ -37,20 +36,20 @@ export function WordFooter() {
               saved
             </p>
           ) : (
-            <p className="text-[var(--muted)] text-[12px]" aria-live="polite" data-testid="saved-status">
+            <p className="foot-saved" aria-live="polite" data-testid="saved-status">
               {saved}
             </p>
           )}
+          {done ? (
+            <Link href="/stats" className="word-count word-good" data-testid="word-count" title="Today’s stats">
+              {words}
+            </Link>
+          ) : (
+            <p className="word-count" data-testid="word-count">
+              {words} / {WORD_GOAL}
+            </p>
+          )}
         </div>
-        {done ? (
-          <Link href="/stats" className="word-count word-good" data-testid="word-count" title="Today’s stats">
-            {words}
-          </Link>
-        ) : (
-          <p className="word-count" data-testid="word-count">
-            {words} / {WORD_GOAL}
-          </p>
-        )}
       </div>
     </footer>
   );

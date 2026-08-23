@@ -21,6 +21,10 @@ STOP only when that is true. Firebase wiring is not STOP. A 30-minute slice is n
   - Makeup/strike notice: Georgia 11pt, #d4eef7
 - Confetti + “500. That’s a strike.”
 - After-login pages share the 800px column; h1 is 35px #4DB559
+- Stats today is `entry_stats`: 40px #4DB559 heroes, 12px headers, 11px #666 labels; all-time table 12px / 30px #666
+- Person page `.persons-header` is #DCFFFD, 15px padding, 5px radius, `0 1px 5px rgba(0,0,0,.5)`
+- Challenge/person empty states use `.notice` (Georgia 11pt, #d4eef7)
+- Footer logo bree/sniglet, line-height 45px; footer links 16px
 - Badges are a catalog of rows. Unearned grey. `data-badge` kept
 - Stats scorecard + word bars + dated archive; one month walls; person page is a scoreboard
 - Unit + Playwright e2e (original CSS tokens, 20–28px boxes, 14px count, green, 27 badge rows, archive)

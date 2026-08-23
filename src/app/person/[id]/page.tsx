@@ -56,15 +56,15 @@ export default function PersonPage() {
   if (!self && (missing || !isFirebaseConfigured())) {
     return (
       <main className="page site-col">
-        <p>No public stats for this person this month.</p>
+        <p className="notice">No public stats for this person this month.</p>
       </main>
     );
   }
 
   if (!score) {
     return (
-      <main className="page site-col muted" data-testid="person-waiting">
-        Looking up this month’s score…
+      <main className="page site-col" data-testid="person-waiting">
+        <p className="notice">Looking up this month’s score…</p>
       </main>
     );
   }
@@ -75,12 +75,14 @@ export default function PersonPage() {
 
   return (
     <main className="page site-col">
-      <h1 className="page-title">{score.displayName}</h1>
-      <p className="person-score" data-testid="person-score">
-        {score.monthPoints} points this month · {score.daysCompleted}{" "}
-        {score.daysCompleted === 1 ? "day" : "days"} of 500 · {score.monthWords} words · streak{" "}
-        {score.streak}
-      </p>
+      <div className="persons-header">
+        <h1 className="page-title">{score.displayName}</h1>
+        <p className="person-score" data-testid="person-score">
+          {score.monthPoints} points this month · {score.daysCompleted}{" "}
+          {score.daysCompleted === 1 ? "day" : "days"} of 500 · {score.monthWords} words · streak{" "}
+          {score.streak}
+        </p>
+      </div>
       {earned.length ? (
         <ul className="badge-list" data-testid="person-badges">
           {earned.map((badge) => (
