@@ -94,7 +94,7 @@ try {
     };
   });
   console.log("editorStyle=" + JSON.stringify(editorStyle));
-  if (!/georgia|ui-serif|cambria|times/i.test(editorStyle.fontFamily)) {
+  if (!/source serif|ui-serif|iowan|palatino|georgia|cambria|times/i.test(editorStyle.fontFamily)) {
     fail("editor is not the 750 serif stack, got " + editorStyle.fontFamily);
   }
   if (editorStyle.borderTopWidth !== "0px") fail("editor should have no border");
@@ -651,6 +651,7 @@ try {
   const tzCount = await page.locator('[data-testid="timezone"] option').count();
   console.log("timezones=" + tzCount);
   if (tzCount < 8) fail("timezone list too short");
+  if (tzCount > 20) fail("timezone dump is back, got " + tzCount);
   await page.locator('[data-testid="hide-chrome"]').check();
   await page.goto(SITE, { waitUntil: "domcontentloaded" });
   await page.waitForSelector('[data-testid="editor"]');

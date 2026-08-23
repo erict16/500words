@@ -4,7 +4,7 @@ import { useApp } from "@/components/AppProvider";
 import type { FontId, ThemeId } from "@/lib/types";
 
 const FONTS: { id: FontId; label: string }[] = [
-  { id: "georgia", label: "Georgia" },
+  { id: "georgia", label: "Serif" },
   { id: "palatino", label: "Palatino" },
   { id: "times", label: "Times" },
   { id: "helvetica", label: "Helvetica" },
@@ -23,33 +23,19 @@ const COMMON_ZONES = [
   "Australia/Sydney",
 ];
 
-function timeZones(): string[] {
-  try {
-    if (typeof Intl !== "undefined" && "supportedValuesOf" in Intl) {
-      return Intl.supportedValuesOf("timeZone");
-    }
-  } catch {
-    /* ignore */
-  }
-  return COMMON_ZONES;
-}
-
 export default function SettingsPage() {
   const { settings, updateSettings, profile, downloadExport, updateProfile, entry } = useApp();
-  const zones = timeZones();
-  const extra = zones.filter((z) => !COMMON_ZONES.includes(z));
-  if (
-    settings.timezone &&
-    !COMMON_ZONES.includes(settings.timezone) &&
-    !extra.includes(settings.timezone)
-  ) {
-    extra.unshift(settings.timezone);
-  }
+  const guest = profile?.uid === "local";
+  const zonesShown = COMMON_ZONES.includes(settings.timezone)
+    ? COMMON_ZONES
+    : [settings.timezone, ...COMMON_ZONES];
 
   return (
     <main className="page site-col">
       <h1 className="page-title">Settings</h1>
-      <p className="subdued">Signed in as {profile?.email}</p>
+      <p className="subdued">
+        {guest ? "Writing on this device. Sign in from Menu to sync." : `Signed in as ${profile?.email}`}
+      </p>
 
       <label className="field">
         Name on the public page
@@ -169,22 +155,11 @@ export default function SettingsPage() {
           onChange={(e) => updateSettings({ timezone: e.target.value })}
           data-testid="timezone"
         >
-          <optgroup label="Common">
-            {COMMON_ZONES.map((z) => (
-              <option key={z} value={z}>
-                {z}
-              </option>
-            ))}
-          </optgroup>
-          {extra.length ? (
-            <optgroup label="All">
-              {extra.map((z) => (
-                <option key={z} value={z}>
-                  {z}
-                </option>
-              ))}
-            </optgroup>
-          ) : null}
+          {zonesShown.map((z) => (
+            <option key={z} value={z}>
+              {z}
+            </option>
+          ))}
         </select>
       </label>
 

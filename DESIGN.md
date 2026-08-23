@@ -7,12 +7,14 @@ Loops: read this file first. Do not put the app nav on the write page. Do not se
 ## Type (from `_nuxt/entry.amQniMXz.css`)
 
 ```
---font-serif-primary: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif
+--font-serif-primary: Source Serif 4, ui-serif, Iowan, Palatino, Georgia, Cambria, Times
 --font-sans-metadata: ui-sans-serif, system-ui, …
 --font-size-lg: 1.125rem   /* 18px editor */
 ```
 
-On a Mac, `ui-serif` is New York. Body and wordmark are **400**. Headlines on the logged-out homepage are **600**. The write-page date is **700** at **1.5rem** (`.entry-date-writing-style`). The editor is regular, not bold.
+750’s real face is a Cloud.typography kit (domain-locked). We cannot hotlink it. Root bug was `.font-georgia { font-family: Georgia }` winning over `ui-serif`. Default “Serif” now uses `--font-serif-primary` (Source Serif 4 + ui-serif). Do not put Georgia first.
+
+On a Mac, `ui-serif` is New York. Body and wordmark are **400**. Headlines on the logged-out homepage are **600**. The write-page date is **700** at **1.5rem**. The editor is regular, not bold.
 
 | Surface | Size | Weight |
 | --- | --- | --- |
