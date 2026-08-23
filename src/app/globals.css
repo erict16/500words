@@ -7,7 +7,6 @@
   --line: #e0e0e0;
   --soft: #f8f9fa;
   --good: #4caf50;
-  --stat: #4db559;
   --link: #00c853;
   --strike: #4caf50;
   --spare: #c8e6c9;
@@ -32,7 +31,6 @@
   --line: #3a3a3a;
   --soft: #1c1c1c;
   --good: #7dcc8e;
-  --stat: #7dcc8e;
   --link: #7dcc8e;
   --strike: #f0f0f0;
   --spare: #b0b0b0;
@@ -50,7 +48,6 @@
   --line: #d4c4a8;
   --soft: #efe3cc;
   --good: #4caf50;
-  --stat: #4caf50;
   --link: #00a844;
   --strike: #3b2f23;
   --spare: #6a5848;
@@ -191,18 +188,6 @@ button {
     margin-left: 16px;
     margin-right: 16px;
   }
-}
-
-.btn-ink {
-  border: 1px solid var(--ink);
-  background: var(--ink);
-  color: var(--paper);
-  padding: 8px 16px;
-  font-size: 14px;
-  cursor: pointer;
-}
-.btn-ink:active {
-  transform: scale(0.98);
 }
 
 .btn-google {
@@ -578,10 +563,6 @@ a.subdued:hover {
   color: var(--text-secondary);
 }
 
-.month-wrap {
-  padding: 0 0 10px;
-}
-
 .month-head {
   display: flex;
   align-items: baseline;
@@ -592,28 +573,10 @@ a.subdued:hover {
   margin-bottom: 0;
 }
 
-.month-name {
-  font-size: 14px;
-  color: #666;
-}
-
-.days-left {
-  font-size: 12px;
-  color: #666;
-  margin-left: 10px;
-  font-weight: 400;
-}
-
 .month-pts {
   font-size: 14px;
   color: #666;
   font-variant-numeric: tabular-nums;
-}
-
-.bowling-score-tally,
-.month-wrap {
-  width: 800px;
-  max-width: 100%;
 }
 
 .month-grid {
@@ -742,7 +705,6 @@ span.day-box {
   box-shadow: none;
 }
 
-.chrome-link:focus-visible,
 .day-box:focus-visible,
 button:focus-visible,
 select:focus-visible,
@@ -754,27 +716,6 @@ input:focus-visible {
 .write-area:disabled {
   opacity: 1;
   color: var(--ink);
-}
-
-.chrome-link {
-  color: #666;
-  text-decoration: none;
-  font-size: 12px;
-  font-weight: 400;
-  background: none;
-  border: 0;
-  padding: 1px;
-  cursor: pointer;
-}
-
-[data-theme="dark"] .chrome-link {
-  color: #c8c8c8;
-}
-
-.chrome-link:hover,
-.chrome-link.active {
-  color: #000;
-  text-decoration: none;
 }
 
 .site-foot {
@@ -912,13 +853,6 @@ input:focus-visible {
 }
 [data-theme="dark"] .word-good {
   color: var(--good);
-}
-
-.scorecard {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0;
-  margin-top: 12px;
 }
 
 .mini-calendar {
@@ -1133,42 +1067,10 @@ input:focus-visible {
   line-height: 24px;
 }
 
-.archive,
 .browse-list {
   list-style: none;
   margin: 8px 0 0;
   padding: 0;
-}
-
-.archive button {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 16px;
-  width: 100%;
-  padding: 9px 0;
-  border: 0;
-  border-bottom: 1px solid var(--line);
-  background: none;
-  color: inherit;
-  font: inherit;
-  cursor: pointer;
-  text-align: left;
-}
-
-.archive-date {
-  font-family: var(--font-sans-metadata);
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--link);
-}
-
-.archive-words {
-  font-family: var(--font-sans-metadata);
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
 }
 
 .month-entry {
@@ -1222,12 +1124,6 @@ input:focus-visible {
   color: var(--text-secondary);
 }
 
-.badge-list {
-  list-style: none;
-  margin: 4px 0 0;
-  padding: 0;
-}
-
 .badge-section {
   margin-top: 2.5rem;
 }
@@ -1269,7 +1165,6 @@ input:focus-visible {
   display: flex;
   flex-direction: column;
   min-height: 280px;
-  margin-top: 12px;
   padding: 12px 12px 16px;
   background: var(--paper);
   border: 1px solid var(--border-light);
@@ -1288,7 +1183,7 @@ input:focus-visible {
 .badge-image-container {
   position: relative;
   flex-shrink: 0;
-  padding: 4px 0 8px;
+  padding: 12px;
 }
 
 .earned-checkmark {
@@ -1331,14 +1226,6 @@ input:focus-visible {
   color: var(--text-muted);
 }
 
-.badge-row {
-  display: flex;
-  gap: 20px;
-  align-items: flex-start;
-  padding: 14px 0;
-  border-bottom: 1px solid var(--line);
-}
-
 .badge-sheet {
   list-style: none;
   margin: 16px 0 0;
@@ -1358,26 +1245,6 @@ input:focus-visible {
   font-weight: 400;
   margin: 6px 0 0;
   line-height: 1.3;
-}
-
-.stat-dl {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px 28px;
-  margin: 20px 0 0;
-  font-size: 16px;
-}
-
-.stat-dl dt {
-  font-size: 12px;
-  color: var(--muted);
-}
-
-.stat-dl dd {
-  font-size: 1.5rem;
-  color: var(--ink);
-  font-weight: 700;
-  margin: 0;
 }
 
 label {
@@ -2052,7 +1919,6 @@ label {
   outline-offset: 2px;
 }
 
-[data-theme="dark"] .month-name,
 [data-theme="dark"] .month-pts {
   color: var(--muted);
 }
@@ -2110,7 +1976,6 @@ label {
 
 @media print {
   .site-bar,
-  .month-wrap,
   .no-print,
   footer,
   .skip-link {

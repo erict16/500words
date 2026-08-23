@@ -291,6 +291,15 @@ try {
   console.log("eggCard=" + JSON.stringify(eggCard));
   if (eggCard.height < 80) fail("badge card too short, got " + eggCard.height);
   if (eggCard.display && eggCard.display !== "flex") fail("badge card not flex column, got " + eggCard.display);
+  const badgeImgPad = await page.locator('[data-testid="badge-egg"] .badge-image-container').evaluate((el) => {
+    const s = getComputedStyle(el);
+    return s.paddingTop || s.padding;
+  });
+  console.log("badgeImgPad=" + badgeImgPad);
+  if (!String(badgeImgPad).includes("12px")) fail("badge image padding not 12px, got " + badgeImgPad);
+  const badgeGap = await page.locator(".badge-grid").first().evaluate((el) => getComputedStyle(el).rowGap);
+  console.log("badgeGap=" + badgeGap);
+  if (badgeGap !== "12px") fail("badge grid gap not 12px, got " + badgeGap);
   const eggHow = (await page.locator('[data-testid="badge-egg"] .badge-copy p').first().textContent()) ?? "";
   console.log("eggHow=" + eggHow.slice(0, 80));
   if (!/how we all start/i.test(eggHow)) fail("egg catalog copy is not the original 750 blurb");
