@@ -33,15 +33,11 @@ export function WordFooter() {
             Print
           </button>
           {savedFlash ? (
-            <p
-              className="bg-[var(--good)] px-2 py-0.5 text-[12px] text-white"
-              aria-live="polite"
-              data-testid="saved-flash"
-            >
+            <p className="saved-flash" aria-live="polite" data-testid="saved-flash">
               saved
             </p>
           ) : (
-            <p className="text-[var(--muted)]" aria-live="polite" data-testid="saved-status">
+            <p className="text-[var(--muted)] text-[12px]" aria-live="polite" data-testid="saved-status">
               {saved}
             </p>
           )}

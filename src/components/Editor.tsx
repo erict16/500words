@@ -49,7 +49,7 @@ export function Editor() {
         </p>
       ) : null}
       {isToday && missedYesterday ? (
-        <p className="write-note">
+        <p className="notice">
           You missed yesterday. Write {WORD_GOAL * 2} words today to keep the streak
           (a makeup day).
         </p>

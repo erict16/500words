@@ -26,7 +26,7 @@ export default function StatsPage() {
       <p className="page-kicker">Time, words, points. Not what the words were about.</p>
 
       <h2 className="page-h2">Today</h2>
-      <p className={`stat-hero ${done ? "word-good" : ""}`} data-testid="stat-words">
+      <p className="stat-hero" data-testid="stat-words">
         {words}
       </p>
       <p className="stat-goal" data-testid="stat-goal">

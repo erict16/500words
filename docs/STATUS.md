@@ -12,13 +12,13 @@ Clone **original.750words.com** (Rails bowling). Do not clone 750words.com Nuxt 
 - Google + “Write on this device” (never infinite Loading)
 - Local write survives reload
 - Original chrome: **800px** paper, **30px Sniglet** black wordmark, **bold black Helvetica** nav (`margin-right: 15px`), no teal bar
-- Day boxes **22px**, day number **11px bold**, `/` spare and `X` strike, wrapping row
-- Editor Georgia 21px (settings) on a **770px** measure; footer count **14px `#666`**, at 500 **green bold** stats link; `.days-left`; confetti + “500. That’s a strike.”
+- Day boxes **20×22**, day number **11px bold**, `/` spare and `X` strike, wrapping row
+- Editor Helvetica **20px / 1.6em** on a **770px** measure (Settings still offer Georgia etc.); footer count **14px `#666`**, at 500 **green bold** stats link; `.days-left`; confetti + “500. That’s a strike.”
 - Page titles **35px `#4DB559` Sniglet**; stats hero **40px `#4DB559`**; search box 16px `#666` borderless
 - Badges catalog of rows (drawing + name + how). Unearned grey. `data-badge` kept
 - Stats scorecard + word bars + dated archive; one month walls; person page is counts + badges only
-- Sign-in: same 800px header, Sniglet title, Continue with Google, quiet local fallback
-- Unit + Playwright e2e (no teal bar, 30px wordmark, 14px count, green at 500, 22px boxes, 800px column)
+- Sign-in: same 800px header, 350px form, Continue with Google, quiet local fallback
+- Unit + Playwright e2e (no teal bar, 30px wordmark, 14px count, green at 500, 20px boxes, 800px column, Helvetica editor)
 
 ## Next
 

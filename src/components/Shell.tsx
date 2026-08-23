@@ -13,7 +13,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
     return (
       <>
         <header className="site-bar">
-          <div className="site-bar-inner site-col">
+          <div className="site-bar-inner">
             <Link href="/" className="site-mark">
               500 Words
             </Link>

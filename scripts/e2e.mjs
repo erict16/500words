@@ -80,9 +80,9 @@ try {
   }
 
   const editor = page.locator('[data-testid="editor"]');
-  const georgia = await editor.evaluate((el) => getComputedStyle(el).fontFamily);
-  console.log("editorFont=" + georgia);
-  if (!/georgia/i.test(georgia)) fail("editor is not Georgia");
+  const editorFont = await editor.evaluate((el) => getComputedStyle(el).fontFamily);
+  console.log("editorFont=" + editorFont);
+  if (!/helvetica/i.test(editorFont)) fail("editor is not Helvetica");
 
   const barBg = await page.locator("header.site-bar").evaluate((el) => getComputedStyle(el).backgroundColor);
   console.log("barBg=" + barBg);
