@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { cx, ui } from "@/lib/css";
+import { isLocalUid } from "@/lib/identity";
 import { useApp } from "./AppProvider";
 
 const LINKS = [
@@ -17,35 +19,35 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
   const { user, signOut, signIn, profile, configured } = useApp();
   const pathname = usePathname();
   const onWrite = pathname === "/";
-  const guest = profile?.uid === "local";
+  const guest = isLocalUid(profile?.uid);
 
   if (!user) return <>{children}</>;
 
   const menu = (
-    <details className="write-menu">
-      <summary className="write-menu-sum">Menu</summary>
-      <div className="write-menu-list" role="menu">
+    <details className={ui.menu}>
+      <summary className={ui.menuSum}>Menu</summary>
+      <div className={ui.menuList} role="menu">
         {LINKS.map((link) => (
           <Link
             key={link.href}
             href={link.href}
             role="menuitem"
-            className={`menu-link ${pathname === link.href ? "active" : ""}`}
+            className={cx(ui.menuLink, pathname === link.href && "active")}
           >
             {link.label}
           </Link>
         ))}
         {profile && !guest ? (
-          <Link href={`/person/${profile.uid}`} role="menuitem" className="menu-link" data-testid="you-link">
+          <Link href={`/person/${profile.uid}`} role="menuitem" className={ui.menuLink} data-testid="you-link">
             {profile.displayName}
           </Link>
         ) : null}
         {guest && configured ? (
-          <button type="button" role="menuitem" className="menu-link" data-testid="google-signin" onClick={() => void signIn()}>
+          <button type="button" role="menuitem" className={ui.menuLink} data-testid="google-signin" onClick={() => void signIn()}>
             Sign in
           </button>
         ) : (
-          <button type="button" role="menuitem" className="menu-link" onClick={() => void signOut()}>
+          <button type="button" role="menuitem" className={ui.menuLink} onClick={() => void signOut()}>
             Sign out
           </button>
         )}
@@ -56,12 +58,12 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
   if (onWrite) {
     return (
       <>
-        <a href="#write" className="skip-link">
+        <a href="#write" className={ui.skip}>
           Skip to writing
         </a>
-        <header className="write-top">
-          <div className="site-col write-top-inner">
-            <Link href="/" className="site-mark">
+        <header className={ui.writeTop}>
+          <div className={cx(ui.col, ui.writeTopInner)}>
+            <Link href="/" className={ui.mark}>
               500 Words
             </Link>
             {menu}
@@ -74,35 +76,35 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <a href="#write" className="skip-link">
+      <a href="#write" className={ui.skip}>
         Skip to writing
       </a>
-      <header className="site-bar sticky top-0 z-10">
-        <div className="site-bar-inner site-col">
-          <Link href="/" className="site-mark">
+      <header className={cx(ui.bar, "sticky top-0 z-10")}>
+        <div className={cx(ui.barInner, ui.col)}>
+          <Link href="/" className={ui.mark}>
             500 Words
           </Link>
-          <nav className="bar-nav" aria-label="App">
+          <nav className={ui.barNav} aria-label="App">
             {LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`bar-link ${pathname === link.href ? "active" : ""}`}
+                className={cx(ui.barLink, pathname === link.href && "active")}
               >
                 {link.label}
               </Link>
             ))}
             {profile && !guest ? (
-              <Link href={`/person/${profile.uid}`} className="bar-link" data-testid="you-link">
+              <Link href={`/person/${profile.uid}`} className={ui.barLink} data-testid="you-link">
                 {profile.displayName}
               </Link>
             ) : null}
             {guest && configured ? (
-              <button type="button" className="bar-link" data-testid="google-signin" onClick={() => void signIn()}>
+              <button type="button" className={ui.barLink} data-testid="google-signin" onClick={() => void signIn()}>
                 Sign in
               </button>
             ) : (
-              <button type="button" className="bar-link" onClick={() => void signOut()}>
+              <button type="button" className={ui.barLink} onClick={() => void signOut()}>
                 Sign out
               </button>
             )}

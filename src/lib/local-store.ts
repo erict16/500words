@@ -1,12 +1,12 @@
-import { addDays, datesInMonth, hourInZone, monthKey } from "./dates";
-import { badgesToAward, type BadgeStats } from "./badges";
+import { addDays, datesInMonth, hourInZone, monthKey } from "./dates.ts";
+import { badgesToAward, type BadgeStats } from "./badges.ts";
 import {
   applyChallenge,
   applyLifetime,
   applySave,
   emptyLifetime,
   type Lifetime,
-} from "./engine";
+} from "./engine.ts";
 import {
   defaultSettings,
   emptyEntry,
@@ -18,9 +18,10 @@ import {
   type SessionStats,
   type Settings,
   type UserProfile,
-} from "./types";
-import { filterHits, type SearchHit } from "./search";
-import { markForWords } from "./words";
+} from "./types.ts";
+import { filterHits, type SearchHit } from "./search.ts";
+import { countWords, markForWords } from "./words.ts";
+import { LOCAL_UID } from "./identity.ts";
 
 const KEY = "fivehundred-local-v1";
 export const SESSION_KEY = "fivehundred-local-session";
@@ -52,24 +53,141 @@ type DB = {
   challenges: Record<string, ChallengeEntrant & { joinDate: string }>;
 };
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function asString(value: unknown, fallback: string): string {
+  return typeof value === "string" ? value : fallback;
+}
+
+function asNumber(value: unknown, fallback: number): number {
+  return typeof value === "number" && Number.isFinite(value) ? value : fallback;
+}
+
+export function parseLocalDb(raw: unknown): DB {
+  const base = seed();
+  if (!isRecord(raw)) return base;
+  return {
+    profile: parseProfile(raw.profile, base.profile),
+    days: parseDays(raw.days),
+    lifetime: isRecord(raw.lifetime) ? { ...base.lifetime, ...raw.lifetime } : base.lifetime,
+    badges: parseBadges(raw.badges),
+    challenges: parseChallenges(raw.challenges),
+  };
+}
+
+function parseProfile(value: unknown, fallback: UserProfile): UserProfile {
+  if (!isRecord(value)) return fallback;
+  const settings = isRecord(value.settings)
+    ? { ...fallback.settings, ...value.settings }
+    : fallback.settings;
+  const email = asString(value.email, "");
+  return {
+    uid: LOCAL_UID,
+    displayName: asString(value.displayName, fallback.displayName) || "You",
+    email: email === "you@local" ? "" : email,
+    photoURL: asString(value.photoURL, ""),
+    createdAt: asNumber(value.createdAt, fallback.createdAt),
+    timezone: asString(value.timezone, fallback.timezone),
+    settings,
+    daysWithAccount: Math.max(1, asNumber(value.daysWithAccount, fallback.daysWithAccount)),
+  };
+}
+
+function parseDays(value: unknown): Record<string, DayEntry> {
+  if (!isRecord(value)) return {};
+  const days: Record<string, DayEntry> = {};
+  for (const [date, entry] of Object.entries(value)) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !isRecord(entry)) continue;
+    const base = emptyEntry(date);
+    const text = asString(entry.text, "");
+    const wordCount = asNumber(entry.wordCount, countWords(text));
+    days[date] = {
+      ...base,
+      text,
+      wordCount,
+      basePoints: asNumber(entry.basePoints, 0),
+      points: asNumber(entry.points, 0),
+      mark:
+        entry.mark === "none" || entry.mark === "dot" || entry.mark === "spare" || entry.mark === "strike"
+          ? entry.mark
+          : markForWords(wordCount),
+      locked: Boolean(entry.locked),
+      celebrated: Boolean(entry.celebrated),
+      completedAt: entry.completedAt == null ? null : asNumber(entry.completedAt, 0),
+      updatedAt: asNumber(entry.updatedAt, Date.now()),
+      session: isRecord(entry.session) ? { ...base.session, ...entry.session } : base.session,
+      madeUp: Boolean(entry.madeUp),
+      tags: isRecord(entry.tags)
+        ? Object.fromEntries(
+            Object.entries(entry.tags).filter(
+              (pair): pair is [string, string] => typeof pair[1] === "string",
+            ),
+          )
+        : {},
+    };
+  }
+  return days;
+}
+
+function parseBadges(value: unknown): Record<string, EarnedBadge> {
+  if (!isRecord(value)) return {};
+  const badges: Record<string, EarnedBadge> = {};
+  for (const [id, badge] of Object.entries(value)) {
+    if (!isRecord(badge)) continue;
+    badges[id] = {
+      id: asString(badge.id, id),
+      earnedAt: asNumber(badge.earnedAt, Date.now()),
+      times: Math.max(1, asNumber(badge.times, 1)),
+    };
+  }
+  return badges;
+}
+
+function parseChallenges(value: unknown): DB["challenges"] {
+  if (!isRecord(value)) return {};
+  const challenges: DB["challenges"] = {};
+  for (const [month, row] of Object.entries(value)) {
+    if (!isRecord(row)) continue;
+    const status = row.status;
+    challenges[month] = {
+      uid: LOCAL_UID,
+      displayName: asString(row.displayName, "You"),
+      photoURL: asString(row.photoURL, ""),
+      completedDays: asNumber(row.completedDays, 0),
+      missedDays: asNumber(row.missedDays, 0),
+      status:
+        status === "in" || status === "out" || status === "won" || status === "shame"
+          ? status
+          : "in",
+      joinDate: asString(row.joinDate, ""),
+    };
+  }
+  return challenges;
+}
+
 function load(): DB {
   if (typeof window === "undefined") return seed();
   try {
     const raw = window.localStorage.getItem(KEY);
     if (!raw) return seed();
-    return JSON.parse(raw) as DB;
+    return parseLocalDb(JSON.parse(raw));
   } catch {
     return seed();
   }
 }
 
 function seed(): DB {
-  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+  const tz =
+    typeof Intl !== "undefined"
+      ? Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC"
+      : "UTC";
   return {
     profile: {
-      uid: "local",
+      uid: LOCAL_UID,
       displayName: "You",
-      email: "you@local",
+      email: "",
       photoURL: "",
       createdAt: Date.now(),
       timezone: tz,
@@ -89,12 +207,9 @@ function persist(db: DB) {
   }
 }
 
-export const localUser = {
-  uid: "local",
-  displayName: "You",
-  email: "you@local",
-  photoURL: "",
-} as const;
+export function localEntriesWithText(): DayEntry[] {
+  return Object.values(load().days).filter((day) => day.text.trim().length > 0);
+}
 
 export function localEnsureUser(): UserProfile {
   const db = load();
@@ -219,7 +334,7 @@ export function localJoinChallenge(month: string, today: string) {
     wordsByDate,
   });
   db.challenges[month] = {
-    uid: "local",
+    uid: LOCAL_UID,
     displayName: db.profile.displayName,
     photoURL: "",
     ...next,

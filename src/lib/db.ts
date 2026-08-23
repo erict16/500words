@@ -9,7 +9,6 @@ import {
   updateDoc,
   type Unsubscribe,
 } from "firebase/firestore";
-import type { User } from "firebase/auth";
 import { badgesToAward, type BadgeStats } from "./badges";
 import { addDays, datesInMonth, hourInZone, monthKey, todayInZone } from "./dates";
 import {
@@ -64,11 +63,19 @@ export function publicMonthRef(month: string, uid: string) {
   return doc(getDb(), "public", month, "people", uid);
 }
 
-export async function ensureUser(user: User, timezone: string): Promise<UserProfile> {
+export async function ensureUser(
+  user: {
+    uid: string;
+    displayName: string | null;
+    email: string | null;
+    photoURL: string | null;
+  },
+  timezone: string,
+  seed?: { settings?: Settings },
+): Promise<UserProfile> {
   const ref = userRef(user.uid);
   const snap = await getDoc(ref);
-  const settings = defaultSettings();
-  settings.timezone = timezone;
+  const settings = { ...defaultSettings(), timezone, ...seed?.settings };
   if (!snap.exists()) {
     const profile: UserProfile = {
       uid: user.uid,

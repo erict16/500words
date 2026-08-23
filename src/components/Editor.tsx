@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { cx, ui } from "@/lib/css";
 import { countWords } from "@/lib/words";
 import { WORD_GOAL } from "@/lib/types";
 import { useApp } from "./AppProvider";
@@ -12,7 +13,7 @@ export function Editor() {
   const [focused, setFocused] = useState(false);
   const [paused, setPaused] = useState(false);
   const words = countWords(entry.text);
-  const className = `write-area font-${settings.font}`;
+  const className = cx(ui.area, `font-${settings.font}`);
   const hideChrome = settings.hideChrome && focused && !paused && words > 0;
 
   useEffect(() => {
@@ -59,19 +60,19 @@ export function Editor() {
   }, []);
 
   return (
-    <div className="write-col">
+    <div className={ui.writeCol}>
       {!isToday ? (
-        <p className="write-note">
+        <p className={ui.writeNote}>
           {entry.date} is closed. You can read it. You can’t add words to a past day.
         </p>
       ) : null}
       {isToday && settings.lockEdits && entry.locked ? (
-        <p className="write-note">
+        <p className={ui.writeNote}>
           Today is locked. Turn that off in Settings if you want to keep going.
         </p>
       ) : null}
       {isToday && missedYesterday ? (
-        <p className="notice">
+        <p className={ui.notice}>
           You missed yesterday. Write {WORD_GOAL * 2} words today to keep the streak
           (a makeup day).
         </p>
@@ -103,7 +104,7 @@ export function Editor() {
       {settings.hideChrome ? (
         <button
           type="button"
-          className="exit-focus-btn"
+          className={ui.exitFocus}
           data-testid="exit-focus"
           aria-label="Show header and menu"
           onMouseDown={(e) => {

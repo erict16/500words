@@ -1,11 +1,12 @@
 "use client";
 
+import { cx, ui } from "@/lib/css";
 import { monthAbbr, prettyLongDate, shiftMonth } from "@/lib/dates";
 import { useApp } from "./AppProvider";
 
 export function DayCheck() {
   return (
-    <svg className="day-check" viewBox="0 0 16 16" aria-hidden>
+    <svg className={ui.dayCheck} viewBox="0 0 16 16" aria-hidden>
       <path
         d="M3.2 8.4 6.1 11.2 12.8 4.4"
         fill="none"
@@ -24,38 +25,36 @@ export function MonthGrid() {
   const completed = lifetime?.completedEver ?? 0;
 
   return (
-    <div className="write-head">
-      <h1 className="write-date" data-testid="write-date">
+    <div className={ui.head}>
+      <h1 className={ui.date} data-testid="write-date">
         {prettyLongDate(date)}
       </h1>
-      <div className="cal-row">
-        <div className="cal-months">
-          <button type="button" className="cal-nav" aria-label="Previous month" onClick={() => setDate(prev)}>
+      <div className={ui.calRow}>
+        <div className={ui.calMonths}>
+          <button type="button" className={ui.calNav} aria-label="Previous month" onClick={() => setDate(prev)}>
             ◀
           </button>
-          <button type="button" className="cal-month" onClick={() => setDate(prev)}>
+          <button type="button" className={ui.calMonth} onClick={() => setDate(prev)}>
             {monthAbbr(prev)}
           </button>
-          <span className="cal-sep">|</span>
-          <span className="cal-month current">{monthAbbr(date)}</span>
+          <span className={ui.calSep}>|</span>
+          <span className={cx(ui.calMonth, "current")}>{monthAbbr(date)}</span>
         </div>
-        <p className="cal-done" data-testid="days-completed">
+        <p className={ui.calDone} data-testid="days-completed">
           {completed} {completed === 1 ? "day" : "days"} completed
         </p>
       </div>
-      <div className="month-grid" data-testid="month-grid">
+      <div className={ui.monthGrid} data-testid="month-grid">
         {monthDays.map((day) => {
           const future = day.date > today;
           const selected = day.date === date;
-          const cls = [
-            "day-box",
+          const cls = cx(
+            ui.dayBox,
             day.mark,
-            day.date === today ? "today" : "",
-            future ? "future" : "",
-            selected ? "selected" : "",
-          ]
-            .filter(Boolean)
-            .join(" ");
+            day.date === today && "today",
+            future && "future",
+            selected && "selected",
+          );
           return (
             <button
               key={day.date}

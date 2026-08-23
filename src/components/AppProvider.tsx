@@ -17,7 +17,6 @@ import {
   signInWithPopup,
   signInWithRedirect,
   signOut as firebaseSignOut,
-  type User,
 } from "firebase/auth";
 import {
   ensureUser,
@@ -29,6 +28,7 @@ import {
   listenDay,
   listenLifetime,
   listenMonth,
+  loadDay,
   saveDayText,
   saveSettings,
 } from "@/lib/db";
@@ -36,10 +36,12 @@ import { monthKey, todayInZone } from "@/lib/dates";
 import { emptyMonth, missedYesterday as missedYesterdayFn } from "@/lib/engine";
 import { isE2E } from "@/lib/env";
 import { getFirebaseAuth, googleProvider, isFirebaseConfigured } from "@/lib/firebase";
+import { localSessionUser, sessionFromFirebase, type SessionUser } from "@/lib/identity";
 import {
   localBadges,
   localChallenge,
   localEnsureUser,
+  localEntriesWithText,
   localExport,
   localJoinChallenge,
   localLifetime,
@@ -49,7 +51,6 @@ import {
   localSaveSettings,
   localSearch,
   localSetName,
-  localUser,
   setLocalSession,
 } from "@/lib/local-store";
 import { hideSession, showSession, touchSession } from "@/lib/session";
@@ -71,7 +72,7 @@ import {
 type AppContextValue = {
   configured: boolean;
   ready: boolean;
-  user: User | null;
+  user: SessionUser | null;
   profile: UserProfile | null;
   settings: Settings;
   today: string;
@@ -93,7 +94,6 @@ type AppContextValue = {
   newBadges: string[];
   error: string | null;
   signIn: () => Promise<void>;
-  startLocal: () => void;
   signOut: () => Promise<void>;
   setDate: (date: string) => void;
   setText: (text: string) => void;
@@ -112,15 +112,16 @@ const e2e = isE2E();
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const configured = isFirebaseConfigured() || e2e;
-  const [offline, setOffline] = useState(e2e);
-  const offlineRef = useRef(e2e);
+  const [offline, setOffline] = useState(true);
+  const offlineRef = useRef(true);
   const [ready, setReady] = useState(true);
-  const [user, setUser] = useState<User | null>(e2e ? (localUser as unknown as User) : null);
+  const [user, setUser] = useState<SessionUser | null>(localSessionUser);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [settings, setSettings] = useState<Settings>(defaultSettings);
   const [date, setDateState] = useState(() =>
     todayInZone(Intl.DateTimeFormat().resolvedOptions().timeZone),
   );
+  const dateRef = useRef(date);
   const [today, setToday] = useState(date);
   const [entry, setEntry] = useState<DayEntry>(() => emptyEntry(date));
   const [monthDays, setMonthDays] = useState<MonthDay[]>(() => emptyMonth(monthKey(date)));
@@ -136,17 +137,29 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const textRef = useRef("");
   const sessionRef = useRef(emptySession());
   const saveTimer = useRef<number | null>(null);
+  const flashTimer = useRef<number | null>(null);
   const dirtyRef = useRef(false);
 
   useEffect(() => {
     offlineRef.current = offline;
   }, [offline]);
 
+  useEffect(() => {
+    dateRef.current = date;
+  }, [date]);
+
+  useEffect(() => {
+    return () => {
+      if (saveTimer.current) window.clearTimeout(saveTimer.current);
+      if (flashTimer.current) window.clearTimeout(flashTimer.current);
+    };
+  }, []);
+
   const bootLocal = useCallback(() => {
     offlineRef.current = true;
     setLocalSession(true);
     setOffline(true);
-    setUser(localUser as unknown as User);
+    setUser(localSessionUser);
     const ensured = localEnsureUser();
     setProfile(ensured);
     setSettings(ensured.settings);
@@ -182,18 +195,34 @@ export function AppProvider({ children }: { children: ReactNode }) {
           setLocalSession(false);
           setOffline(false);
         }
-        setUser(next);
         if (!next) {
-          setProfile(null);
           setReady(true);
           return;
         }
         try {
+          setUser(sessionFromFirebase(next));
           const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-          const ensured = await ensureUser(next, tz);
+          const guest = localEnsureUser();
+          const ensured = await ensureUser(sessionFromFirebase(next), tz, {
+            settings: guest.settings,
+          });
+          const t = todayInZone(ensured.settings.timezone);
+          for (const day of localEntriesWithText()) {
+            const cloud = await loadDay(next.uid, day.date);
+            if (cloud.text.trim()) continue;
+            await saveDayText({
+              uid: next.uid,
+              displayName: ensured.displayName,
+              photoURL: ensured.photoURL,
+              date: day.date,
+              today: t,
+              timezone: ensured.settings.timezone,
+              text: day.text,
+              session: day.session || emptySession(),
+            });
+          }
           setProfile(ensured);
           setSettings(ensured.settings);
-          const t = todayInZone(ensured.settings.timezone);
           setToday(t);
           setDateState(t);
         } catch (err) {
@@ -280,10 +309,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
             : null;
         if (!result) return;
         dirtyRef.current = false;
-        setEntry(result.entry);
+        if (dateRef.current === date) setEntry(result.entry);
         setLastSavedAt(Date.now());
         setSavedFlash(true);
-        window.setTimeout(() => setSavedFlash(false), 900);
+        if (flashTimer.current) window.clearTimeout(flashTimer.current);
+        flashTimer.current = window.setTimeout(() => setSavedFlash(false), 900);
         if (e2e || offline) {
           setMonthDays(localMonth(monthKey(date)));
           setBadges(localBadges());
@@ -352,10 +382,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
     },
     [user, offline],
   );
-
-  const startLocal = useCallback(() => {
-    bootLocal();
-  }, [bootLocal]);
 
   const signIn = useCallback(async () => {
     if (e2e) return;
@@ -454,7 +480,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   );
 
   const joinedChallenge = Boolean(
-    (user || e2e || offline) && challenge.some((p) => p.uid === (user?.uid ?? "local")),
+    (user || e2e || offline) &&
+      challenge.some((p) => p.uid === (user?.uid ?? localSessionUser.uid)),
   );
 
   const value: AppContextValue = {
@@ -482,11 +509,21 @@ export function AppProvider({ children }: { children: ReactNode }) {
     newBadges,
     error,
     signIn,
-    startLocal,
     signOut,
     setDate: (next) => {
+      if (saveTimer.current) {
+        window.clearTimeout(saveTimer.current);
+        saveTimer.current = null;
+      }
+      if (dirtyRef.current) void persist(textRef.current);
+      dirtyRef.current = false;
       setDateState(next);
-      setMonthDays(emptyMonth(monthKey(next)));
+      if (offlineRef.current || e2e) {
+        setMonthDays(localMonth(monthKey(next)));
+        setEntry(localLoadDay(next));
+      } else {
+        setMonthDays(emptyMonth(monthKey(next)));
+      }
     },
     setText,
     saveNow,
@@ -509,4 +546,3 @@ export function useApp() {
   if (!ctx) throw new Error("useApp must be used inside AppProvider");
   return ctx;
 }
-

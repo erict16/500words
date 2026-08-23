@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { cx, ui } from "@/lib/css";
 import { AppChrome } from "./AppChrome";
 import { SiteFooter } from "./SiteFooter";
 
@@ -13,9 +14,9 @@ export function Shell({ children }: { children: React.ReactNode }) {
   if (isPublic) {
     return (
       <>
-        <header className="write-top">
-          <div className="site-col write-top-inner">
-            <Link href="/" className="site-mark">
+        <header className={ui.writeTop}>
+          <div className={cx(ui.col, ui.writeTopInner)}>
+            <Link href="/" className={ui.mark}>
               500 Words
             </Link>
           </div>

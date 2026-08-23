@@ -7,11 +7,12 @@ import { GuestHero } from "@/components/GuestHero";
 import { MonthGrid } from "@/components/MonthGrid";
 import { WordFooter } from "@/components/WordFooter";
 import { useApp } from "@/components/AppProvider";
+import { cx, ui } from "@/lib/css";
 
 export default function WritePage() {
   const { error } = useApp();
   return (
-    <main className="write-page site-col" data-ready="write">
+    <main className={cx(ui.page, ui.col)} data-ready="write">
       <GuestHero />
       <MonthGrid />
       {error ? (

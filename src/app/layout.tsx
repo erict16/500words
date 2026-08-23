@@ -4,6 +4,7 @@ import { AppProvider } from "@/components/AppProvider";
 import { Shell } from "@/components/Shell";
 import { ThemeSync } from "@/components/ThemeSync";
 import "./globals.css";
+import "@/styles/app.css";
 
 const sourceSerif = Source_Serif_4({
   subsets: ["latin"],

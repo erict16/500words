@@ -1,6 +1,8 @@
 "use client";
 
 import { useApp } from "@/components/AppProvider";
+import { cx, ui } from "@/lib/css";
+import { isLocalUid } from "@/lib/identity";
 import type { FontId, ThemeId } from "@/lib/types";
 
 const FONTS: { id: FontId; label: string }[] = [
@@ -25,19 +27,19 @@ const COMMON_ZONES = [
 
 export default function SettingsPage() {
   const { settings, updateSettings, profile, downloadExport, updateProfile, entry } = useApp();
-  const guest = profile?.uid === "local";
+  const guest = isLocalUid(profile?.uid);
   const zonesShown = COMMON_ZONES.includes(settings.timezone)
     ? COMMON_ZONES
     : [settings.timezone, ...COMMON_ZONES];
 
   return (
-    <main className="page site-col">
-      <h1 className="page-title">Settings</h1>
-      <p className="subdued">
+    <main className={cx(ui.innerPage, ui.col)}>
+      <h1 className={ui.pageTitle}>Settings</h1>
+      <p className={ui.subdued}>
         {guest ? "Writing on this device. Sign in from Menu to sync." : `Signed in as ${profile?.email}`}
       </p>
 
-      <label className="field">
+      <label className={ui.field}>
         Name on the public page
         <input
           type="text"
@@ -47,19 +49,19 @@ export default function SettingsPage() {
         />
       </label>
 
-      <div className="field font-picker" data-testid="font">
+      <div className={cx(ui.field, ui.fontPicker)} data-testid="font">
         <p className="field-hint">Font</p>
-        <div className="font-picker-list">
+        <div className={ui.fontPickerList}>
           {FONTS.map((f) => (
             <button
               key={f.id}
               type="button"
-              className={`font-menu-item ${settings.font === f.id ? "is-active" : ""}`}
-              onClick={() => updateSettings({ font: f.id as FontId })}
+              className={cx(ui.fontItem, settings.font === f.id && "is-active")}
+              onClick={() => updateSettings({ font: f.id })}
               aria-pressed={settings.font === f.id}
             >
-              <span className={`font-title font-${f.id}`}>{f.label}</span>
-              <span className={`font-sample-text font-${f.id}`}>
+              <span className={cx(ui.fontTitle, `font-${f.id}`)}>{f.label}</span>
+              <span className={cx(ui.fontSample, `font-${f.id}`)}>
                 The quick brown fox writes five hundred words.
               </span>
             </button>
@@ -67,7 +69,7 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      <label className="field">
+      <label className={ui.field}>
         Font size · {settings.fontSize}px
         <input
           type="range"
@@ -80,7 +82,7 @@ export default function SettingsPage() {
         />
       </label>
 
-      <label className="field">
+      <label className={ui.field}>
         Line height · {settings.lineHeight.toFixed(2)}
         <input
           type="range"
@@ -92,7 +94,7 @@ export default function SettingsPage() {
         />
       </label>
 
-      <label className="field">
+      <label className={ui.field}>
         Paragraph spacing · {settings.paragraphSpacing}
         <input
           type="range"
@@ -106,14 +108,14 @@ export default function SettingsPage() {
         />
       </label>
 
-      <fieldset className="field theme-field">
+      <fieldset className={cx(ui.field, ui.themeField)}>
         <legend>Theme</legend>
         <p className="field-hint">Choose your preferred theme. This affects the appearance across the site.</p>
-        <div className="theme-selector-wrapper">
+        <div className={ui.themeWrap}>
           {(["light", "dark", "sepia"] as ThemeId[]).map((theme) => (
             <label
               key={theme}
-              className={`theme-activator ${settings.theme === theme ? "is-active" : ""}`}
+              className={cx(ui.themeActivator, settings.theme === theme && "is-active")}
             >
               <input
                 type="radio"
@@ -122,13 +124,13 @@ export default function SettingsPage() {
                 onChange={() => updateSettings({ theme })}
                 data-testid={`theme-${theme}`}
               />
-              <span className="theme-name">{theme}</span>
+              <span className={ui.themeName}>{theme}</span>
             </label>
           ))}
         </div>
       </fieldset>
 
-      <label className="check">
+      <label className={ui.check}>
         <input
           type="checkbox"
           checked={settings.hideChrome}
@@ -138,7 +140,7 @@ export default function SettingsPage() {
         Hide the header while typing
       </label>
 
-      <label className="check">
+      <label className={ui.check}>
         <input
           type="checkbox"
           checked={settings.lockEdits}
@@ -148,7 +150,7 @@ export default function SettingsPage() {
         Lock today after 500 words (you can still read it)
       </label>
 
-      <label className="field">
+      <label className={ui.field}>
         Timezone
         <select
           value={settings.timezone}
@@ -163,10 +165,10 @@ export default function SettingsPage() {
         </select>
       </label>
 
-      <div className="btn-row">
+      <div className={ui.btnRow}>
         <button
           type="button"
-          className="btn-quiet"
+          className={ui.btnQuiet}
           onClick={() => void downloadExport()}
           data-testid="export"
         >
@@ -174,7 +176,7 @@ export default function SettingsPage() {
         </button>
         <button
           type="button"
-          className="btn-quiet"
+          className={ui.btnQuiet}
           onClick={() => window.print()}
           data-testid="print"
         >
@@ -182,7 +184,7 @@ export default function SettingsPage() {
         </button>
       </div>
 
-      <p className="subdued">Typing autosaves. ⌘S (or Ctrl-S) saves now.</p>
+      <p className={ui.subdued}>Typing autosaves. ⌘S (or Ctrl-S) saves now.</p>
 
       <p
         className={`font-${settings.font}`}
