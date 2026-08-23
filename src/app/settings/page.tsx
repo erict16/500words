@@ -47,7 +47,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <main className="page">
+    <main className="page site-col">
       <h1 className="page-title">Settings</h1>
       <p className="page-kicker">Signed in as {profile?.email}</p>
 

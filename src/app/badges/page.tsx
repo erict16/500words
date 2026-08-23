@@ -19,7 +19,7 @@ export default function BadgesPage() {
   const earned = new Set(badges.map((b) => b.id));
 
   return (
-    <main className="page">
+    <main className="page-wide site-col">
       <h1 className="page-title">Badges</h1>
       <p className="page-kicker">
         Ink-and-wash animals for showing up. They don’t mean you’re a good writer. They mean you wrote.
@@ -32,7 +32,7 @@ export default function BadgesPage() {
       {GROUPS.map((group) => (
         <section key={group.id}>
           <h2 className="page-h2">{group.label}</h2>
-          <ul className="badge-list">
+          <ul className="badge-sheet">
             {BADGES.filter((b) => b.group === group.id).map((badge) => {
               const got = earned.has(badge.id);
               const when = badges.find((b) => b.id === badge.id);
@@ -40,18 +40,14 @@ export default function BadgesPage() {
                 <li
                   key={badge.id}
                   data-testid={`badge-${badge.id}`}
-                  className={`badge-row ${got ? "" : "opacity-70"}`}
+                  className="badge-tile"
                 >
                   <BadgeArt badge={badge} earned={got} />
-                  <div>
-                    <h3 className="text-[16px]">{badge.name}</h3>
-                    <p className="mt-1 text-[14px] text-[var(--muted)]">{badge.how}</p>
-                    {when ? (
-                      <p className="mt-1 text-[12px] text-[var(--muted)]">
-                        {new Date(when.earnedAt).toLocaleDateString()}
-                      </p>
-                    ) : null}
-                  </div>
+                  <h3>{badge.name}</h3>
+                  <p>{badge.how}</p>
+                  {when ? (
+                    <p>{new Date(when.earnedAt).toLocaleDateString()}</p>
+                  ) : null}
                 </li>
               );
             })}

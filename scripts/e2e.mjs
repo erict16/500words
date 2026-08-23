@@ -75,12 +75,39 @@ try {
 
   const box = await page.locator('[data-testid="today-box"]').boundingBox();
   console.log("todayBox=" + Math.round(box?.width || 0) + "x" + Math.round(box?.height || 0));
-  if (!box || box.width < 24 || box.height < 24) fail("today box too small");
+  if (!box || box.width < 27 || box.width > 30 || box.height < 27 || box.height > 30) {
+    fail("today box not 28px, got " + Math.round(box?.width || 0) + "x" + Math.round(box?.height || 0));
+  }
 
   const editor = page.locator('[data-testid="editor"]');
   const georgia = await editor.evaluate((el) => getComputedStyle(el).fontFamily);
   console.log("editorFont=" + georgia);
   if (!/georgia/i.test(georgia)) fail("editor is not Georgia");
+
+  const barH = await page.locator("header.site-bar").evaluate((el) => el.getBoundingClientRect().height);
+  console.log("barH=" + Math.round(barH));
+  if (barH < 60 || barH > 70) fail("header not ~64px, got " + barH);
+  const markSize = await page.locator(".site-mark").evaluate((el) => getComputedStyle(el).fontSize);
+  console.log("markSize=" + markSize);
+  const markPx = Number.parseFloat(markSize);
+  if (markPx < 32 || markPx > 36) fail("wordmark not ~2.1rem, got " + markSize);
+  const navSize = await page.locator(".bar-link").first().evaluate((el) => getComputedStyle(el).fontSize);
+  const navTrack = await page.locator(".bar-link").first().evaluate((el) => getComputedStyle(el).letterSpacing);
+  console.log("navSize=" + navSize + " track=" + navTrack);
+  if (navSize !== "15px") fail("nav not 15px, got " + navSize);
+  const countStyle = await page.locator('[data-testid="word-count"]').evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { fontSize: s.fontSize, fontFamily: s.fontFamily, color: s.color };
+  });
+  console.log("countStyle=" + JSON.stringify(countStyle));
+  if (countStyle.fontSize !== "24px") fail("count not 24px, got " + countStyle.fontSize);
+  if (!/georgia/i.test(countStyle.fontFamily)) fail("count not Georgia");
+  const daysLeft = await page.locator('[data-testid="days-left"]').textContent();
+  console.log("daysLeft=" + daysLeft);
+  if (!daysLeft?.includes("left")) fail("missing days left");
+  const numSize = await page.locator('[data-testid="today-box"] .num').evaluate((el) => getComputedStyle(el).fontSize);
+  console.log("dayNum=" + numSize);
+  if (numSize !== "9px") fail("day number not 9px, got " + numSize);
 
   const words = Array.from({ length: 500 }, (_, i) => "word" + i).join(" ");
   await editor.fill(words);
@@ -99,6 +126,9 @@ try {
   if (!banner?.includes("500")) fail("missing strike banner");
   const count = await page.locator('[data-testid="word-count"]').textContent();
   console.log("count=" + count);
+  const doneColor = await page.locator('[data-testid="word-count"]').evaluate((el) => getComputedStyle(el).color);
+  console.log("doneColor=" + doneColor);
+  if (!doneColor.includes("76, 175, 80")) fail("done count not #4caf50, got " + doneColor);
 
   await page.keyboard.press("Meta+s");
   await page.waitForSelector('[data-testid="saved-flash"]', { timeout: 5000 });
@@ -162,8 +192,10 @@ try {
   if (bars < 28) fail("stats word bars missing");
   await page.waitForSelector("[data-testid='archive'] [data-testid='archive-hit']", { timeout: 10000 });
   const archive = await page.locator("[data-testid='archive'] [data-testid='archive-hit']").count();
-  console.log("archive=" + archive);
+  const archiveText = (await page.locator("[data-testid='archive'] [data-testid='archive-hit']").first().textContent()) ?? "";
+  console.log("archive=" + archive + " archiveText=" + archiveText.replace(/\s+/g, " ").trim());
   if (archive < 1) fail("stats archive missing");
+  if (!/words/i.test(archiveText)) fail("archive row missing word count");
 
   await page.goto(SITE + "/person/local", { waitUntil: "domcontentloaded" });
   await page.waitForSelector('[data-testid="person-score"]', { timeout: 10000 });

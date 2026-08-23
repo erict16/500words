@@ -16,7 +16,7 @@ export default function ChallengePage() {
   const daysLeft = monthDates.filter((d) => d >= today).length;
 
   return (
-    <main className="page-wide">
+    <main className="page-wide site-col">
       <div className="flex items-start gap-5">
         {horse ? <BadgeArt badge={horse} earned /> : null}
         <div>

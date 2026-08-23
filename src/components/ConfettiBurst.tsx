@@ -17,7 +17,7 @@ export function ConfettiBurst() {
         const dark = settings.theme === "dark";
         const colors = dark
           ? ["#7dcc8e", "#f0f0f0", "#c4a35a", "#9bb7d4"]
-          : ["#1f7a3a", "#222222", "#c4a35a", "#4a6fa5"];
+          : ["#4caf50", "#222222", "#c4a35a", "#2bbbad"];
         fire({ particleCount: 120, spread: 70, origin: { y: 0.45 }, colors });
         window.setTimeout(() => {
           fire({ particleCount: 80, spread: 100, origin: { y: 0.4 }, colors });

@@ -8,6 +8,7 @@ export function MonthGrid() {
   const { date, today, monthDays, monthPoints, setDate, lifetime } = useApp();
   const label = monthLabel(date);
   const thisMonth = monthKey(today);
+  const daysLeft = monthDays.filter((d) => d.date >= today).length;
 
   return (
     <div className="month-wrap">
@@ -36,8 +37,13 @@ export function MonthGrid() {
             </button>
           ) : null}
           {lifetime?.currentStreak ? ` · ${lifetime.currentStreak} day streak` : ""}
+          {monthKey(date) === thisMonth ? (
+            <span className="days-left" data-testid="days-left">
+              {daysLeft} {daysLeft === 1 ? "day" : "days"} left
+            </span>
+          ) : null}
         </p>
-        <p className="month-pts">{monthPoints}</p>
+        <p className="month-pts">{monthPoints} pts</p>
       </div>
       <div className="month-grid" data-testid="month-grid">
         {monthDays.map((day) => {

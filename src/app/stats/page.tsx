@@ -21,7 +21,7 @@ export default function StatsPage() {
   const done = words >= WORD_GOAL || entry.locked;
 
   return (
-    <main className="page">
+    <main className="page site-col">
       <h1 className="page-title">Stats</h1>
       <p className="page-kicker">Time, words, points. Not what the words were about.</p>
 

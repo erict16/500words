@@ -4,6 +4,7 @@ export type SearchHit = {
   date: string;
   wordCount: number;
   snippet: string;
+  activeMs: number;
 };
 
 const SNIP = 90;
@@ -21,6 +22,7 @@ export function filterHits(days: DayEntry[], query: string): SearchHit[] {
     date: d.date,
     wordCount: d.wordCount,
     snippet: snippet(d.text, q),
+    activeMs: d.session?.activeMs ?? 0,
   }));
 }
 

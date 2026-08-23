@@ -39,26 +39,22 @@ export function Editor() {
   return (
     <div className="write-col">
       {!isToday ? (
-        <p className="mx-auto mb-2 max-w-2xl text-[13px] text-[var(--muted)]">
+        <p className="write-note">
           {entry.date} is closed. You can read it. You can’t add words to a past day.
         </p>
       ) : null}
       {isToday && settings.lockEdits && entry.locked ? (
-        <p className="mx-auto mb-2 max-w-2xl text-[13px] text-[var(--muted)]">
+        <p className="write-note">
           Today is locked. Turn that off in Settings if you want to keep going.
         </p>
       ) : null}
       {isToday && missedYesterday ? (
-        <p className="mx-auto mb-2 max-w-2xl text-[13px] text-[var(--muted)]">
+        <p className="write-note">
           You missed yesterday. Write {WORD_GOAL * 2} words today to keep the streak
           (a makeup day).
         </p>
       ) : null}
-      {isToday && tip ? (
-        <p className="mx-auto mb-2 max-w-2xl text-[13px] italic text-[var(--muted)]">
-          {tip}
-        </p>
-      ) : null}
+      {isToday && tip ? <p className="write-note italic">{tip}</p> : null}
       <textarea
         ref={ref}
         id="write"

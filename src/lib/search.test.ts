@@ -11,6 +11,18 @@ describe("search", () => {
     assert.equal(hits.length, 1);
     assert.equal(hits[0].date, "2026-08-01");
     assert.match(hits[0].snippet, /world/);
+    assert.equal(hits[0].activeMs, 0);
+  });
+
+  it("carries session time onto archive hits", () => {
+    const a = {
+      ...emptyEntry("2026-08-01"),
+      text: "hello",
+      wordCount: 1,
+      session: { ...emptyEntry("2026-08-01").session, activeMs: 120000 },
+    };
+    const hits = filterHits([a], "");
+    assert.equal(hits[0].activeMs, 120000);
   });
 
   it("lists recent days when the query is empty", () => {

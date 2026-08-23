@@ -30,7 +30,7 @@ export default function SearchPage() {
   }, [query, searchWriting]);
 
   return (
-    <main className="page">
+    <main className="page site-col">
       <h1 className="page-title">Search</h1>
       <p className="page-kicker">Your writing only. Nothing leaves this account.</p>
       <label className="field">

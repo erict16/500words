@@ -55,7 +55,7 @@ export default function PersonPage() {
 
   if (!self && (missing || !isFirebaseConfigured())) {
     return (
-      <main className="page">
+      <main className="page site-col">
         <p>No public stats for this person this month.</p>
       </main>
     );
@@ -63,7 +63,7 @@ export default function PersonPage() {
 
   if (!score) {
     return (
-      <main className="page text-[var(--muted)]" data-testid="person-waiting">
+      <main className="page site-col text-[var(--muted)]" data-testid="person-waiting">
         Looking up this month’s score…
       </main>
     );
@@ -74,7 +74,7 @@ export default function PersonPage() {
     .filter((b): b is NonNullable<typeof b> => Boolean(b));
 
   return (
-    <main className="page">
+    <main className="page-wide site-col">
       <h1 className="page-title">{score.displayName}</h1>
       <p className="mt-4 text-[16px] leading-relaxed" data-testid="person-score">
         {score.monthPoints} points this month · {score.daysCompleted}{" "}
@@ -82,11 +82,11 @@ export default function PersonPage() {
         {score.streak}
       </p>
       {earned.length ? (
-        <ul className="badge-list" data-testid="person-badges">
+        <ul className="badge-sheet" data-testid="person-badges">
           {earned.map((badge) => (
-            <li key={badge.id} className="badge-row">
+            <li key={badge.id} className="badge-tile">
               <BadgeArt badge={badge} earned />
-              <p className="pt-6 text-[15px]">{badge.name}</p>
+              <h3>{badge.name}</h3>
             </li>
           ))}
         </ul>

@@ -22,8 +22,8 @@ export function WordFooter() {
         : "";
 
   return (
-    <footer className="pointer-events-none fixed bottom-0 left-0 right-0 py-3">
-      <div className="pointer-events-auto mx-auto flex max-w-[1080px] items-baseline justify-between gap-4 px-5">
+    <footer className="word-foot">
+      <div className="site-col word-foot-inner">
         {done ? (
           <Link href="/stats" className="word-count word-good" data-testid="word-count" title="Today’s stats">
             {words}

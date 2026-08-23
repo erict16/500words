@@ -3,8 +3,18 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { prettyDate } from "@/lib/dates";
+import { formatDuration, wordsPerMinute } from "@/lib/session";
 import type { SearchHit } from "@/lib/search";
+import { countWords } from "@/lib/words";
 import { useApp } from "./AppProvider";
+
+function meta(wordCount: number, activeMs: number) {
+  const parts = [`${wordCount} words`];
+  if (activeMs > 0) parts.push(formatDuration(activeMs));
+  const wpm = wordsPerMinute(wordCount, activeMs);
+  if (wpm) parts.push(`${wpm} wpm`);
+  return parts.join(" · ");
+}
 
 export function EntryArchive() {
   const { searchWriting, setDate, entry } = useApp();
@@ -19,7 +29,7 @@ export function EntryArchive() {
     return () => {
       live = false;
     };
-  }, [searchWriting, entry.date, entry.wordCount]);
+  }, [searchWriting, entry.date, entry.wordCount, entry.session.activeMs]);
 
   if (!hits.length) return null;
 
@@ -27,22 +37,27 @@ export function EntryArchive() {
     <section>
       <h2 className="page-h2">Your pages</h2>
       <ul className="archive" data-testid="archive">
-        {hits.map((hit) => (
-          <li key={hit.date}>
-            <button
-              type="button"
-              data-testid="archive-hit"
-              data-date={hit.date}
-              onClick={() => {
-                setDate(hit.date);
-                router.push("/");
-              }}
-            >
-              <span className="archive-date">{prettyDate(hit.date)}</span>
-              <span className="archive-words">{hit.wordCount} words</span>
-            </button>
-          </li>
-        ))}
+        {hits.map((hit) => {
+          const live = hit.date === entry.date;
+          const words = live ? countWords(entry.text) || hit.wordCount : hit.wordCount;
+          const active = live ? entry.session.activeMs || hit.activeMs : hit.activeMs;
+          return (
+            <li key={hit.date}>
+              <button
+                type="button"
+                data-testid="archive-hit"
+                data-date={hit.date}
+                onClick={() => {
+                  setDate(hit.date);
+                  router.push("/");
+                }}
+              >
+                <span className="archive-date">{prettyDate(hit.date)}</span>
+                <span className="archive-words">{meta(words, active)}</span>
+              </button>
+            </li>
+          );
+        })}
       </ul>
     </section>
   );
