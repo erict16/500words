@@ -116,10 +116,11 @@ button {
 
 .site-bar-inner {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 16px;
-  margin: 1em 0;
+  min-height: 48px;
+  margin: 8px 0;
   flex-wrap: wrap;
 }
 
@@ -158,12 +159,15 @@ button {
   background: none;
   border: 0;
   padding: 4px 0;
-  margin: 0 20px 0 0;
+  margin: 0 16px 0 0;
   cursor: pointer;
   line-height: 1.4;
   white-space: nowrap;
   display: inline-block;
   outline: none;
+}
+.bar-nav .bar-link:last-child {
+  margin-right: 0;
 }
 .bar-link:hover,
 .bar-link.active {
@@ -268,15 +272,98 @@ button {
   padding: 0;
 }
 
-.write-top { padding: 12px 0 0; }
-.write-top-inner { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
-.write-menu { position: relative; font-family: var(--font-sans-metadata); }
-.write-menu-sum { list-style: none; cursor: pointer; font-size: 13px; font-weight: 400; color: var(--muted); }
-.write-menu-sum::-webkit-details-marker { display: none; }
-.write-menu-list { position: absolute; right: 0; top: 100%; z-index: 20; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; padding: 10px 0 12px; min-width: 140px; background: var(--paper); }
-.guest-kicker { margin: 8px 0 0; font-family: var(--font-serif-primary); font-size: 1.125rem; font-weight: 400; color: var(--muted); line-height: 1.5; }
+.write-top {
+  padding: 0;
+}
+
+.write-top-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 48px;
+}
+
+.write-menu {
+  position: relative;
+  font-family: var(--font-sans-metadata);
+}
+
+.write-menu-sum {
+  list-style: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 32px;
+  min-height: 32px;
+  padding: 0 4px;
+  color: var(--muted);
+}
+.write-menu-sum::-webkit-details-marker {
+  display: none;
+}
+.write-menu-sum:hover {
+  color: var(--ink);
+}
+
+.write-menu-list {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  min-width: 176px;
+  padding: 8px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.menu-link {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 36px;
+  padding: 8px 10px;
+  margin: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font-family: var(--font-sans-metadata);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.menu-link:hover,
+.menu-link.active {
+  background: var(--soft);
+  color: var(--ink);
+  text-decoration: none;
+}
+.menu-link:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.guest-kicker {
+  margin: 8px 0 0;
+  font-family: var(--font-serif-primary);
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
 .write-head {
-  margin: 24px 0 8px;
+  margin: 16px 0 8px;
 }
 
 .write-date {
@@ -295,7 +382,8 @@ button {
   gap: 16px;
   margin-bottom: 8px;
   font-family: var(--font-sans-metadata);
-  font-size: 13px;
+  font-size: 14px;
+  line-height: 20px;
   color: var(--ink);
 }
 
@@ -326,7 +414,8 @@ button {
 .cal-done {
   margin: 0;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 14px;
+  line-height: 20px;
 }
 
 .page,
@@ -685,7 +774,8 @@ input:focus-visible {
 .foot-tagline {
   margin: 0;
   font-family: var(--font-sans-metadata);
-  font-size: 13px;
+  font-size: 14px;
+  line-height: 20px;
   color: #9e9e9e;
   font-weight: 400;
 }
@@ -741,20 +831,30 @@ input:focus-visible {
   background: var(--paper);
 }
 
-.word-foot .foot-bar,
+.write-foot-bar,
 .word-foot-inner {
   pointer-events: auto;
 }
 
+.write-foot-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 48px;
+  padding: 8px 0 12px;
+  font-weight: 400;
+}
+
 .word-foot-inner {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: flex-end;
-  gap: 8px;
+  gap: 12px;
   color: #666;
   font-size: 14px;
   font-weight: 400;
-  line-height: 45px;
+  line-height: 20px;
 }
 
 .foot-saved {
@@ -772,7 +872,7 @@ input:focus-visible {
   text-decoration: none;
   font-weight: 400;
   padding: 0;
-  line-height: 45px;
+  line-height: 20px;
 }
 
 .word-good,

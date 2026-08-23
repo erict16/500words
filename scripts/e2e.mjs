@@ -114,6 +114,29 @@ try {
   console.log("mark=" + JSON.stringify(mark));
   if (!/georgia|ui-serif|cambria|times/i.test(mark.font)) fail("wordmark not serif, got " + mark.font);
   if (!(mark.weight === "400" || mark.weight === "normal")) fail("wordmark should be 400, got " + mark.weight);
+  const align = await page.locator(".write-top-inner").evaluate((el) => {
+    const markEl = el.querySelector(".site-mark");
+    const menuEl = el.querySelector(".write-menu-sum");
+    const dateEl = document.querySelector(".write-date");
+    const calEl = document.querySelector(".cal-row");
+    const a = markEl.getBoundingClientRect();
+    const b = menuEl.getBoundingClientRect();
+    const d = dateEl.getBoundingClientRect();
+    const c = calEl.getBoundingClientRect();
+    return {
+      markMenuDy: Math.abs(a.top + a.height / 2 - (b.top + b.height / 2)),
+      markLeft: Math.round(a.left),
+      dateLeft: Math.round(d.left),
+      calLeft: Math.round(c.left),
+      menuSize: getComputedStyle(menuEl).fontSize,
+      dateSize: getComputedStyle(dateEl).fontSize,
+    };
+  });
+  console.log("align=" + JSON.stringify(align));
+  if (align.markMenuDy > 2) fail("wordmark and Menu not vertically aligned, Δ " + align.markMenuDy);
+  if (Math.abs(align.markLeft - align.dateLeft) > 1) fail("wordmark and date left edges differ");
+  if (align.menuSize !== "14px") fail("Menu not 14px, got " + align.menuSize);
+  if (align.dateSize !== "24px") fail("date not 24px, got " + align.dateSize);
 
   const words = Array.from({ length: 500 }, (_, i) => "word" + i).join(" ");
   await editor.fill(words);
@@ -485,7 +508,14 @@ try {
   if (personH1.color.includes("77, 181, 89")) fail("person h1 still Rails #4DB559");
 
   await page.goto(SITE + "/search", { waitUntil: "domcontentloaded" });
-  await page.waitForSelector('[data-testid="search-input"]');
+  await page.waitForFunction(
+    () => {
+      const el = document.querySelector('[data-testid="search-input"]');
+      return el && el.getBoundingClientRect().height > 20;
+    },
+    null,
+    { timeout: 10000 },
+  );
   const searchStyle = await page.locator('[data-testid="search-input"]').evaluate((el) => {
     const s = getComputedStyle(el);
     return {

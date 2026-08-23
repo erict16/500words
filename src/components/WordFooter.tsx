@@ -23,7 +23,7 @@ export function WordFooter() {
 
   return (
     <footer className="site-foot word-foot">
-      <div className="site-col foot-bar">
+      <div className="site-col write-foot-bar">
         <p className="foot-tagline">Private, unfiltered, spontaneous, daily</p>
         <div className="word-foot-inner">
           {savedFlash ? (
