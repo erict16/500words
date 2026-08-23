@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AppChrome } from "./AppChrome";
-import { SignInGate } from "./SignInGate";
 import { SiteFooter } from "./SiteFooter";
 
 export function Shell({ children }: { children: React.ReactNode }) {
@@ -14,8 +13,8 @@ export function Shell({ children }: { children: React.ReactNode }) {
   if (isPublic) {
     return (
       <>
-        <header className="site-bar">
-          <div className="site-bar-inner site-col">
+        <header className="write-top">
+          <div className="site-col write-top-inner">
             <Link href="/" className="site-mark">
               500 Words
             </Link>
@@ -28,11 +27,9 @@ export function Shell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <SignInGate>
-      <AppChrome>
-        {children}
-        {onWrite ? null : <SiteFooter />}
-      </AppChrome>
-    </SignInGate>
+    <AppChrome>
+      {children}
+      {onWrite ? null : <SiteFooter />}
+    </AppChrome>
   );
 }

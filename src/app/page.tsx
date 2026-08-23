@@ -3,6 +3,7 @@
 import { BadgeToast } from "@/components/BadgeToast";
 import { ConfettiBurst } from "@/components/ConfettiBurst";
 import { Editor } from "@/components/Editor";
+import { GuestHero } from "@/components/GuestHero";
 import { MonthGrid } from "@/components/MonthGrid";
 import { WordFooter } from "@/components/WordFooter";
 import { useApp } from "@/components/AppProvider";
@@ -11,6 +12,7 @@ export default function WritePage() {
   const { error } = useApp();
   return (
     <main className="write-page site-col" data-ready="write">
+      <GuestHero />
       <MonthGrid />
       {error ? (
         <p className="px-4 text-[13px] text-red-700">{error}</p>

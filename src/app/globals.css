@@ -127,7 +127,7 @@ button {
   font-family: var(--font-serif-primary);
   font-size: 20px;
   font-style: normal;
-  font-weight: 700;
+  font-weight: 400;
   color: var(--ink);
   text-decoration: none;
   letter-spacing: 0;
@@ -268,13 +268,20 @@ button {
   padding: 0;
 }
 
+.write-top { padding: 12px 0 0; }
+.write-top-inner { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+.write-menu { position: relative; font-family: var(--font-sans-metadata); }
+.write-menu-sum { list-style: none; cursor: pointer; font-size: 13px; font-weight: 400; color: var(--muted); }
+.write-menu-sum::-webkit-details-marker { display: none; }
+.write-menu-list { position: absolute; right: 0; top: 100%; z-index: 20; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; padding: 10px 0 12px; min-width: 140px; background: var(--paper); }
+.guest-kicker { margin: 8px 0 0; font-family: var(--font-serif-primary); font-size: 1.125rem; font-weight: 400; color: var(--muted); line-height: 1.5; }
 .write-head {
   margin: 24px 0 8px;
 }
 
 .write-date {
   font-family: var(--font-serif-primary);
-  font-size: 32px;
+  font-size: 1.5rem;
   font-weight: 700;
   line-height: 1.15;
   margin: 0 0 18px;
@@ -620,7 +627,8 @@ span.day-box {
   margin: 0;
   display: block;
   caret-color: var(--ink);
-  font-size: 21px;
+  font-size: 1.125rem;
+  font-weight: 400;
   line-height: 1.6em;
   font-family: var(--font-serif-primary);
 }

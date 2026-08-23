@@ -50,7 +50,6 @@ import {
   localSearch,
   localSetName,
   localUser,
-  hasLocalSession,
   setLocalSession,
 } from "@/lib/local-store";
 import { hideSession, showSession, touchSession } from "@/lib/session";
@@ -164,10 +163,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useLayoutEffect(() => {
-    if (e2e) return;
-    if (!hasLocalSession()) return;
-    const id = window.requestAnimationFrame(() => bootLocal());
-    return () => window.cancelAnimationFrame(id);
+    bootLocal();
   }, [bootLocal]);
 
   useEffect(() => {
@@ -389,15 +385,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signOut = useCallback(async () => {
-    setLocalSession(false);
-    if (offline) {
-      setOffline(false);
-      setUser(null);
-      setProfile(null);
-      return;
+    if (isFirebaseConfigured() && !offline) {
+      await firebaseSignOut(getFirebaseAuth());
     }
-    if (isFirebaseConfigured()) await firebaseSignOut(getFirebaseAuth());
-  }, [offline]);
+    bootLocal();
+  }, [offline, bootLocal]);
 
   const joinThisMonth = useCallback(async () => {
     if (!profile) return;
