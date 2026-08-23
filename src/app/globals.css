@@ -9,7 +9,6 @@
   --good: #4caf50;
   --stat: #4db559;
   --link: #00c853;
-  --notice: #d4eef7;
   --strike: #4caf50;
   --spare: #c8e6c9;
   --brand-green: #00c853;
@@ -35,7 +34,6 @@
   --good: #7dcc8e;
   --stat: #7dcc8e;
   --link: #7dcc8e;
-  --notice: #1a3340;
   --strike: #f0f0f0;
   --spare: #b0b0b0;
   --text-secondary: #9a9a9a;
@@ -54,7 +52,6 @@
   --good: #4caf50;
   --stat: #4caf50;
   --link: #00a844;
-  --notice: #efe3cc;
   --strike: #3b2f23;
   --spare: #6a5848;
 }
@@ -115,7 +112,7 @@ button {
   background: var(--paper);
   color: var(--ink);
   position: relative;
-  margin: 0 0 1em;
+  margin: 0;
   padding-top: 1px;
   font-size: 16px;
 }
@@ -581,61 +578,6 @@ a.subdued:hover {
   color: var(--text-secondary);
 }
 
-table.entry-stats {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 1em;
-  table-layout: fixed;
-}
-table.entry-stats td {
-  width: 20%;
-  vertical-align: top;
-  padding: 0 8px 0 0;
-}
-table.entry-stats .stat-head {
-  font-family: var(--font-sans-metadata);
-  font-size: 0.875rem;
-  border-bottom: 1px solid var(--border-light);
-  color: var(--ink);
-}
-table.entry-stats strong {
-  display: block;
-  font-family: var(--font-serif-primary);
-  font-size: 1.875rem;
-  line-height: 1.25;
-  color: var(--ink);
-  margin: 0;
-  padding: 0;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-}
-table.entry-stats span {
-  font-family: var(--font-sans-metadata);
-  font-size: 0.875rem;
-  color: var(--text-secondary);
-}
-
-table.lifetime-stats {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 8px;
-}
-table.lifetime-stats td {
-  padding: 5px 5px 5px 0;
-  vertical-align: top;
-  font-family: var(--font-sans-metadata);
-  font-size: 0.875rem;
-  color: var(--text-secondary);
-}
-table.lifetime-stats strong {
-  display: block;
-  font-family: var(--font-serif-primary);
-  font-size: 1.5rem;
-  color: var(--ink);
-  font-weight: 700;
-  margin: 0;
-}
-
 .month-wrap {
   padding: 0 0 10px;
 }
@@ -855,13 +797,12 @@ input:focus-visible {
 
 .foot-bar {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 16px;
-  font-weight: 700;
-  line-height: 45px;
-  padding-top: 20px;
-  padding-bottom: 8px;
+  font-weight: 400;
+  line-height: 1.2;
+  padding: 16px 0 32px;
 }
 
 .foot-logo {
@@ -869,7 +810,7 @@ input:focus-visible {
   font-weight: 700;
   color: var(--ink);
   text-decoration: none;
-  line-height: 45px;
+  line-height: 1.2;
   font-size: 20px;
 }
 .foot-logo:hover {
@@ -1139,9 +1080,11 @@ input:focus-visible {
 
 .challenge-copy {
   max-width: 36em;
-  font-size: 16px;
-  line-height: 1.55;
-  margin: 12px 0 0;
+  font-family: var(--font-serif-primary);
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.75;
+  margin: 0 0 2rem;
 }
 
 .challenge-nav {
@@ -1589,12 +1532,6 @@ label {
 [data-theme="dark"] .foot-logo,
 [data-theme="dark"] .foot-link {
   color: var(--ink);
-}
-[data-theme="dark"] table.entry-stats strong {
-  color: var(--ink);
-}
-[data-theme="dark"] table.entry-stats .stat-head {
-  border-bottom-color: var(--line);
 }
 [data-theme="dark"] .challenge-nav button,
 [data-theme="dark"] .challenge-nav a {

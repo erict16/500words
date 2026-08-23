@@ -28,7 +28,7 @@ export default function StatsPage() {
   return (
     <main className="page site-col">
       <h1 className="page-title">Stats</h1>
-      <p className="page-kicker">Time, words, points. Not what the words were about.</p>
+      <p className="page-description">Time, words, points. Not what the words were about.</p>
 
       <h2 className="page-h2">Today</h2>
       <div className="person-stat-row entry-stats" role="group" aria-label="Today’s words, time, pauses, pace, and points">

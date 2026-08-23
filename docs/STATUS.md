@@ -22,6 +22,7 @@ STOP only when that is true.
 - Sign-in: serif 1.125rem “Sign in” title. Challenge walls: stacked group-cards (serif names). Sepia no longer uses Rails #000099.
 - Stats word bars are 32px sparklines (1px gap, #00c853). Settings checkboxes are 44px with green accent.
 - Write footer: 820px column, serif 14px tagline, 16px padding (`WritePageFooter`). Hide chrome while typing uses 750 focus mode (header/calendar/footer out, Menu exit). Inner h2 is 700.
+- Inner footer is current-750 (20px serif 700, not Rails 45px). Stats/challenge leads are serif page-description. Dead Rails `table.entry-stats` CSS is gone.
 
 ## Next
 

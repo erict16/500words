@@ -115,6 +115,16 @@ v-alert / notice               sans, 1px #ccc, 4px radius — not Georgia #d4eef
 challenge pills                not #45DED7; primary green / #ccc
 ```
 
+Inner chrome (logged-in layout CSS on the public homepage):
+
+```
+#logo                         serif 20px / 700 (inner footer only; write wordmark stays 400)
+.words-nav                    sans, padding 0 16px
+.words-footer                 bg elevated, padding 0 — not 45px Rails line-height
+.container-narrow             max-width 820px
+page-description              serif 1rem / 1.75 / #666
+```
+
 Write footer (`WritePageFooter.Dbeovq_b.css`):
 
 ```

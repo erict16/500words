@@ -219,6 +219,15 @@ try {
   if (!settingsInput.borderTopColor.includes("204, 204, 204")) fail("settings input border not #ccc, got " + settingsInput.borderTopColor);
   if (settingsInput.radius !== "4px") fail("settings input radius not 4px, got " + settingsInput.radius);
   if (settingsInput.shadow !== "none") fail("settings input still has inset shadow, got " + settingsInput.shadow);
+  const footLogo = await page.locator(".foot-logo").evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { size: s.fontSize, weight: s.fontWeight, line: s.lineHeight, font: s.fontFamily };
+  });
+  console.log("footLogo=" + JSON.stringify(footLogo));
+  if (footLogo.size !== "20px") fail("inner footer logo not 20px, got " + footLogo.size);
+  if (footLogo.weight !== "700" && footLogo.weight !== "bold") fail("inner footer logo not 700, got " + footLogo.weight);
+  if (footLogo.line === "45px") fail("inner footer still Rails 45px line-height");
+  if (!/georgia|ui-serif|cambria|times/i.test(footLogo.font)) fail("inner footer logo not serif, got " + footLogo.font);
   const themeActivator = await page.locator(".theme-activator").first().evaluate((el) => {
     const s = getComputedStyle(el);
     return {
@@ -302,6 +311,14 @@ try {
   await page.waitForSelector('[data-testid="join-challenge"], [data-testid="joined-challenge"]', {
     timeout: 10000,
   });
+  const challengeCopy = await page.locator(".challenge-copy").evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { size: s.fontSize, font: s.fontFamily, color: s.color, height: s.lineHeight };
+  });
+  console.log("challengeCopy=" + JSON.stringify(challengeCopy));
+  if (challengeCopy.size !== "16px") fail("challenge copy not 1rem, got " + challengeCopy.size);
+  if (!/georgia|ui-serif|cambria|times/i.test(challengeCopy.font)) fail("challenge copy not serif, got " + challengeCopy.font);
+  if (!challengeCopy.color.includes("102, 102, 102")) fail("challenge copy not #666, got " + challengeCopy.color);
   const joinStyle = await page.locator('[data-testid="join-challenge"]').evaluate((el) => {
     const s = getComputedStyle(el);
     return {
@@ -419,6 +436,14 @@ try {
     return { fontSize: s.fontSize, color: s.color };
   });
   console.log("statHero=" + JSON.stringify(statHero));
+  const statsLead = await page.locator(".page-title + p").evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { size: s.fontSize, font: s.fontFamily, color: s.color, cls: el.className };
+  });
+  console.log("statsLead=" + JSON.stringify(statsLead));
+  if (statsLead.cls !== "page-description") fail("stats lead not page-description, got " + statsLead.cls);
+  if (statsLead.size !== "16px") fail("stats lead not 1rem, got " + statsLead.size);
+  if (!/georgia|ui-serif|cambria|times/i.test(statsLead.font)) fail("stats lead not serif, got " + statsLead.font);
   const innerH2 = await page.locator(".page-h2").first().evaluate((el) => getComputedStyle(el).fontWeight);
   console.log("innerH2=" + innerH2);
   if (innerH2 !== "700" && innerH2 !== "bold") fail("inner h2 not 700, got " + innerH2);
