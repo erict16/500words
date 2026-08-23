@@ -31,42 +31,45 @@ export default function StatsPage() {
       <p className="page-kicker">Time, words, points. Not what the words were about.</p>
 
       <h2 className="page-h2">Today</h2>
-      <table className="entry-stats">
-        <caption className="sr-only">Today’s words, time, pauses, pace, and points</caption>
-        <tbody>
-          <tr>
-            <td>
-              <div className="stat-head">Words</div>
-              <strong className="stat-hero" data-testid="stat-words">
-                {words}
-              </strong>
-              <span className="stat-goal" data-testid="stat-goal">
-                {done ? "Strike" : `${WORD_GOAL - words} to go`}
-              </span>
-            </td>
-            <td>
-              <div className="stat-head">Active time</div>
-              <strong data-testid="stat-time">{formatDuration(entry.session.activeMs)}</strong>
-              <span>this session</span>
-            </td>
-            <td>
-              <div className="stat-head">Breaks</div>
-              <strong data-testid="stat-pauses">{entry.session.pauseCount}</strong>
-              <span>pauses</span>
-            </td>
-            <td>
-              <div className="stat-head">Words / min</div>
-              <strong data-testid="stat-wpm">{wpm || "—"}</strong>
-              <span>pace</span>
-            </td>
-            <td>
-              <div className="stat-head">Points</div>
-              <strong data-testid="stat-points">{entry.points}</strong>
-              <span>today</span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div className="person-stat-row entry-stats" role="group" aria-label="Today’s words, time, pauses, pace, and points">
+        <div className="stats-cell">
+          <div className="stat-head">Words</div>
+          <strong className="stat-hero" data-testid="stat-words">
+            {words}
+          </strong>
+          <span className="stat-goal" data-testid="stat-goal">
+            {done ? "Strike" : `${WORD_GOAL - words} to go`}
+          </span>
+        </div>
+        <div className="stats-cell">
+          <div className="stat-head">Active time</div>
+          <strong className="stat-hero" data-testid="stat-time">
+            {formatDuration(entry.session.activeMs)}
+          </strong>
+          <span className="stat-goal">this session</span>
+        </div>
+        <div className="stats-cell">
+          <div className="stat-head">Breaks</div>
+          <strong className="stat-hero" data-testid="stat-pauses">
+            {entry.session.pauseCount}
+          </strong>
+          <span className="stat-goal">pauses</span>
+        </div>
+        <div className="stats-cell">
+          <div className="stat-head">Words / min</div>
+          <strong className="stat-hero" data-testid="stat-wpm">
+            {wpm || "—"}
+          </strong>
+          <span className="stat-goal">pace</span>
+        </div>
+        <div className="stats-cell">
+          <div className="stat-head">Points</div>
+          <strong className="stat-hero" data-testid="stat-points">
+            {entry.points}
+          </strong>
+          <span className="stat-goal">today</span>
+        </div>
+      </div>
 
       {tags.length ? (
         <section>
@@ -148,25 +151,20 @@ export default function StatsPage() {
 
       <section>
         <h2 className="page-h2">All time</h2>
-        <table className="lifetime-stats" data-testid="stat-alltime">
-          <caption className="sr-only">All-time words, days finished, and streak</caption>
-          <tbody>
-            <tr>
-              <td>
-                words
-                <strong>{lifetime?.totalWords ?? 0}</strong>
-              </td>
-              <td>
-                days finished
-                <strong>{lifetime?.completedEver ?? 0}</strong>
-              </td>
-              <td>
-                day streak
-                <strong>{lifetime?.currentStreak ?? 0}</strong>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div className="person-stat-row lifetime-stats" data-testid="stat-alltime" role="group" aria-label="All-time words, days finished, and streak">
+          <div className="stats-cell">
+            <div className="stat-key">words</div>
+            <div className="score">{lifetime?.totalWords ?? 0}</div>
+          </div>
+          <div className="stats-cell">
+            <div className="stat-key">days finished</div>
+            <div className="score">{lifetime?.completedEver ?? 0}</div>
+          </div>
+          <div className="stats-cell">
+            <div className="stat-key">day streak</div>
+            <div className="score">{lifetime?.currentStreak ?? 0}</div>
+          </div>
+        </div>
         {profile ? (
           <p className="page-kicker">
             <Link href={`/person/${profile.uid}`} className="ink-link" data-testid="public-link">

@@ -362,10 +362,10 @@ try {
   if (!statHero.color.includes("26, 26, 26") && !statHero.color.includes("0, 0, 0")) {
     fail("stats number not ink, got " + statHero.color);
   }
-  const entryCols = await page.locator("table.entry-stats td").count();
+  const entryCols = await page.locator(".entry-stats .stats-cell").count();
   console.log("entryCols=" + entryCols);
-  if (entryCols !== 5) fail("today stats should be a 5-column entry_stats table, got " + entryCols);
-  const lifeStrong = await page.locator("table.lifetime-stats strong").first().evaluate((el) => {
+  if (entryCols !== 5) fail("today stats should be five centered cells, got " + entryCols);
+  const lifeStrong = await page.locator(".lifetime-stats .score").first().evaluate((el) => {
     const s = getComputedStyle(el);
     return { fontSize: s.fontSize, color: s.color, fontWeight: s.fontWeight };
   });
@@ -379,7 +379,7 @@ try {
   }
   const statLabel = await page.locator('[data-testid="stat-goal"]').evaluate((el) => getComputedStyle(el).fontSize);
   const statHead = await page.locator(".stat-head").first().evaluate((el) => getComputedStyle(el).fontSize);
-  const lifeCell = await page.locator(".lifetime-stats td").first().evaluate((el) => getComputedStyle(el).fontSize);
+  const lifeCell = await page.locator(".lifetime-stats .stat-key").first().evaluate((el) => getComputedStyle(el).fontSize);
   const timeHero = await page.locator('[data-testid="stat-time"]').evaluate((el) => {
     const s = getComputedStyle(el);
     return { fontSize: s.fontSize, color: s.color };

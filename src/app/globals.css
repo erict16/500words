@@ -143,21 +143,22 @@ button {
 .bar-nav {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: center;
   justify-content: flex-start;
-  font-family: var(--chrome);
+  font-family: var(--font-sans-metadata);
+  user-select: none;
 }
 
 .bar-link {
-  color: #6b6b6b;
+  color: var(--text-secondary);
   text-decoration: none;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 400;
   letter-spacing: 0;
   background: none;
   border: 0;
-  padding: 0;
-  margin: 0 15px 0 0;
+  padding: 4px 0;
+  margin: 0 20px 0 0;
   cursor: pointer;
   line-height: 1.4;
   white-space: nowrap;
@@ -166,11 +167,11 @@ button {
 }
 .bar-link:hover,
 .bar-link.active {
-  color: #000;
+  color: var(--ink);
   text-decoration: none;
 }
 .bar-link.active {
-  border-bottom: 1px solid #000;
+  border-bottom: 2px solid var(--brand-green);
 }
 .bar-link:focus-visible {
   outline: 2px solid var(--ink);
@@ -1323,6 +1324,17 @@ label {
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   margin-top: 4px;
+}
+
+.stats-cell .stat-hero {
+  display: block;
+  margin-top: 4px;
+}
+
+.stats-cell .stat-head {
+  font-family: var(--font-sans-metadata);
+  font-size: 0.875rem;
+  border-bottom: 0;
 }
 
 .badge-group-label {

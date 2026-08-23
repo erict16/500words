@@ -86,6 +86,8 @@ search result snippet          sans 0.85rem / #666 / 1.6
 theme-activator                48px, min-width 200px, 1px #ccc, radius 4px
 font-menu-item                 min-height 80px, 16px title / 600, 14px sample
 logo-link / site-mark          serif 20px / 700
+.words-nav                     sans 16px
+stats cells                    centered, serif 1.875rem today / 1.5rem all-time
 participant-card               8px radius, 1px #e0e0e0, sans row
 account-browse .month-entry    padding 16px 0, 1px #e0e0e0
 month-title a/strong           sans 600, primary #00c853

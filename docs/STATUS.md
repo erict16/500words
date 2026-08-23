@@ -17,6 +17,7 @@ STOP only when that is true.
 - Person page: sans month summary (“This month, … completed 500 words”), DAY N OF MONTH kicker, CURRENT BADGES — no Rails two-column table.
 - Stats month is current-750 mini-calendar dots (#00c853 completed, 7-col grid). Write page still 18px green-check squares.
 - Settings font picker: 80px items, 16px titles, 14px samples (FontPicker._nuxt). Logo 20px serif 700.
+- Stats Today/All-time are centered stats-cells (no Rails 5-col table). Header nav is 16px sans with a green active underline.
 
 ## Next
 
