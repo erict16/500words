@@ -10,11 +10,10 @@ STOP only when that is true.
 - Google + Write on this device
 - Copied tokens from `750words.com/_nuxt/entry` CSS: `ui-serif, Georgia, Cambria, Times`, `#4caf50`, `#00c853`
 - Write page: long date heading, Jul | Aug, 18px rounded squares, green check at 500, placeholder, tagline
-- Stats/search/badges/challenge still exist
+- Inner pages: serif ink titles (1.875rem), 48px outlined fields, full-width search, no mint person header, no #45DED7 challenge pills, no Georgia #d4eef7 notices
 
 ## Next
 
-- Inner pages still mix old Rails CSS
 - Tag Savage images are not in the public CSS
 - Firestore rules unpublished
 - `500words-inky` 404

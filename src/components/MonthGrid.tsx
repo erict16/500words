@@ -3,7 +3,7 @@
 import { monthAbbr, prettyLongDate, shiftMonth } from "@/lib/dates";
 import { useApp } from "./AppProvider";
 
-function Check() {
+export function DayCheck() {
   return (
     <svg className="day-check" viewBox="0 0 16 16" aria-hidden>
       <path
@@ -70,7 +70,7 @@ export function MonthGrid() {
               aria-label={`Day ${day.day}${day.mark === "strike" ? ", done" : ""}`}
               aria-current={selected ? "date" : undefined}
             >
-              {day.mark === "strike" ? <Check /> : null}
+              {day.mark === "strike" ? <DayCheck /> : null}
             </button>
           );
         })}

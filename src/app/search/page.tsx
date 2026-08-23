@@ -30,20 +30,22 @@ export default function SearchPage() {
   }, [query, searchWriting]);
 
   return (
-    <main className="page site-col">
+    <main className="page site-col search-page">
       <h1 className="page-title">Search</h1>
       <p className="subdued">Your writing only. Nothing leaves this account.</p>
       <label className="field">
         Find a word, a date, a sentence
-        <input
-          type="search"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder=""
-          className="search-box"
-          data-testid="search-input"
-          autoFocus
-        />
+        <div className="search-row">
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder=""
+            className="search-box"
+            data-testid="search-input"
+            autoFocus
+          />
+        </div>
       </label>
       {busy ? <p className="subdued">Looking…</p> : null}
       <ul className="archive" data-testid="search-hits">

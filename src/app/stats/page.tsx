@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { BowlingMark } from "@/components/BowlingMark";
+import { DayCheck } from "@/components/MonthGrid";
 import { EntryArchive } from "@/components/EntryArchive";
 import { useApp } from "@/components/AppProvider";
 import { formatDuration, wordsPerMinute } from "@/lib/session";
@@ -105,8 +105,7 @@ export default function StatsPage() {
                     router.push("/");
                   }}
                 >
-                  <span className="num">{day.day}</span>
-                  <BowlingMark mark={day.mark} />
+                  {day.mark === "strike" ? <DayCheck /> : null}
                 </button>
                 <span className="score-pts">{day.points || ""}</span>
               </div>

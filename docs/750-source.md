@@ -6,11 +6,10 @@ Use this file. Do not guess from screenshots.
 
 ## Hosts
 
-- **Bowling product (clone this):** `https://original.750words.com`
-  - Rails. CSS: `/assets/stylesheets/base_packaged.css` (64,242 bytes)
-  - Writing surface, bowling tally, stats tables, search box, sign-in form are in that file even when `/entry` is gated.
-- **Current V2 (do not clone):** `https://750words.com`
-  - Nuxt. CSS under `/_nuxt/`. This is the green-check / AI product. Ignore except to know what we are *not* copying.
+- **Current product (clone this after-login chrome):** `https://750words.com`
+  - Nuxt. Public CSS under `/_nuxt/` (`entry.amQniMXz.css` plus page chunks). Write page + inner pages.
+- **Bowling Rails (do not put back on the write page):** `https://original.750words.com`
+  - `/assets/stylesheets/base_packaged.css` — Sniglet, numbered boxes, mint person header. Keep as a token dump only.
 
 ## Tokens from `base_packaged.css`
 
@@ -54,6 +53,38 @@ form#update_settings input       20px, height 37px, inset shadow
 
 Typekit: `https://use.typekit.com/onu2kal.js` (sniglet + bree). Fallback: Helvetica, not Georgia, for the original chrome. Georgia is only on `.notice`.
 
+## Tokens from current `750words.com/_nuxt` (inner pages, 2026-08-23)
+
+Pulled `entry.amQniMXz.css` plus `prefs.lq1g1e79.css`, `index.DkhQW2uW.css` (badges), `index.BedupGjz.css` / `_query_.D7Zt-hjq.css` (search), `index.DbdOTmxB.css` (person), `browse.CJzZ1Qdk.css`. Logged-in HTML still 403s.
+
+```
+--font-serif-primary           ui-serif, Georgia, Cambria, Times
+--font-sans-metadata           ui-sans-serif, system-ui, …
+--font-size-3xl / h1           1.875rem, weight 700, line-height 1.25, color #1a1a1a
+--font-size-2xl / h2           1.5rem
+page-title                     serif, ink — not #4DB559
+page-description               serif, #666, line-height 1.75
+section-title                  serif 1.5rem
+inner column                   max-width 50rem (search 44rem)
+--brand-green / --color-primary  #00c853  (links, search bars, joined)
+--color-text-secondary         #666
+--color-text-muted             #888
+--color-border-light/medium    #e0e0e0 / #ccc
+--radius-base                  4px
+fields / search                48px tall, 16px sans, 1px #ccc, hover #00c853
+theme activator                48px, 1px #ccc
+badge-title                    serif 18px
+badge-subtitle                 sans 0.875rem #666
+search result date             sans 0.8rem / 600 / primary
+search result title            serif 1.05rem
+search result snippet          sans 0.85rem
+person page                    no #DCFFFD mint card; ink serif
+v-alert / notice               sans, 1px #ccc, 4px radius — not Georgia #d4eef7
+challenge pills                not #45DED7; primary green / #ccc
+```
+
+Do not copy AI chunks (`EntryMindset`, Silly Robot, donut “analysis”).
+
 ## What we still cannot download
 
 - Logged-in HTML for `/entry`, `/stats`, `/badges` (Cloudflare 403 + auth)
@@ -63,6 +94,7 @@ Bowling `/` and `X` are not in this stylesheet as SVG. The month row is a 20px-w
 
 ## Do not
 
-- Copy Nuxt V2 chrome (`#4caf50` Material, `--v-theme`, 820px footer)
+- Restore Sniglet / numbered bowling boxes on the write page
 - Copy marketing homepage copy
-- Check in their full `base_packaged.css` (use tokens above)
+- Copy Nuxt AI analysis
+- Check in their full CSS files (use tokens above)

@@ -19,7 +19,7 @@ export default function BadgesPage() {
   return (
     <main className="page site-col">
       <h1 className="page-title">Badges</h1>
-      <p className="subdued">
+      <p className="page-description">
         Here’s an incomplete and frequently outdated annotated list. Little animals for showing up.
         They don’t mean you’re a good writer. They mean you wrote.
       </p>
