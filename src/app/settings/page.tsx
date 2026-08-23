@@ -12,7 +12,7 @@ const FONTS: { id: FontId; label: string }[] = [
 ];
 
 export default function SettingsPage() {
-  const { settings, updateSettings, profile } = useApp();
+  const { settings, updateSettings, profile, downloadExport } = useApp();
 
   return (
     <main className="mx-auto max-w-xl px-6 py-8">
@@ -112,6 +112,14 @@ export default function SettingsPage() {
           onChange={(e) => updateSettings({ timezone: e.target.value })}
         />
       </label>
+
+      <button
+        type="button"
+        className="mt-8 border border-[var(--ink)] px-3 py-2 text-[14px] active:scale-[0.97]"
+        onClick={() => void downloadExport()}
+      >
+        Export entries
+      </button>
 
       <p
         className={`mt-10 font-${settings.font} text-[var(--ink)]`}

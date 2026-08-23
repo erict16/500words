@@ -10,10 +10,16 @@ import {
   type Unsubscribe,
 } from "firebase/firestore";
 import type { User } from "firebase/auth";
-import { badgesToAward, isFastFinish, type BadgeStats } from "./badges";
+import { badgesToAward, type BadgeStats } from "./badges";
 import { addDays, datesInMonth, hourInZone, monthKey, todayInZone } from "./dates";
+import {
+  applyChallenge,
+  applyLifetime,
+  applySave,
+  emptyLifetime,
+  type Lifetime,
+} from "./engine";
 import { getDb } from "./firebase";
-import { scoreDay } from "./points";
 import {
   defaultSettings,
   emptyEntry,
@@ -28,7 +34,7 @@ import {
   type Settings,
   type UserProfile,
 } from "./types";
-import { countWords, markForWords, parseTags } from "./words";
+import { markForWords } from "./words";
 
 const asNumber = (value: unknown, fallback = 0) =>
   typeof value === "number" && Number.isFinite(value) ? value : fallback;
@@ -217,68 +223,46 @@ export async function saveDayText(opts: {
 }): Promise<{ entry: DayEntry; justFinished: boolean; newBadges: string[] }> {
   const { uid, date, today, timezone, text, session, displayName, photoURL } = opts;
   const existing = await loadDay(uid, date);
-  const wordCount = countWords(text);
-  const tags = parseTags(text);
+  const yesterdayDate = addDays(date, -1);
+  const yesterday = await loadDay(uid, yesterdayDate);
   const previousBase = await loadPreviousBase(uid, date);
-  const scored = scoreDay(
-    wordCount,
-    previousBase,
-    existing.locked,
-    existing.points,
-    existing.basePoints,
-  );
-  const justFinished = !existing.locked && wordCount >= WORD_GOAL;
-  const entry: DayEntry = {
-    ...existing,
+  const result = applySave({
+    existing,
     text,
-    wordCount,
-    basePoints: scored.basePoints,
-    points: scored.points,
-    mark: existing.locked || justFinished ? "strike" : markForWords(wordCount),
-    locked: existing.locked || justFinished,
-    celebrated: existing.celebrated || justFinished,
-    completedAt: existing.completedAt ?? (justFinished ? Date.now() : null),
-    updatedAt: Date.now(),
+    previousBase,
+    date,
+    today,
     session,
-    tags,
-  };
-
-  if (date < today) {
-    throw new Error("Yesterday is closed. You can’t add words to a past day.");
+    yesterday,
+  });
+  if (result.makeupYesterday) {
+    await setDoc(
+      dayRef(uid, yesterdayDate),
+      { ...yesterday, madeUp: true, updatedAt: Date.now() },
+      { merge: true },
+    );
   }
-
-  if (wordCount >= WORD_GOAL * 2) {
-    const yesterday = addDays(date, -1);
-    const y = await loadDay(uid, yesterday);
-    if (y.wordCount < WORD_GOAL && !y.madeUp) {
-      await setDoc(
-        dayRef(uid, yesterday),
-        { madeUp: true, updatedAt: Date.now() },
-        { merge: true },
-      );
-      entry.madeUp = false;
-    }
-  }
-
   await setDoc(
     dayRef(uid, date),
-    { ...entry, serverUpdatedAt: serverTimestamp() },
+    { ...result.entry, serverUpdatedAt: serverTimestamp() },
     { merge: true },
   );
 
-  const life = await updateLifetime(uid, date, entry, session, timezone, justFinished);
-  await syncPublic(uid, date, displayName, photoURL, entry, life.currentStreak);
-  await syncChallenge(uid, date, displayName, photoURL, entry);
+  const life = await updateLifetime(
+    uid,
+    date,
+    result.entry,
+    session,
+    timezone,
+    result.justFinished,
+    result.makeupYesterday,
+  );
+  await syncPublic(uid, date, displayName, photoURL, result.entry, life.currentStreak);
+  await syncChallenge(uid, date, displayName, photoURL, result.entry, today);
 
   const newBadges = await awardBadges(uid, life);
-  return { entry, justFinished, newBadges };
+  return { entry: result.entry, justFinished: result.justFinished, newBadges };
 }
-
-type Lifetime = BadgeStats & {
-  lastCompleted: string | null;
-  lastShowedUp: string | null;
-  monthChallengeWins: number;
-};
 
 async function updateLifetime(
   uid: string,
@@ -287,70 +271,39 @@ async function updateLifetime(
   session: SessionStats,
   timezone: string,
   justFinished: boolean,
+  makeupYesterday: boolean,
 ): Promise<Lifetime> {
   const ref = lifetimeRef(uid);
   const snap = await getDoc(ref);
-  const prev = snap.data() ?? {};
-  const lastCompleted = (prev.lastCompleted as string | null) ?? null;
-  const lastShowedUp = (prev.lastShowedUp as string | null) ?? null;
-
-  let currentStreak = asNumber(prev.currentStreak);
-  let showUpStreak = asNumber(prev.showUpStreak);
-  let completedEver = asNumber(prev.completedEver);
-  let showedUpEver = asNumber(prev.showedUpEver);
-  let totalWords = asNumber(prev.totalWords);
-  let fastDays = asNumber(prev.fastDays);
-  let nightDays = asNumber(prev.nightDays);
-  let morningDays = asNumber(prev.morningDays);
-
-  const prevWords = asNumber(prev.lastWordCount);
-  const prevDate = (prev.lastWordDate as string | null) ?? null;
-  if (prevDate === date) {
-    totalWords += entry.wordCount - prevWords;
-  } else {
-    totalWords += entry.wordCount;
-  }
-
-  if (entry.wordCount >= 1 && lastShowedUp !== date) {
-    showedUpEver += 1;
-    showUpStreak = lastShowedUp === addDays(date, -1) ? showUpStreak + 1 : 1;
-  }
-
-  if (justFinished) {
-    completedEver += 1;
-    currentStreak = lastCompleted === addDays(date, -1) ? currentStreak + 1 : 1;
-    if (isFastFinish(session.activeMs)) fastDays += 1;
-    const hour = hourInZone(timezone);
-    if (hour >= 22) nightDays += 1;
-    if (hour < 8) morningDays += 1;
-  }
-
-  const next: Lifetime = {
-    currentStreak,
-    showUpStreak,
-    completedEver,
-    showedUpEver,
-    totalWords: Math.max(0, totalWords),
-    fastDays,
-    nightDays,
-    morningDays,
-    monthChallengeWon: asNumber(prev.monthChallengeWins) > 0,
-    hasWritten: true,
-    lastCompleted: justFinished ? date : lastCompleted,
-    lastShowedUp: entry.wordCount >= 1 ? date : lastShowedUp,
-    monthChallengeWins: asNumber(prev.monthChallengeWins),
+  const prevData = snap.data() ?? {};
+  const prev: Lifetime = {
+    ...emptyLifetime(),
+    currentStreak: asNumber(prevData.currentStreak),
+    showUpStreak: asNumber(prevData.showUpStreak),
+    completedEver: asNumber(prevData.completedEver),
+    showedUpEver: asNumber(prevData.showedUpEver),
+    totalWords: asNumber(prevData.totalWords),
+    fastDays: asNumber(prevData.fastDays),
+    nightDays: asNumber(prevData.nightDays),
+    morningDays: asNumber(prevData.morningDays),
+    monthChallengeWon: asNumber(prevData.monthChallengeWins) > 0,
+    hasWritten: asNumber(prevData.totalWords) > 0,
+    lastCompleted: (prevData.lastCompleted as string | null) ?? null,
+    lastShowedUp: (prevData.lastShowedUp as string | null) ?? null,
+    monthChallengeWins: asNumber(prevData.monthChallengeWins),
+    lastWordCount: asNumber(prevData.lastWordCount),
+    lastWordDate: (prevData.lastWordDate as string | null) ?? null,
   };
-
-  await setDoc(
-    ref,
-    {
-      ...next,
-      lastWordCount: entry.wordCount,
-      lastWordDate: date,
-      updatedAt: Date.now(),
-    },
-    { merge: true },
+  const next = applyLifetime(
+    prev,
+    date,
+    entry,
+    session,
+    hourInZone(timezone),
+    justFinished,
+    makeupYesterday,
   );
+  await setDoc(ref, { ...next, updatedAt: Date.now() }, { merge: true });
   return next;
 }
 
@@ -424,40 +377,35 @@ async function syncChallenge(
   displayName: string,
   photoURL: string,
   entry: DayEntry,
+  today: string,
 ) {
   const month = monthKey(date);
   const ref = challengeRef(month, uid);
   const snap = await getDoc(ref);
   if (!snap.exists()) return;
-  const dates = datesInMonth(month);
-  const today = date;
-  let completedDays = 0;
-  let missedDays = 0;
+  const joinDate =
+    typeof snap.data()?.joinDate === "string"
+      ? (snap.data()?.joinDate as string)
+      : date;
   const daySnaps = await getDocs(collection(getDb(), "users", uid, "days"));
-  const byDate = new Map<string, number>();
+  const wordsByDate: Record<string, number> = {};
   daySnaps.forEach((d) => {
-    if (d.id.startsWith(month)) byDate.set(d.id, asNumber(d.data().wordCount));
+    if (d.id.startsWith(month)) wordsByDate[d.id] = asNumber(d.data().wordCount);
   });
-  byDate.set(date, entry.wordCount);
-  for (const d of dates) {
-    if (d > today) continue;
-    const words = byDate.get(d) ?? 0;
-    if (words >= WORD_GOAL) completedDays += 1;
-    else if (d < today) missedDays += 1;
-  }
-  const last = dates[dates.length - 1];
-  let status: ChallengeStatus = "in";
-  if (missedDays > 0) status = "shame";
-  if (today >= last && missedDays === 0 && completedDays === dates.length) status = "won";
+  wordsByDate[date] = entry.wordCount;
+  const next = applyChallenge({
+    monthDates: datesInMonth(month),
+    today,
+    joinDate,
+    wordsByDate,
+  });
   await updateDoc(ref, {
     displayName,
     photoURL,
-    completedDays,
-    missedDays,
-    status,
+    ...next,
     updatedAt: Date.now(),
   });
-  if (status === "won") {
+  if (next.status === "won") {
     await setDoc(
       lifetimeRef(uid),
       { monthChallengeWins: 1, monthChallengeWon: true },
@@ -476,6 +424,7 @@ export async function joinChallenge(
   displayName: string,
   photoURL: string,
   month: string,
+  today: string,
 ) {
   await setDoc(challengeRef(month, uid), {
     uid,
@@ -483,9 +432,20 @@ export async function joinChallenge(
     photoURL,
     completedDays: 0,
     missedDays: 0,
-    status: "in",
+    status: "in" as ChallengeStatus,
     joinedAt: Date.now(),
+    joinDate: today,
   });
+}
+
+export async function exportEntries(uid: string): Promise<string> {
+  const snap = await getDocs(collection(getDb(), "users", uid, "days"));
+  const days: DayEntry[] = [];
+  snap.forEach((d) => days.push(entryFromSnap(d.id, d.data())));
+  days.sort((a, b) => a.date.localeCompare(b.date));
+  return days
+    .map((d) => `===== ${d.date} (${d.wordCount} words) =====\n${d.text}\n`)
+    .join("\n");
 }
 
 export function listenChallenge(

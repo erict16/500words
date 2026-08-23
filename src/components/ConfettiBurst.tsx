@@ -39,7 +39,10 @@ export function ConfettiBurst() {
       className="pointer-events-none fixed inset-x-0 top-24 z-20 flex justify-center"
       aria-live="polite"
     >
-      <p className="rounded-sm bg-[var(--ink)] px-4 py-2 text-[15px] text-[var(--paper)]">
+      <p
+        className="rounded-sm bg-[var(--ink)] px-4 py-2 text-[15px] text-[var(--paper)]"
+        data-testid="strike-banner"
+      >
         500. That’s a strike.
       </p>
     </div>

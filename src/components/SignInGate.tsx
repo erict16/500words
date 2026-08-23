@@ -7,7 +7,10 @@ export function SignInGate({ children }: { children: React.ReactNode }) {
 
   if (!ready) {
     return (
-      <main className="flex min-h-screen items-center justify-center text-[14px] text-[var(--muted)]">
+      <main
+        className="flex min-h-screen items-center justify-center text-[14px] text-[var(--muted)]"
+        data-ready="loading"
+      >
         Loading…
       </main>
     );

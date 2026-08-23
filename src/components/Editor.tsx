@@ -55,6 +55,7 @@ export function Editor() {
       ) : null}
       <textarea
         ref={ref}
+        id="write"
         className={className}
         value={entry.text}
         onChange={(e) => setText(e.target.value)}
@@ -62,7 +63,9 @@ export function Editor() {
         spellCheck
         autoCapitalize="sentences"
         autoCorrect="on"
+        name="entry"
         placeholder={isToday ? "Write…" : ""}
+        data-testid="editor"
         style={{
           fontSize: `${settings.fontSize}px`,
           lineHeight: settings.lineHeight + settings.paragraphSpacing * 0.15,

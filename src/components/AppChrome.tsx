@@ -45,6 +45,9 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
 
   return (
     <>
+      <a href="#write" className="skip-link">
+        Skip to writing
+      </a>
       <header
         className="sticky top-0 z-10 border-b border-[var(--line)] bg-[var(--header)]"
         style={{

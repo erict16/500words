@@ -58,6 +58,14 @@ export function hourInZone(timeZone: string, now = new Date()): number {
   return Number.parseInt(hour, 10) % 24;
 }
 
+export function shiftMonth(dateStr: string, delta: number): string {
+  const { year, month } = parseDate(dateStr);
+  const d = new Date(year, month - 1 + delta, 1);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  return `${y}-${m}-01`;
+}
+
 export function datesInMonth(yearMonth: string): string[] {
   const [year, month] = yearMonth.split("-").map(Number);
   const count = daysInMonth(year, month - 1);

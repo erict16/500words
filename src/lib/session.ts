@@ -1,4 +1,4 @@
-import { emptySession, type SessionStats } from "./types";
+import { emptySession, type SessionStats } from "./types.ts";
 
 const IDLE_MS = 60_000;
 

@@ -18,6 +18,7 @@ import {
 } from "firebase/auth";
 import {
   ensureUser,
+  exportEntries,
   joinChallenge as joinChallengeDb,
   listenBadges,
   listenChallenge,
@@ -27,8 +28,23 @@ import {
   saveDayText,
   saveSettings,
 } from "@/lib/db";
-import { addDays, monthKey, todayInZone } from "@/lib/dates";
+import { monthKey, todayInZone } from "@/lib/dates";
+import { emptyMonth, missedYesterday as missedYesterdayFn } from "@/lib/engine";
+import { isE2E } from "@/lib/env";
 import { getFirebaseAuth, googleProvider, isFirebaseConfigured } from "@/lib/firebase";
+import {
+  localBadges,
+  localChallenge,
+  localEnsureUser,
+  localExport,
+  localJoinChallenge,
+  localLifetime,
+  localLoadDay,
+  localMonth,
+  localSaveDay,
+  localSaveSettings,
+  localUser,
+} from "@/lib/local-store";
 import { hideSession, showSession, touchSession } from "@/lib/session";
 import { tipForAccountDay } from "@/lib/tips";
 import type { BadgeStats } from "@/lib/badges";
@@ -36,7 +52,6 @@ import {
   defaultSettings,
   emptyEntry,
   emptySession,
-  WORD_GOAL,
   type ChallengeEntrant,
   type DayEntry,
   type EarnedBadge,
@@ -65,6 +80,7 @@ type AppContextValue = {
   tip: string | null;
   saving: boolean;
   lastSavedAt: number | null;
+  savedFlash: boolean;
   justFinished: boolean;
   newBadges: string[];
   error: string | null;
@@ -72,17 +88,21 @@ type AppContextValue = {
   signOut: () => Promise<void>;
   setDate: (date: string) => void;
   setText: (text: string) => void;
+  saveNow: () => void;
   updateSettings: (patch: Partial<Settings>) => void;
   joinThisMonth: () => Promise<void>;
+  downloadExport: () => Promise<void>;
   clearCelebration: () => void;
 };
 
 const AppContext = createContext<AppContextValue | null>(null);
 
+const e2e = isE2E();
+
 export function AppProvider({ children }: { children: ReactNode }) {
-  const configured = isFirebaseConfigured();
-  const [ready, setReady] = useState(!configured);
-  const [user, setUser] = useState<User | null>(null);
+  const configured = isFirebaseConfigured() || e2e;
+  const [ready, setReady] = useState(e2e || !isFirebaseConfigured());
+  const [user, setUser] = useState<User | null>(e2e ? (localUser as unknown as User) : null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [settings, setSettings] = useState<Settings>(defaultSettings);
   const [date, setDateState] = useState(() =>
@@ -90,26 +110,41 @@ export function AppProvider({ children }: { children: ReactNode }) {
   );
   const [today, setToday] = useState(date);
   const [entry, setEntry] = useState<DayEntry>(() => emptyEntry(date));
-  const [monthDays, setMonthDays] = useState<MonthDay[]>([]);
+  const [monthDays, setMonthDays] = useState<MonthDay[]>(() => emptyMonth(monthKey(date)));
   const [badges, setBadges] = useState<EarnedBadge[]>([]);
   const [lifetime, setLifetime] = useState<AppContextValue["lifetime"]>(null);
   const [challenge, setChallenge] = useState<ChallengeEntrant[]>([]);
   const [saving, setSaving] = useState(false);
   const [lastSavedAt, setLastSavedAt] = useState<number | null>(null);
+  const [savedFlash, setSavedFlash] = useState(false);
   const [justFinished, setJustFinished] = useState(false);
   const [newBadges, setNewBadges] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const textRef = useRef("");
   const sessionRef = useRef(emptySession());
   const saveTimer = useRef<number | null>(null);
-  const entryRef = useRef(entry);
+  const dirtyRef = useRef(false);
 
   useEffect(() => {
-    entryRef.current = entry;
-  }, [entry]);
-
-  useEffect(() => {
-    if (!configured) return;
+    if (e2e) {
+      const boot = () => {
+        const ensured = localEnsureUser();
+        setProfile(ensured);
+        setSettings(ensured.settings);
+        const t = todayInZone(ensured.settings.timezone);
+        setToday(t);
+        setDateState(t);
+        setEntry(localLoadDay(t));
+        setMonthDays(localMonth(monthKey(t)));
+        setBadges(localBadges());
+        setLifetime(localLifetime());
+        setChallenge(localChallenge(monthKey(t)));
+        setReady(true);
+      };
+      const id = window.requestAnimationFrame(boot);
+      return () => window.cancelAnimationFrame(id);
+    }
+    if (!isFirebaseConfigured()) return;
     const auth = getFirebaseAuth();
     return onAuthStateChanged(auth, async (next) => {
       setUser(next);
@@ -132,11 +167,21 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setReady(true);
       }
     });
-  }, [configured]);
+  }, []);
 
   useEffect(() => {
+    if (e2e) {
+      if (dirtyRef.current) return;
+      setEntry(localLoadDay(date));
+      setMonthDays(localMonth(monthKey(date)));
+      setBadges(localBadges());
+      setLifetime(localLifetime());
+      setChallenge(localChallenge(monthKey(today)));
+      return;
+    }
     if (!user) return;
     const unsubDay = listenDay(user.uid, date, (next) => {
+      if (dirtyRef.current) return;
       setEntry(next);
       textRef.current = next.text;
       sessionRef.current = next.session || emptySession();
@@ -165,23 +210,43 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const persist = useCallback(
     async (text: string) => {
-      if (!user || !profile) return;
+      if (!profile) return;
       if (date !== today) return;
       setSaving(true);
       setError(null);
       try {
-        const result = await saveDayText({
-          uid: user.uid,
-          displayName: profile.displayName,
-          photoURL: profile.photoURL,
-          date,
-          today,
-          timezone: settings.timezone,
-          text,
-          session: sessionRef.current,
-        });
+        const result = e2e
+          ? localSaveDay({
+              date,
+              today,
+              timezone: settings.timezone,
+              text,
+              session: sessionRef.current,
+            })
+          : user
+            ? await saveDayText({
+                uid: user.uid,
+                displayName: profile.displayName,
+                photoURL: profile.photoURL,
+                date,
+                today,
+                timezone: settings.timezone,
+                text,
+                session: sessionRef.current,
+              })
+            : null;
+        if (!result) return;
+        dirtyRef.current = false;
         setEntry(result.entry);
         setLastSavedAt(Date.now());
+        setSavedFlash(true);
+        window.setTimeout(() => setSavedFlash(false), 900);
+        if (e2e) {
+          setMonthDays(localMonth(monthKey(date)));
+          setBadges(localBadges());
+          setLifetime(localLifetime());
+          setChallenge(localChallenge(monthKey(today)));
+        }
         if (result.justFinished) {
           setJustFinished(true);
           setNewBadges(result.newBadges);
@@ -200,6 +265,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const setText = useCallback(
     (text: string) => {
       if (date !== today) return;
+      dirtyRef.current = true;
       textRef.current = text;
       sessionRef.current = touchSession(sessionRef.current);
       setEntry((prev) => ({ ...prev, text, updatedAt: Date.now() }));
@@ -211,11 +277,28 @@ export function AppProvider({ children }: { children: ReactNode }) {
     [date, today, persist],
   );
 
+  const saveNow = useCallback(() => {
+    if (saveTimer.current) window.clearTimeout(saveTimer.current);
+    void persist(textRef.current);
+  }, [persist]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "s") {
+        e.preventDefault();
+        saveNow();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [saveNow]);
+
   const updateSettings = useCallback(
     (patch: Partial<Settings>) => {
       setSettings((prev) => {
         const next = { ...prev, ...patch };
-        if (user) void saveSettings(user.uid, next);
+        if (e2e) localSaveSettings(next);
+        else if (user) void saveSettings(user.uid, next);
         return next;
       });
     },
@@ -223,37 +306,59 @@ export function AppProvider({ children }: { children: ReactNode }) {
   );
 
   const signIn = useCallback(async () => {
-    if (!configured) {
+    if (e2e) return;
+    if (!isFirebaseConfigured()) {
       setError("Firebase isn’t set up yet.");
       return;
     }
     setError(null);
     await signInWithPopup(getFirebaseAuth(), googleProvider());
-  }, [configured]);
+  }, []);
 
   const signOut = useCallback(async () => {
-    if (configured) await firebaseSignOut(getFirebaseAuth());
-  }, [configured]);
+    if (!e2e && isFirebaseConfigured()) await firebaseSignOut(getFirebaseAuth());
+  }, []);
 
   const joinThisMonth = useCallback(async () => {
-    if (!user || !profile) return;
-    await joinChallengeDb(user.uid, profile.displayName, profile.photoURL, monthKey(today));
+    if (!profile) return;
+    if (e2e) {
+      localJoinChallenge(monthKey(today), today);
+      setChallenge(localChallenge(monthKey(today)));
+      return;
+    }
+    if (!user) return;
+    await joinChallengeDb(
+      user.uid,
+      profile.displayName,
+      profile.photoURL,
+      monthKey(today),
+      today,
+    );
   }, [user, profile, today]);
 
-  const missedYesterday = useMemo(() => {
-    const y = addDays(today, -1);
-    const row = monthDays.find((d) => d.date === y);
-    if (!row) return false;
-    return row.wordCount < WORD_GOAL && !row.madeUp;
-  }, [monthDays, today]);
+  const downloadExport = useCallback(async () => {
+    const body = e2e
+      ? localExport()
+      : user
+        ? await exportEntries(user.uid)
+        : "";
+    const blob = new Blob([body || "(empty)"], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "500words-export.txt";
+    a.click();
+    URL.revokeObjectURL(url);
+  }, [user]);
 
   const monthPoints = useMemo(
     () => monthDays.reduce((sum, d) => sum + d.points, 0),
     [monthDays],
   );
 
-  const joinedChallenge = Boolean(user && challenge.some((p) => p.uid === user.uid));
-  const daysWithAccount = profile?.daysWithAccount ?? 1;
+  const joinedChallenge = Boolean(
+    (user || e2e) && challenge.some((p) => p.uid === (user?.uid ?? "local")),
+  );
 
   const value: AppContextValue = {
     configured,
@@ -271,19 +376,25 @@ export function AppProvider({ children }: { children: ReactNode }) {
     lifetime,
     challenge,
     joinedChallenge,
-    missedYesterday,
-    tip: tipForAccountDay(daysWithAccount),
+    missedYesterday: missedYesterdayFn(today, lifetime?.lastCompleted ?? null),
+    tip: tipForAccountDay(profile?.daysWithAccount ?? 1),
     saving,
     lastSavedAt,
+    savedFlash,
     justFinished,
     newBadges,
     error,
     signIn,
     signOut,
-    setDate: setDateState,
+    setDate: (next) => {
+      setDateState(next);
+      setMonthDays(emptyMonth(monthKey(next)));
+    },
     setText,
+    saveNow,
     updateSettings,
     joinThisMonth,
+    downloadExport,
     clearCelebration: () => {
       setJustFinished(false);
       setNewBadges([]);
@@ -298,3 +409,4 @@ export function useApp() {
   if (!ctx) throw new Error("useApp must be used inside AppProvider");
   return ctx;
 }
+

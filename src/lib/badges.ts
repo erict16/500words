@@ -1,4 +1,4 @@
-import { FAST_MINUTES, WORD_GOAL, type EarnedBadge } from "./types";
+import { FAST_MINUTES, WORD_GOAL, type EarnedBadge } from "./types.ts";
 
 export type BadgeDef = {
   id: string;

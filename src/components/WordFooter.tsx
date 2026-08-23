@@ -6,25 +6,33 @@ import { WORD_GOAL } from "@/lib/types";
 import { useApp } from "./AppProvider";
 
 export function WordFooter() {
-  const { entry, saving, lastSavedAt, isToday } = useApp();
+  const { entry, saving, savedFlash, isToday } = useApp();
   const words = countWords(entry.text);
   const done = words >= WORD_GOAL || entry.locked;
-  const saved = saving ? "saving…" : lastSavedAt ? "saved" : "";
+  const saved = saving ? "saving…" : savedFlash ? "saved" : "";
 
   return (
-    <footer className="fixed bottom-0 left-0 right-0 border-t border-[var(--line)] bg-[var(--paper)]/95 px-4 py-2 backdrop-blur-[2px]">
-      <div className="flex items-baseline justify-between gap-4 text-[13px]">
+    <footer className="pointer-events-none fixed bottom-0 left-0 right-0 px-4 py-3">
+      <div className="pointer-events-auto flex items-baseline justify-between gap-4 text-[13px] tabular-nums">
         {done ? (
-          <Link href="/stats" className="word-good">
+          <Link href="/stats" className="word-good" data-testid="word-count">
             {words} words
           </Link>
         ) : (
-          <p>
+          <p data-testid="word-count">
             {words} / {WORD_GOAL}
             {isToday ? ` · ${Math.max(0, WORD_GOAL - words)} to go` : ""}
           </p>
         )}
-        <p className="text-[var(--muted)]">{saved}</p>
+        {savedFlash ? (
+          <p className="bg-[var(--good)] px-2 py-0.5 text-[12px] text-white" aria-live="polite">
+            saved
+          </p>
+        ) : (
+          <p className="text-[var(--muted)]" aria-live="polite">
+            {saved}
+          </p>
+        )}
       </div>
     </footer>
   );
