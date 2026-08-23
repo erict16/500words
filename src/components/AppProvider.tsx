@@ -320,6 +320,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
         else if (user) void saveSettings(user.uid, next);
         return next;
       });
+      if (patch.timezone) {
+        const t = todayInZone(patch.timezone);
+        setToday(t);
+      }
     },
     [user, offline],
   );
@@ -357,7 +361,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
     try {
       await signInWithPopup(getFirebaseAuth(), googleProvider());
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Google sign-in failed.";
+      const raw = err instanceof Error ? err.message : "Google sign-in failed.";
+      const message = /unauthorized-domain/i.test(raw)
+        ? "Google isn’t allowed on this domain yet. Use “Write on this device”."
+        : raw;
       setError(message);
     }
   }, []);

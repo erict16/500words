@@ -7,6 +7,7 @@ import {
   emptyLifetime,
   emptyMonth,
   missedYesterday,
+  publicScore,
 } from "./engine.ts";
 import { emptyEntry, emptySession, WORD_GOAL } from "./types.ts";
 
@@ -148,4 +149,23 @@ test("missedYesterday is true when last strike was two days ago", () => {
 test("emptyMonth has the right number of August days", () => {
   assert.equal(emptyMonth("2026-08").length, 31);
   assert.equal(emptyMonth("2026-08")[0].date, "2026-08-01");
+});
+
+test("publicScore never includes writing", () => {
+  const month = emptyMonth("2026-08");
+  month[0].wordCount = 500;
+  month[0].mark = "strike";
+  month[0].points = 2;
+  const row = publicScore({
+    displayName: "Ada",
+    monthDays: month,
+    streak: 3,
+    badges: [{ id: "egg", earnedAt: 1, times: 1 }],
+  });
+  assert.equal(row.displayName, "Ada");
+  assert.equal(row.daysCompleted, 1);
+  assert.equal(row.monthWords, 500);
+  assert.equal(row.monthPoints, 2);
+  assert.deepEqual(row.badgeIds, ["egg"]);
+  assert.equal("text" in row, false);
 });

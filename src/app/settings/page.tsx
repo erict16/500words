@@ -11,8 +11,40 @@ const FONTS: { id: FontId; label: string }[] = [
   { id: "courier", label: "Courier" },
 ];
 
+const COMMON_ZONES = [
+  "UTC",
+  "America/Los_Angeles",
+  "America/Denver",
+  "America/Chicago",
+  "America/New_York",
+  "Europe/London",
+  "Europe/Paris",
+  "Asia/Tokyo",
+  "Australia/Sydney",
+];
+
+function timeZones(): string[] {
+  try {
+    if (typeof Intl !== "undefined" && "supportedValuesOf" in Intl) {
+      return Intl.supportedValuesOf("timeZone");
+    }
+  } catch {
+    /* ignore */
+  }
+  return COMMON_ZONES;
+}
+
 export default function SettingsPage() {
   const { settings, updateSettings, profile, downloadExport } = useApp();
+  const zones = timeZones();
+  const extra = zones.filter((z) => !COMMON_ZONES.includes(z));
+  if (
+    settings.timezone &&
+    !COMMON_ZONES.includes(settings.timezone) &&
+    !extra.includes(settings.timezone)
+  ) {
+    extra.unshift(settings.timezone);
+  }
 
   return (
     <main className="mx-auto max-w-xl px-6 py-8">
@@ -27,6 +59,7 @@ export default function SettingsPage() {
           className="mt-1 block w-full border border-[var(--line)] bg-[var(--paper)] px-2 py-2 text-[15px] text-[var(--ink)]"
           value={settings.font}
           onChange={(e) => updateSettings({ font: e.target.value as FontId })}
+          data-testid="font"
         >
           {FONTS.map((f) => (
             <option key={f.id} value={f.id}>
@@ -89,6 +122,7 @@ export default function SettingsPage() {
                 checked={settings.theme === theme}
                 onChange={() => updateSettings({ theme })}
                 className="mr-2"
+                data-testid={`theme-${theme}`}
               />
               {theme}
             </label>
@@ -107,17 +141,36 @@ export default function SettingsPage() {
 
       <label className="mt-6 block text-[13px] text-[var(--muted)]">
         Timezone
-        <input
+        <select
           className="mt-1 block w-full border border-[var(--line)] bg-[var(--paper)] px-2 py-2 text-[15px] text-[var(--ink)]"
           value={settings.timezone}
           onChange={(e) => updateSettings({ timezone: e.target.value })}
-        />
+          data-testid="timezone"
+        >
+          <optgroup label="Common">
+            {COMMON_ZONES.map((z) => (
+              <option key={z} value={z}>
+                {z}
+              </option>
+            ))}
+          </optgroup>
+          {extra.length ? (
+            <optgroup label="All">
+              {extra.map((z) => (
+                <option key={z} value={z}>
+                  {z}
+                </option>
+              ))}
+            </optgroup>
+          ) : null}
+        </select>
       </label>
 
       <button
         type="button"
         className="mt-8 border border-[var(--ink)] px-3 py-2 text-[14px] active:scale-[0.97]"
         onClick={() => void downloadExport()}
+        data-testid="export"
       >
         Export entries
       </button>
@@ -125,6 +178,7 @@ export default function SettingsPage() {
       <p
         className={`mt-10 font-${settings.font} text-[var(--ink)]`}
         style={{ fontSize: settings.fontSize, lineHeight: settings.lineHeight }}
+        data-testid="font-preview"
       >
         The quick brown fox writes five hundred words and does not look at
         Twitter until the strike is in the box.

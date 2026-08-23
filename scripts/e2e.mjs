@@ -110,6 +110,50 @@ try {
   await page.locator('[data-testid="join-challenge"]').click();
   await page.waitForSelector('[data-testid="joined-challenge"]');
 
+  await page.goto(SITE + "/stats", { waitUntil: "domcontentloaded" });
+  await page.waitForFunction(
+    () => document.querySelector('[data-testid="stat-words"]')?.textContent?.trim() === "500",
+    null,
+    { timeout: 10000 },
+  );
+  const statWords = (await page.locator('[data-testid="stat-words"]').textContent())?.trim();
+  const statGoal = await page.locator('[data-testid="stat-goal"]').textContent();
+  const statPoints = Number((await page.locator('[data-testid="stat-points"]').textContent())?.trim());
+  const statMonthBoxes = await page.locator("[data-testid='stats-month'] .day-box").count();
+  console.log("statWords=" + statWords + " goal=" + statGoal + " points=" + statPoints + " monthBoxes=" + statMonthBoxes);
+  if (statWords !== "500") fail("stats words expected 500, got " + statWords);
+  if (!statGoal?.includes("Strike")) fail("stats goal is not Strike");
+  if (!(statPoints >= 2)) fail("stats points expected >= 2, got " + statPoints);
+  if (statMonthBoxes < 28) fail("stats month grid missing");
+
+  await page.goto(SITE + "/person/local", { waitUntil: "domcontentloaded" });
+  await page.waitForSelector('[data-testid="person-score"]', { timeout: 10000 });
+  await page.waitForFunction(
+    () => document.querySelector('[data-testid="person-score"]')?.textContent?.includes("500"),
+    null,
+    { timeout: 10000 },
+  );
+  await page.waitForSelector('[data-testid="person-badges"] [data-badge="egg"]', { timeout: 10000 });
+  const personScore = await page.locator('[data-testid="person-score"]').textContent();
+  const egg = await page.locator('[data-testid="person-badges"] [data-badge="egg"]').count();
+  console.log("personScore=" + personScore + " egg=" + egg);
+  if (!personScore?.includes("500")) fail("person page missing word count");
+  if (egg < 1) fail("person page missing egg badge");
+  const leaked = await page.locator("textarea, [data-testid='editor']").count();
+  if (leaked) fail("person page leaked writing");
+
+  await page.goto(SITE + "/settings", { waitUntil: "domcontentloaded" });
+  await page.locator('[data-testid="theme-dark"]').check();
+  await page.waitForFunction(() => document.documentElement.dataset.theme === "dark", null, {
+    timeout: 5000,
+  });
+  const theme = await page.evaluate(() => document.documentElement.dataset.theme);
+  console.log("theme=" + theme);
+  if (theme !== "dark") fail("dark theme did not apply");
+  const tzCount = await page.locator('[data-testid="timezone"] option').count();
+  console.log("timezones=" + tzCount);
+  if (tzCount < 8) fail("timezone list too short");
+
   console.log("pageErrors=" + errors.length);
   if (errors.length) fail(errors.join("\n"));
   await browser.close();

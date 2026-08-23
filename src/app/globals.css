@@ -193,6 +193,11 @@ button {
   outline-offset: -2px;
 }
 
+span.day-box {
+  cursor: default;
+  display: inline-block;
+}
+
 .skip-link {
   position: absolute;
   left: 8px;

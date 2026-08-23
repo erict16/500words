@@ -2,6 +2,7 @@
 
 import { monthKey, monthLabel, shiftMonth } from "@/lib/dates";
 import { useApp } from "./AppProvider";
+import { BowlingMark } from "./BowlingMark";
 
 export function MonthGrid() {
   const { date, today, monthDays, monthPoints, setDate, lifetime } = useApp();
@@ -71,18 +72,7 @@ export function MonthGrid() {
               aria-current={selected ? "date" : undefined}
             >
               <span className="num">{day.day}</span>
-              {day.mark === "spare" || day.mark === "strike" ? (
-                <svg className="mark" viewBox="0 0 28 28" aria-hidden>
-                  {day.mark === "spare" ? (
-                    <line x1="5" y1="23" x2="23" y2="5" />
-                  ) : (
-                    <>
-                      <line x1="5" y1="5" x2="23" y2="23" />
-                      <line x1="23" y1="5" x2="5" y2="23" />
-                    </>
-                  )}
-                </svg>
-              ) : null}
+              <BowlingMark mark={day.mark} />
             </button>
           );
         })}

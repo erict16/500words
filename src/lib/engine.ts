@@ -5,6 +5,7 @@ import {
   WORD_GOAL,
   type ChallengeStatus,
   type DayEntry,
+  type EarnedBadge,
   type MonthDay,
   type SessionStats,
 } from "./types.ts";
@@ -181,6 +182,25 @@ export function applyChallenge(opts: {
 export function missedYesterday(today: string, lastCompleted: string | null): boolean {
   if (!lastCompleted) return false;
   return lastCompleted < addDays(today, -1);
+}
+
+/** Public scoreboard. Never includes the writing. */
+export function publicScore(opts: {
+  displayName: string;
+  monthDays: MonthDay[];
+  streak: number;
+  badges: EarnedBadge[];
+}) {
+  const { displayName, monthDays, streak, badges } = opts;
+  return {
+    displayName,
+    monthPoints: monthDays.reduce((sum, d) => sum + d.points, 0),
+    monthWords: monthDays.reduce((sum, d) => sum + d.wordCount, 0),
+    daysStarted: monthDays.filter((d) => d.wordCount > 0).length,
+    daysCompleted: monthDays.filter((d) => d.mark === "strike" || d.wordCount >= WORD_GOAL).length,
+    streak,
+    badgeIds: badges.map((b) => b.id),
+  };
 }
 
 export { emptyEntry, WORD_GOAL };

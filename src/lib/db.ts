@@ -17,13 +17,13 @@ import {
   applyLifetime,
   applySave,
   emptyLifetime,
+  publicScore,
   type Lifetime,
 } from "./engine";
 import { getDb } from "./firebase";
 import {
   defaultSettings,
   emptyEntry,
-  WORD_GOAL,
   type ChallengeEntrant,
   type ChallengeStatus,
   type DayEntry,
@@ -257,10 +257,10 @@ export async function saveDayText(opts: {
     result.justFinished,
     result.makeupYesterday,
   );
-  await syncPublic(uid, date, displayName, photoURL, result.entry, life.currentStreak);
   await syncChallenge(uid, date, displayName, photoURL, result.entry, today);
 
   const newBadges = await awardBadges(uid, life);
+  await syncPublic(uid, date, displayName, photoURL, result.entry, life.currentStreak);
   return { entry: result.entry, justFinished: result.justFinished, newBadges };
 }
 
@@ -341,30 +341,58 @@ async function syncPublic(
   streak: number,
 ) {
   const month = monthKey(date);
-  const monthDays = await getDocs(collection(getDb(), "users", uid, "days"));
-  let monthPoints = 0;
-  let monthWords = 0;
-  let daysStarted = 0;
-  let daysCompleted = 0;
-  monthDays.forEach((d) => {
+  const monthDaysSnap = await getDocs(collection(getDb(), "users", uid, "days"));
+  const byDate = new Map<string, MonthDay>();
+  monthDaysSnap.forEach((d) => {
     if (!d.id.startsWith(month)) return;
     const data = d.data();
-    monthPoints += asNumber(data.points);
-    monthWords += asNumber(data.wordCount);
-    if (asNumber(data.wordCount) >= 1) daysStarted += 1;
-    if (asNumber(data.wordCount) >= WORD_GOAL || data.locked) daysCompleted += 1;
+    byDate.set(d.id, {
+      date: d.id,
+      day: Number(d.id.slice(-2)),
+      wordCount: asNumber(data.wordCount),
+      mark: (data.mark as DayMark) || markForWords(asNumber(data.wordCount)),
+      points: asNumber(data.points),
+      madeUp: Boolean(data.madeUp),
+    });
   });
+  byDate.set(date, {
+    date,
+    day: Number(date.slice(-2)),
+    wordCount: entry.wordCount,
+    mark: entry.mark,
+    points: entry.points,
+    madeUp: entry.madeUp,
+  });
+  const monthDays = datesInMonth(month).map((d) => {
+    const day = Number(d.slice(-2));
+    return (
+      byDate.get(d) ?? {
+        date: d,
+        day,
+        wordCount: 0,
+        mark: "none" as const,
+        points: 0,
+        madeUp: false,
+      }
+    );
+  });
+  const badgeSnap = await getDocs(collection(getDb(), "users", uid, "badges"));
+  const badges: EarnedBadge[] = [];
+  badgeSnap.forEach((d) => {
+    const data = d.data();
+    badges.push({
+      id: d.id,
+      earnedAt: asNumber(data.earnedAt, Date.now()),
+      times: asNumber(data.times, 1),
+    });
+  });
+  const score = publicScore({ displayName, monthDays, streak, badges });
   await setDoc(
     publicMonthRef(month, uid),
     {
       uid,
-      displayName,
       photoURL,
-      monthPoints,
-      monthWords,
-      daysStarted,
-      daysCompleted,
-      streak,
+      ...score,
       updatedAt: Date.now(),
     },
     { merge: true },
