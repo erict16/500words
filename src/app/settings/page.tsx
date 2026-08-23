@@ -47,27 +47,23 @@ export default function SettingsPage() {
   }
 
   return (
-    <main className="mx-auto max-w-xl px-6 py-8">
-      <h1 className="font-georgia text-3xl">Settings</h1>
-      <p className="mt-2 text-[14px] text-[var(--muted)]">
-        Signed in as {profile?.email}
-      </p>
+    <main className="page">
+      <h1 className="page-title">Settings</h1>
+      <p className="page-kicker">Signed in as {profile?.email}</p>
 
-      <label className="mt-8 block text-[13px] text-[var(--muted)]">
+      <label className="field">
         Name on the public page
         <input
           type="text"
           defaultValue={profile?.displayName ?? ""}
           onBlur={(e) => updateProfile({ displayName: e.target.value })}
-          className="mt-1 block w-full border border-[var(--line)] bg-[var(--paper)] px-2 py-2 text-[15px] text-[var(--ink)]"
           data-testid="display-name"
         />
       </label>
 
-      <label className="mt-6 block text-[13px] text-[var(--muted)]">
+      <label className="field">
         Font
         <select
-          className="mt-1 block w-full border border-[var(--line)] bg-[var(--paper)] px-2 py-2 text-[15px] text-[var(--ink)]"
           value={settings.font}
           onChange={(e) => updateSettings({ font: e.target.value as FontId })}
           data-testid="font"
@@ -80,7 +76,7 @@ export default function SettingsPage() {
         </select>
       </label>
 
-      <label className="mt-6 block text-[13px] text-[var(--muted)]">
+      <label className="field">
         Font size · {settings.fontSize}px
         <input
           type="range"
@@ -89,12 +85,11 @@ export default function SettingsPage() {
           step={1}
           value={settings.fontSize}
           onChange={(e) => updateSettings({ fontSize: Number(e.target.value) })}
-          className="mt-2 block w-full"
           data-testid="font-size"
         />
       </label>
 
-      <label className="mt-6 block text-[13px] text-[var(--muted)]">
+      <label className="field">
         Line height · {settings.lineHeight.toFixed(2)}
         <input
           type="range"
@@ -103,11 +98,10 @@ export default function SettingsPage() {
           step={0.05}
           value={settings.lineHeight}
           onChange={(e) => updateSettings({ lineHeight: Number(e.target.value) })}
-          className="mt-2 block w-full"
         />
       </label>
 
-      <label className="mt-6 block text-[13px] text-[var(--muted)]">
+      <label className="field">
         Paragraph spacing · {settings.paragraphSpacing}
         <input
           type="range"
@@ -118,12 +112,11 @@ export default function SettingsPage() {
           onChange={(e) =>
             updateSettings({ paragraphSpacing: Number(e.target.value) })
           }
-          className="mt-2 block w-full"
         />
       </label>
 
-      <fieldset className="mt-6">
-        <legend className="text-[13px] text-[var(--muted)]">Theme</legend>
+      <fieldset className="field" style={{ border: 0, padding: 0 }}>
+        <legend>Theme</legend>
         <div className="mt-2 flex gap-4">
           {(["light", "dark", "sepia"] as ThemeId[]).map((theme) => (
             <label key={theme} className="text-[15px]">
@@ -160,10 +153,9 @@ export default function SettingsPage() {
         Lock today after 500 words (you can still read it)
       </label>
 
-      <label className="mt-6 block text-[13px] text-[var(--muted)]">
+      <label className="field">
         Timezone
         <select
-          className="mt-1 block w-full border border-[var(--line)] bg-[var(--paper)] px-2 py-2 text-[15px] text-[var(--ink)]"
           value={settings.timezone}
           onChange={(e) => updateSettings({ timezone: e.target.value })}
           data-testid="timezone"
@@ -205,6 +197,10 @@ export default function SettingsPage() {
           Print {entry.date}
         </button>
       </div>
+
+      <p className="page-kicker" style={{ marginTop: 36 }}>
+        Typing autosaves. ⌘S (or Ctrl-S) saves now.
+      </p>
 
       <p
         className={`mt-10 font-${settings.font} text-[var(--ink)]`}

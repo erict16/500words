@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useApp } from "@/components/AppProvider";
+import { prettyDate } from "@/lib/dates";
 import type { SearchHit } from "@/lib/search";
 
 export default function SearchPage() {
@@ -29,37 +30,40 @@ export default function SearchPage() {
   }, [query, searchWriting]);
 
   return (
-    <main className="mx-auto max-w-2xl px-6 py-8">
-      <h1 className="font-georgia text-3xl">Search</h1>
-      <p className="mt-2 text-[14px] text-[var(--muted)]">
-        Your writing only. Nothing leaves this account.
-      </p>
-      <input
-        type="search"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder="Find a word, a date, a sentence…"
-        className="mt-6 w-full border border-[var(--line)] bg-[var(--paper)] px-3 py-2 text-[16px] text-[var(--ink)]"
-        data-testid="search-input"
-        autoFocus
-      />
+    <main className="page">
+      <h1 className="page-title">Search</h1>
+      <p className="page-kicker">Your writing only. Nothing leaves this account.</p>
+      <label className="field">
+        Find a word, a date, a sentence
+        <input
+          type="search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder=""
+          className="field-control"
+          data-testid="search-input"
+          autoFocus
+        />
+      </label>
       {busy ? <p className="mt-4 text-[13px] text-[var(--muted)]">Looking…</p> : null}
-      <ul className="mt-6 space-y-4" data-testid="search-hits">
+      <ul className="archive mt-6" data-testid="search-hits">
         {hits.map((hit) => (
           <li key={hit.date}>
             <button
               type="button"
-              className="block w-full text-left"
               data-testid={`search-hit-${hit.date}`}
               onClick={() => {
                 setDate(hit.date);
                 router.push("/");
               }}
             >
-              <span className="text-[13px] text-[var(--muted)]">
-                {hit.date} · {hit.wordCount} words
+              <span>
+                <span className="archive-date">{prettyDate(hit.date)}</span>
+                <span className="mt-1 block text-[15px] leading-relaxed text-[var(--ink)]">
+                  {hit.snippet}
+                </span>
               </span>
-              <span className="mt-1 block text-[16px] leading-relaxed">{hit.snippet}</span>
+              <span className="archive-words">{hit.wordCount} words</span>
             </button>
           </li>
         ))}

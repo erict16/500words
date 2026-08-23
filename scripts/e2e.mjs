@@ -160,6 +160,10 @@ try {
   const bars = await page.locator("[data-testid='word-bars'] .score-bar").count();
   console.log("wordBars=" + bars);
   if (bars < 28) fail("stats word bars missing");
+  await page.waitForSelector("[data-testid='archive'] [data-testid='archive-hit']", { timeout: 10000 });
+  const archive = await page.locator("[data-testid='archive'] [data-testid='archive-hit']").count();
+  console.log("archive=" + archive);
+  if (archive < 1) fail("stats archive missing");
 
   await page.goto(SITE + "/person/local", { waitUntil: "domcontentloaded" });
   await page.waitForSelector('[data-testid="person-score"]', { timeout: 10000 });

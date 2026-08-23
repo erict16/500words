@@ -37,7 +37,7 @@ export function Editor() {
   }, []);
 
   return (
-    <div className="px-7">
+    <div className="write-col">
       {!isToday ? (
         <p className="mx-auto mb-2 max-w-2xl text-[13px] text-[var(--muted)]">
           {entry.date} is closed. You can read it. You can’t add words to a past day.

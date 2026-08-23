@@ -9,19 +9,19 @@ STOP only when that is true. Firebase wiring is not STOP. A 30-minute slice is n
 - Live `500words-ink.vercel.app` HTTP 200
 - Google + “Write on this device” (never infinite Loading)
 - Local write survives reload
-- Teal bar `#2bbbad`, italic Georgia “500 Words”, Lucida nav, 28px bowling boxes with `/` and `X`, Georgia 21px / 640px editor, footer `n / 500` turning into a green stats link, confetti, 500 strike
-- Stats scorecard with points under the boxes + word bars, badges, one month walls, settings, public person, search
-- Badge drawings are ink-and-wash animals (egg, turkey+fan, penguin+bow tie, flamingo, albatross, phoenix, pterodactyl, spacebird, spirit dashed frames, cheetah, hamster, early bird, night bat, oxalis, word-count flocks, turquoise horse). Unearned stays grey. `data-badge` kept.
+- Teal bar `#2bbbad`, Materialize-era 64px rhythm, italic 32px Georgia “500 Words”, 14px white nav in a 1080px inner, 28px bowling boxes with `/` and `X`, Georgia 21px / 640px editor, footer `n / 500` turning into a green stats link, confetti, 500 strike
+- Stats: scorecard with points under the boxes + word bars, dated “Your pages” archive (click a day to read it)
+- Badges as a paper catalog (drawing + how), one month walls, settings, public person, search
+- Badge drawings are ink-and-wash animals. Unearned stays grey. `data-badge` kept.
 - Sign-in: same teal bar, Georgia title, Continue with Google, quiet local fallback
-- Unit + Playwright e2e in repo
+- Unit + Playwright e2e in repo (archive asserted)
 
 ## Next
 
 - Drawings are ours, not Tag Savage’s originals. Still not the 750 badge sheet.
-- Header/type closer, not pixel-identical (Materialize 750 used a slightly different logo size and nav rhythm)
+- Header/type closer (64px / 32px italic), still not a screenshot overlay of 2014 Materialize 750
 - Firestore owner-only rules file exists, not published
 - `500words-inky.vercel.app` still 404 (ink is the live host)
-- Confirm Google authorized domain includes `500words-ink.vercel.app`
 
 ## Do not
 

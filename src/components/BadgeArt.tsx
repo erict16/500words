@@ -49,6 +49,14 @@ function Grain({ p }: { p: Palette }) {
     [15, 72],
     [42, 8],
     [33, 73],
+    [11, 24],
+    [59, 12],
+    [73, 33],
+    [6, 47],
+    [22, 9],
+    [51, 74],
+    [38, 71],
+    [66, 68],
   ];
   return (
     <g opacity="0.22" fill={p.ink}>
@@ -66,7 +74,10 @@ function Hatch({ p, d }: { p: Palette; d: string }) {
 function Paper({ p, spirit }: { p: Palette; spirit: boolean }) {
   return (
     <>
-      <rect x="2.5" y="2.5" width="75" height="75" rx="3.5" fill={p.wash} />
+      <path
+        d="M6 4h67c2 0 4 2 4 5v62c0 3-2 6-5 6H8c-3 0-5-3-5-6V9c0-3 2-5 3-5z"
+        fill={p.wash}
+      />
       <rect
         x="3.2"
         y="3.2"

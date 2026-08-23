@@ -57,28 +57,30 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
           transition: "opacity 160ms ease",
         }}
       >
-        <Link href="/" className="site-mark">
-          500 Words
-        </Link>
-        <nav className="bar-nav">
-          {LINKS.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={`bar-link ${pathname === link.href ? "active" : ""}`}
-            >
-              {link.label}
-            </Link>
-          ))}
-          {profile ? (
-            <Link href={`/person/${profile.uid}`} className="bar-link" data-testid="you-link">
-              {profile.displayName}
-            </Link>
-          ) : null}
-          <button type="button" className="bar-link" onClick={() => void signOut()}>
-            Sign out
-          </button>
-        </nav>
+        <div className="site-bar-inner">
+          <Link href="/" className="site-mark">
+            500 Words
+          </Link>
+          <nav className="bar-nav">
+            {LINKS.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`bar-link ${pathname === link.href ? "active" : ""}`}
+              >
+                {link.label}
+              </Link>
+            ))}
+            {profile ? (
+              <Link href={`/person/${profile.uid}`} className="bar-link" data-testid="you-link">
+                {profile.displayName}
+              </Link>
+            ) : null}
+            <button type="button" className="bar-link" onClick={() => void signOut()}>
+              Sign out
+            </button>
+          </nav>
+        </div>
       </header>
       {children}
     </>

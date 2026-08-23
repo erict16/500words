@@ -10,7 +10,9 @@ export function SignInGate({ children }: { children: React.ReactNode }) {
   return (
     <>
       <header className="site-bar">
-        <span className="site-mark">500 Words</span>
+        <div className="site-bar-inner">
+          <span className="site-mark">500 Words</span>
+        </div>
       </header>
       <main className="mx-auto flex min-h-[70vh] max-w-md flex-col items-start justify-center gap-7 px-7">
         <h1 className="sign-title">500 Words</h1>

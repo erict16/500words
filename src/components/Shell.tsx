@@ -13,9 +13,11 @@ export function Shell({ children }: { children: React.ReactNode }) {
     return (
       <>
         <header className="site-bar">
-          <Link href="/" className="site-mark">
-            500 Words
-          </Link>
+          <div className="site-bar-inner">
+            <Link href="/" className="site-mark">
+              500 Words
+            </Link>
+          </div>
         </header>
         {children}
       </>

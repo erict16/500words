@@ -55,7 +55,7 @@ export default function PersonPage() {
 
   if (!self && (missing || !isFirebaseConfigured())) {
     return (
-      <main className="px-6 py-10">
+      <main className="page">
         <p>No public stats for this person this month.</p>
       </main>
     );
@@ -63,7 +63,7 @@ export default function PersonPage() {
 
   if (!score) {
     return (
-      <main className="px-7 py-10 text-[var(--muted)]" data-testid="person-waiting">
+      <main className="page text-[var(--muted)]" data-testid="person-waiting">
         Looking up this month’s score…
       </main>
     );
@@ -74,24 +74,24 @@ export default function PersonPage() {
     .filter((b): b is NonNullable<typeof b> => Boolean(b));
 
   return (
-    <main className="mx-auto max-w-xl px-7 py-10">
-      <h1 className="font-georgia text-3xl">{score.displayName}</h1>
+    <main className="page">
+      <h1 className="page-title">{score.displayName}</h1>
       <p className="mt-4 text-[16px] leading-relaxed" data-testid="person-score">
         {score.monthPoints} points this month · {score.daysCompleted}{" "}
         {score.daysCompleted === 1 ? "day" : "days"} of 500 · {score.monthWords} words · streak{" "}
         {score.streak}
       </p>
       {earned.length ? (
-        <ul className="mt-8 grid grid-cols-3 gap-4 sm:grid-cols-4" data-testid="person-badges">
+        <ul className="badge-list" data-testid="person-badges">
           {earned.map((badge) => (
-            <li key={badge.id}>
+            <li key={badge.id} className="badge-row">
               <BadgeArt badge={badge} earned />
-              <p className="mt-1 text-[13px]">{badge.name}</p>
+              <p className="pt-6 text-[15px]">{badge.name}</p>
             </li>
           ))}
         </ul>
       ) : null}
-      <p className="mt-8 text-[13px] text-[var(--muted)]">
+      <p className="page-kicker" style={{ marginTop: 32 }}>
         Writing stays private. This page is only the scoreboard.
       </p>
     </main>

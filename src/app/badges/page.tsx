@@ -19,9 +19,9 @@ export default function BadgesPage() {
   const earned = new Set(badges.map((b) => b.id));
 
   return (
-    <main className="mx-auto max-w-3xl px-7 py-8">
-      <h1 className="font-georgia text-3xl">Badges</h1>
-      <p className="mt-2 text-[14px] text-[var(--muted)]">
+    <main className="page">
+      <h1 className="page-title">Badges</h1>
+      <p className="page-kicker">
         Ink-and-wash animals for showing up. They don’t mean you’re a good writer. They mean you wrote.
       </p>
       {newBadges.length ? (
@@ -30,22 +30,28 @@ export default function BadgesPage() {
         </p>
       ) : null}
       {GROUPS.map((group) => (
-        <section key={group.id} className="mt-10">
-          <h2 className="font-georgia text-xl">{group.label}</h2>
-          <ul className="mt-4 grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-3">
+        <section key={group.id}>
+          <h2 className="page-h2">{group.label}</h2>
+          <ul className="badge-list">
             {BADGES.filter((b) => b.group === group.id).map((badge) => {
               const got = earned.has(badge.id);
               const when = badges.find((b) => b.id === badge.id);
               return (
-                <li key={badge.id} data-testid={`badge-${badge.id}`} className={got ? "" : "opacity-70"}>
+                <li
+                  key={badge.id}
+                  data-testid={`badge-${badge.id}`}
+                  className={`badge-row ${got ? "" : "opacity-70"}`}
+                >
                   <BadgeArt badge={badge} earned={got} />
-                  <h3 className="mt-2 text-[15px]">{badge.name}</h3>
-                  <p className="text-[13px] text-[var(--muted)]">{badge.how}</p>
-                  {when ? (
-                    <p className="mt-1 text-[12px] text-[var(--muted)]">
-                      {new Date(when.earnedAt).toLocaleDateString()}
-                    </p>
-                  ) : null}
+                  <div>
+                    <h3 className="text-[16px]">{badge.name}</h3>
+                    <p className="mt-1 text-[14px] text-[var(--muted)]">{badge.how}</p>
+                    {when ? (
+                      <p className="mt-1 text-[12px] text-[var(--muted)]">
+                        {new Date(when.earnedAt).toLocaleDateString()}
+                      </p>
+                    ) : null}
+                  </div>
                 </li>
               );
             })}

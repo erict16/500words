@@ -19,10 +19,8 @@ export function Leaderboard() {
   if (rows.length === 0) return null;
 
   return (
-    <section className="mt-10">
-      <h2 className="text-[13px] uppercase tracking-wide text-[var(--muted)]">
-        This month’s points
-      </h2>
+    <section>
+      <h2 className="page-h2">This month’s points</h2>
       <ol className="mt-3 space-y-1 text-[15px]">
         {rows.slice(0, 20).map((row, i) => (
           <li key={String(row.uid)} className={row.uid === user?.uid ? "font-medium" : ""}>

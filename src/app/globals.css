@@ -77,25 +77,30 @@ button {
 }
 
 .site-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  min-height: 56px;
-  padding: 0 28px;
   background: #2bbbad;
   color: #fff;
 }
 
+.site-bar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 20px;
+  min-height: 64px;
+}
+
 .site-mark {
   font-family: Georgia, "Times New Roman", Times, serif;
-  font-size: 26px;
+  font-size: 32px;
   font-style: italic;
   font-weight: 400;
   color: #fff;
   text-decoration: none;
   letter-spacing: 0;
-  line-height: 56px;
+  line-height: 64px;
   white-space: nowrap;
 }
 
@@ -110,14 +115,14 @@ button {
 .bar-link {
   color: #fff;
   text-decoration: none;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 400;
   opacity: 1;
   background: none;
   border: 0;
-  padding: 0 11px;
+  padding: 0 12px;
   cursor: pointer;
-  line-height: 56px;
+  line-height: 64px;
   white-space: nowrap;
 }
 .bar-link:hover,
@@ -126,19 +131,27 @@ button {
   opacity: 1;
 }
 
-@media (max-width: 800px) {
-  .site-bar {
-    padding: 8px 16px;
+@media (max-width: 900px) {
+  .site-bar-inner {
+    padding: 6px 16px;
+    min-height: 56px;
     align-items: flex-start;
   }
   .site-mark,
   .bar-link {
-    line-height: 1.4;
+    line-height: 40px;
+  }
+  .site-mark {
+    font-size: 26px;
   }
   .bar-link {
-    padding: 4px 8px;
+    padding: 0 8px;
+    font-size: 13px;
   }
-  .month-wrap {
+  .month-wrap,
+  .write-col,
+  .page,
+  .page-wide {
     padding-left: 16px;
     padding-right: 16px;
   }
@@ -182,13 +195,51 @@ button {
 }
 
 .write-page {
-  max-width: 960px;
+  max-width: 1080px;
   margin: 0 auto;
   padding-bottom: 72px;
 }
 
+.write-col {
+  padding: 0 20px;
+}
+
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 32px 20px 72px;
+}
+
+.page-wide {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 32px 20px 72px;
+}
+
+.page-title {
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 1.15;
+  margin: 0;
+}
+
+.page-kicker {
+  margin: 8px 0 0;
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.page-h2 {
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: 22px;
+  font-weight: 400;
+  margin: 2.2em 0 0.5em;
+}
+
 .month-wrap {
-  padding: 12px 28px 4px;
+  padding: 14px 20px 6px;
 }
 
 .month-head {
@@ -416,6 +467,112 @@ input:focus-visible {
   list-style: none;
   font-size: 15px;
   line-height: 1.7;
+}
+
+.archive {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+}
+
+.archive button {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  padding: 9px 0;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.archive button:hover .archive-date {
+  text-decoration: underline;
+}
+
+.archive-date {
+  font-size: 15px;
+}
+
+.archive-words {
+  font-size: 13px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.badge-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+}
+
+.badge-row {
+  display: grid;
+  grid-template-columns: 112px 1fr;
+  gap: 16px;
+  align-items: start;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.stat-dl {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 28px;
+  margin: 20px 0 0;
+  font-size: 16px;
+}
+
+.stat-dl dt {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.field {
+  display: block;
+  margin-top: 24px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.field legend {
+  padding: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+.walls .page-h2 {
+  margin-top: 0.3em;
+}
+
+.field input,
+.field select,
+.field-control {
+  margin-top: 6px;
+  display: block;
+  width: 100%;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  padding: 8px 10px;
+  font-size: 15px;
+}
+.field input[type="range"] {
+  border: 0;
+  padding: 8px 0;
+  background: transparent;
+}
+.field input[type="checkbox"],
+.field input[type="radio"] {
+  width: auto;
+  display: inline;
+  margin: 0;
+  padding: 0;
+  border: 0;
 }
 
 [data-theme="dark"] .month-name,

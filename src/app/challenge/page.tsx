@@ -16,12 +16,12 @@ export default function ChallengePage() {
   const daysLeft = monthDates.filter((d) => d >= today).length;
 
   return (
-    <main className="mx-auto max-w-3xl px-7 py-8">
+    <main className="page-wide">
       <div className="flex items-start gap-5">
         {horse ? <BadgeArt badge={horse} earned /> : null}
         <div>
-          <h1 className="font-georgia text-3xl">One month</h1>
-          <p className="mt-3 text-[16px] leading-relaxed">
+          <h1 className="page-title">One month</h1>
+          <p className="mt-3 max-w-xl text-[16px] leading-relaxed">
             Write {WORD_GOAL} words every day in {monthLabel(today)}. Free. Miss a day after you
             join and your name goes on the wall of shame. Finish the month: wall of awesomeness,
             and a turquoise horse. Days before you joined don’t count against you.
@@ -49,9 +49,9 @@ export default function ChallengePage() {
         </p>
       ) : null}
 
-      <div className="walls mt-12">
+      <div className="walls mt-4">
         <section>
-          <h2 className="font-georgia text-2xl">Wall of awesomeness</h2>
+          <h2 className="page-h2">Wall of awesomeness</h2>
           {awesome.length === 0 ? (
             <p className="mt-2 text-[14px] text-[var(--muted)]">Nobody here yet.</p>
           ) : (
@@ -66,7 +66,7 @@ export default function ChallengePage() {
         </section>
 
         <section>
-          <h2 className="font-georgia text-2xl">Wall of shame</h2>
+          <h2 className="page-h2">Wall of shame</h2>
           {shame.length === 0 ? (
             <p className="mt-2 text-[14px] text-[var(--muted)]">Empty. Keep it that way.</p>
           ) : (

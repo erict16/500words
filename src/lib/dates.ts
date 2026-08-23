@@ -45,6 +45,16 @@ export function monthLabel(dateStr: string): string {
   });
 }
 
+export function prettyDate(dateStr: string): string {
+  const { year, month, day } = parseDate(dateStr);
+  return new Date(year, month - 1, day).toLocaleDateString("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
 export function isFutureDay(dateStr: string, today: string): boolean {
   return dateStr > today;
 }
