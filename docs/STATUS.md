@@ -23,18 +23,17 @@ STOP only when that is true. Firebase wiring is not STOP. A 30-minute slice is n
 - After-login pages share the 800px column; h1 is 35px #4DB559
 - Stats today is `entry_stats`: 5× 40px #4DB559, 12px headers, 11px #666; all-time table 12px / 30px #666 weight 800
 - Person page: `#DCFFFD` header, 18px `.big` / `#4392F1` strong, score table 30px #666
-- Challenge join uses original `#challenge_nav` (`#45DED7` when in); empty walls use `.notice`
 - Footer logo bree/sniglet, line-height 45px; footer links 16px
-- Challenge join uses original `#challenge_nav` (1px #ccc, 10px pad, 10px radius; in-state `#45DED7`)
+- Challenge join uses original `#challenge_nav` (1px #ccc, 10px pad, 10px radius; in-state `#45DED7`); empty walls use `.notice`
 - `.subdued` is 12px #666, no underline; settings text/select match `#update_settings` (1px #fff, 4px radius, inset `#bbb`)
 - Inner-page links `#000099` / hover `#000`; nav stays black
-- Badges are a catalog of rows. Unearned grey. `data-badge` kept
+- Badge catalog copy and groups match original.750words.com (500 instead of 750). Unearned grey. `data-badge` kept. Drawings are ours (watercolor plates, no Materialize `#2bbbad`)
 - Stats scorecard + word bars + dated archive; one month walls; person page is a scoreboard
-- Unit + Playwright e2e (original CSS tokens, 20–28px boxes, 14px count, green, 27 badge rows, archive, #DCFFFD, notice)
+- Unit + Playwright e2e (original CSS tokens, 20–28px boxes, 14px count, green, 27 badge rows, archive, #DCFFFD, notice, egg blurb)
 
 ## Next
 
-- Drawings are ours, not Tag Savage’s originals (those images are not in the public CSS)
+- Tag Savage PNG/GIF files are not in the public CSS, so drawings stay ours
 - Firestore owner-only rules file exists, not published
 - `500words-inky.vercel.app` still 404 (ink is the live host)
 

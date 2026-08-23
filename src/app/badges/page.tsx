@@ -4,14 +4,12 @@ import { BadgeArt } from "@/components/BadgeArt";
 import { useApp } from "@/components/AppProvider";
 import { BADGES } from "@/lib/badges";
 
-const GROUPS: { id: (typeof BADGES)[number]["group"]; label: string }[] = [
-  { id: "habit", label: "Showing up" },
-  { id: "streak", label: "Streaks" },
-  { id: "spirit", label: "Spirit animals" },
-  { id: "speed", label: "Speed" },
-  { id: "clock", label: "Clock" },
-  { id: "words", label: "Words" },
-  { id: "challenge", label: "Challenge" },
+const GROUPS: { ids: (typeof BADGES)[number]["group"][]; label: string }[] = [
+  { ids: ["streak"], label: "Streak badges" },
+  { ids: ["spirit"], label: "Spirit animals" },
+  { ids: ["speed", "clock", "challenge"], label: "Behavior badges" },
+  { ids: ["habit"], label: "Showing up" },
+  { ids: ["words"], label: "Word count" },
 ];
 
 export default function BadgesPage() {
@@ -21,8 +19,9 @@ export default function BadgesPage() {
   return (
     <main className="page site-col">
       <h1 className="page-title">Badges</h1>
-      <p className="page-kicker">
-        Little animals for showing up. They don’t mean you’re a good writer. They mean you wrote.
+      <p className="subdued">
+        Here’s an incomplete and frequently outdated annotated list. Little animals for showing up.
+        They don’t mean you’re a good writer. They mean you wrote.
       </p>
       {newBadges.length ? (
         <p className="page-kicker" data-testid="new-badges">
@@ -30,10 +29,10 @@ export default function BadgesPage() {
         </p>
       ) : null}
       {GROUPS.map((group) => (
-        <section key={group.id}>
+        <section key={group.label}>
           <h2 className="page-h2">{group.label}</h2>
           <ul className="badge-list">
-            {BADGES.filter((b) => b.group === group.id).map((badge) => {
+            {BADGES.filter((b) => group.ids.includes(b.group)).map((badge) => {
               const got = earned.has(badge.id);
               const when = badges.find((b) => b.id === badge.id);
               return (

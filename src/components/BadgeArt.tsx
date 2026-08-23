@@ -13,9 +13,9 @@ function pal(earned: boolean): Palette {
   return earned
     ? {
         ink: "#231c14",
-        wash: "#f1e4c4",
-        accent: "#2bbbad",
-        paper: "#fffaf1",
+        wash: "#f6ecd2",
+        accent: "#4db559",
+        paper: "#fffdf8",
         warm: "#c45c26",
       }
     : {
@@ -73,22 +73,22 @@ function Hatch({ p, d }: { p: Palette; d: string }) {
   return <path d={d} fill="none" stroke={p.ink} strokeWidth="0.45" opacity="0.32" />;
 }
 
-function Paper({ p, spirit, fid }: { p: Palette; spirit: boolean; fid: string }) {
+function Paper({ p, spirit }: { p: Palette; spirit: boolean; fid: string }) {
   return (
     <>
-      <path
-        d="M7 5c22-1 44-1 65 1 2 0 4 2 4 6v58c0 4-2 7-6 7H10c-4 0-6-3-6-7V12c0-4 1-7 3-7z"
-        fill={p.wash}
-        filter={`url(#${fid}-paper)`}
-      />
-      <path
-        d="M7.5 6.2c21-1 45-1 64 0.8 1.6 0.2 3.2 2 3.2 5v57.5c0 3.2-1.8 6-5.2 6.2H10.4c-3.4 0-5.6-2.6-5.6-6.2V12.4c0-3.4 0.8-6 2.7-6.2z"
-        fill="none"
-        stroke={p.ink}
-        strokeWidth={spirit ? 0.95 : 0.4}
-        strokeDasharray={spirit ? "2.3 2" : undefined}
-        opacity={spirit ? 0.85 : 0.3}
-      />
+      {spirit ? (
+        <circle
+          cx="40"
+          cy="40"
+          r="36"
+          fill="none"
+          stroke={p.ink}
+          strokeWidth="0.9"
+          strokeDasharray="2.4 2.2"
+          opacity="0.45"
+        />
+      ) : null}
+      <ellipse cx="40" cy="72" rx="22" ry="4" fill={p.ink} opacity="0.06" />
       <Grain p={p} />
     </>
   );
@@ -167,7 +167,7 @@ function Turkey({ p, earned }: { p: Palette; earned: boolean }) {
 function Penguin({ p, earned }: { p: Palette; earned: boolean }) {
   const black = hue(earned, "#1a1918");
   const orange = hue(earned, "#e07a2f");
-  const tie = hue(earned, "#2bbbad");
+  const tie = hue(earned, "#c45c26");
   return (
     <>
       <ellipse cx="40" cy="69" rx="15" ry="3.4" fill={p.ink} opacity="0.1" />
@@ -273,7 +273,7 @@ function Pterodactyl({ p, earned }: { p: Palette; earned: boolean }) {
 }
 
 function Spacebird({ p, earned }: { p: Palette; earned: boolean }) {
-  const visor = hue(earned, "#2bbbad");
+  const visor = hue(earned, "#3d6ea5");
   const suit = hue(earned, "#3d4a6b");
   return (
     <>
@@ -445,7 +445,7 @@ function Oxalis({ p, earned }: { p: Palette; earned: boolean }) {
 }
 
 function Horse({ p, earned }: { p: Palette; earned: boolean }) {
-  const coat = hue(earned, "#2bbbad");
+  const coat = hue(earned, "#45ded7");
   const mane = hue(earned, "#1a7f78");
   return (
     <>

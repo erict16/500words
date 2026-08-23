@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { BADGES, badgesToAward, type BadgeStats } from "./badges.ts";
+import { BADGE_MAP, BADGES, badgesToAward, type BadgeStats } from "./badges.ts";
 
 const empty: BadgeStats = {
   currentStreak: 0,
@@ -58,4 +58,10 @@ test("catalog includes Tag Savage animals", () => {
   ]) {
     assert.ok(ids.includes(id), id);
   }
+});
+
+test("egg blurb is the original catalog copy", () => {
+  assert.match(BADGE_MAP.egg.how, /how we all start/);
+  assert.match(BADGE_MAP.turkey.how, /Three strikes/);
+  assert.match(BADGE_MAP.flamingo.how, /shrimp/);
 });

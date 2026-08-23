@@ -236,6 +236,18 @@ try {
   console.log("badges=" + badgeCount + " rows=" + badgeRows);
   if (badgeCount < 20) fail("expected animal badges, got " + badgeCount);
   if (badgeRows < 20) fail("badges page should be a catalog of rows, got " + badgeRows);
+  const eggHow = (await page.locator('[data-testid="badge-egg"] .badge-copy p').first().textContent()) ?? "";
+  console.log("eggHow=" + eggHow.slice(0, 80));
+  if (!/how we all start/i.test(eggHow)) fail("egg catalog copy is not the original 750 blurb");
+  const streakHead = await page.locator("h2.page-h2").first().textContent();
+  console.log("streakHead=" + streakHead);
+  if (streakHead !== "Streak badges") fail("badge groups should start with Streak badges, got " + streakHead);
+  const horseFill = await page.locator('[data-badge="turquoise-horse"]').evaluate((el) => {
+    const paints = [...el.querySelectorAll("path, ellipse, circle")].map((n) => getComputedStyle(n).fill);
+    return paints.join(" ");
+  });
+  console.log("horseFill=" + horseFill.slice(0, 120));
+  if (horseFill.includes("43, 187, 173")) fail("turquoise horse still uses Materialize teal");
 
   await page.goto(SITE + "/challenge", { waitUntil: "domcontentloaded" });
   await page.waitForSelector('[data-testid="join-challenge"], [data-testid="joined-challenge"]', {
