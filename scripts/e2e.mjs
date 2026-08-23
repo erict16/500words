@@ -67,6 +67,14 @@ try {
   const google = await page.locator('[data-testid="google-signin"]').count();
   console.log("googleButton=" + google);
   if (!google) fail("missing Continue with Google");
+  const signForm = await page.locator('[data-testid="signin-form"]').boundingBox();
+  console.log("signFormW=" + Math.round(signForm?.width || 0));
+  if (!signForm || signForm.width < 300 || signForm.width > 370) {
+    fail("sign-in form not ~350px, got " + Math.round(signForm?.width || 0));
+  }
+  const signBarBg = await page.locator("header.site-bar").evaluate((el) => getComputedStyle(el).backgroundColor);
+  console.log("signBarBg=" + signBarBg);
+  if (signBarBg.includes("43, 187, 173")) fail("sign-in header is still teal");
   await page.locator('[data-testid="local-write"]').click();
   await page.waitForSelector('[data-testid="editor"]', { timeout: 10000 });
   const boxes = await page.locator(".day-box").count();
@@ -80,9 +88,20 @@ try {
   }
 
   const editor = page.locator('[data-testid="editor"]');
-  const editorFont = await editor.evaluate((el) => getComputedStyle(el).fontFamily);
-  console.log("editorFont=" + editorFont);
-  if (!/helvetica/i.test(editorFont)) fail("editor is not Helvetica");
+  const editorStyle = await editor.evaluate((el) => {
+    const s = getComputedStyle(el);
+    return {
+      fontFamily: s.fontFamily,
+      fontSize: s.fontSize,
+      width: Math.round(el.getBoundingClientRect().width),
+      borderTopWidth: s.borderTopWidth,
+    };
+  });
+  console.log("editorStyle=" + JSON.stringify(editorStyle));
+  if (!/helvetica/i.test(editorStyle.fontFamily)) fail("editor is not Helvetica, got " + editorStyle.fontFamily);
+  if (editorStyle.fontSize !== "20px") fail("editor not 20px, got " + editorStyle.fontSize);
+  if (editorStyle.width < 750 || editorStyle.width > 780) fail("editor width not ~770px, got " + editorStyle.width);
+  if (editorStyle.borderTopWidth !== "0px") fail("editor should have no border");
 
   const barBg = await page.locator("header.site-bar").evaluate((el) => getComputedStyle(el).backgroundColor);
   console.log("barBg=" + barBg);
@@ -99,22 +118,29 @@ try {
   if (mark.fontStyle === "italic") fail("original logo is not italic Georgia");
   const nav = await page.locator(".bar-link").first().evaluate((el) => {
     const s = getComputedStyle(el);
-    return { fontSize: s.fontSize, fontWeight: s.fontWeight, color: s.color };
+    return { fontSize: s.fontSize, fontWeight: s.fontWeight, color: s.color, marginRight: s.marginRight };
   });
   console.log("nav=" + JSON.stringify(nav));
   if (nav.fontSize !== "16px") fail("nav not 16px, got " + nav.fontSize);
+  if (nav.marginRight !== "15px") fail("nav margin-right not 15px, got " + nav.marginRight);
+  if (!(nav.fontWeight === "700" || nav.fontWeight === "bold")) fail("nav not bold, got " + nav.fontWeight);
   const countStyle = await page.locator('[data-testid="word-count"]').evaluate((el) => {
     const s = getComputedStyle(el);
-    return { fontSize: s.fontSize, color: s.color };
+    return { fontSize: s.fontSize, color: s.color, fontFamily: s.fontFamily, fontWeight: s.fontWeight };
   });
   console.log("countStyle=" + JSON.stringify(countStyle));
   if (countStyle.fontSize !== "14px") fail("count not 14px, got " + countStyle.fontSize);
+  if (/georgia/i.test(countStyle.fontFamily)) fail("count should not be Georgia");
+  if (!countStyle.color.includes("102, 102, 102")) fail("count not #666, got " + countStyle.color);
   const daysLeft = await page.locator('[data-testid="days-left"]').textContent();
   console.log("daysLeft=" + daysLeft);
   if (!daysLeft?.includes("left")) fail("missing days left");
   const numSize = await page.locator('[data-testid="today-box"] .num').evaluate((el) => getComputedStyle(el).fontSize);
   console.log("dayNum=" + numSize);
   if (numSize !== "11px") fail("day number not 11px, got " + numSize);
+  const numWeight = await page.locator('[data-testid="today-box"] .num').evaluate((el) => getComputedStyle(el).fontWeight);
+  console.log("dayNumWeight=" + numWeight);
+  if (!(numWeight === "700" || numWeight === "bold")) fail("day number not bold, got " + numWeight);
   const colW = await page.locator("main.write-page").evaluate((el) => el.getBoundingClientRect().width);
   console.log("colW=" + Math.round(colW));
   if (colW < 760 || colW > 820) fail("wrapper not ~800px, got " + colW);
@@ -139,6 +165,9 @@ try {
   const doneColor = await page.locator('[data-testid="word-count"]').evaluate((el) => getComputedStyle(el).color);
   console.log("doneColor=" + doneColor);
   if (!doneColor.includes("0, 128, 0")) fail("done count not green, got " + doneColor);
+  const doneWeight = await page.locator('[data-testid="word-count"]').evaluate((el) => getComputedStyle(el).fontWeight);
+  console.log("doneWeight=" + doneWeight);
+  if (!(doneWeight === "700" || doneWeight === "bold")) fail("done count not bold, got " + doneWeight);
 
   await page.keyboard.press("Meta+s");
   await page.waitForSelector('[data-testid="saved-flash"]', { timeout: 5000 });
@@ -208,6 +237,13 @@ try {
   console.log("archive=" + archive + " archiveText=" + archiveText.replace(/\s+/g, " ").trim());
   if (archive < 1) fail("stats archive missing");
   if (!/words/i.test(archiveText)) fail("archive row missing word count");
+  const statHero = await page.locator('[data-testid="stat-words"]').evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { fontSize: s.fontSize, color: s.color };
+  });
+  console.log("statHero=" + JSON.stringify(statHero));
+  if (statHero.fontSize !== "40px") fail("stats number not 40px, got " + statHero.fontSize);
+  if (!statHero.color.includes("77, 181, 89")) fail("stats number not #4DB559, got " + statHero.color);
 
   await page.goto(SITE + "/person/local", { waitUntil: "domcontentloaded" });
   await page.waitForSelector('[data-testid="person-score"]', { timeout: 10000 });
@@ -227,6 +263,14 @@ try {
 
   await page.goto(SITE + "/search", { waitUntil: "domcontentloaded" });
   await page.waitForSelector('[data-testid="search-input"]');
+  const searchStyle = await page.locator('[data-testid="search-input"]').evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { fontSize: s.fontSize, color: s.color, borderTopWidth: s.borderTopWidth, width: Math.round(el.getBoundingClientRect().width) };
+  });
+  console.log("searchStyle=" + JSON.stringify(searchStyle));
+  if (searchStyle.fontSize !== "16px") fail("search not 16px, got " + searchStyle.fontSize);
+  if (!searchStyle.color.includes("102, 102, 102")) fail("search not #666, got " + searchStyle.color);
+  if (searchStyle.borderTopWidth !== "0px") fail("search should have no border");
   await page.locator('[data-testid="search-input"]').fill("word0");
   await page.waitForSelector('[data-testid="search-hits"] button', { timeout: 10000 });
   const hitCount = await page.locator('[data-testid="search-hits"] button').count();

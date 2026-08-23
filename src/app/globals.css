@@ -91,12 +91,10 @@ button {
 }
 
 .site-bar {
-  background: transparent;
+  background: var(--paper);
   color: var(--ink);
   position: relative;
-  width: 800px;
-  max-width: 100%;
-  margin: 0 auto 1em;
+  margin: 0 0 1em;
   padding-top: 1px;
   font-size: 16px;
 }
@@ -165,8 +163,7 @@ button {
 }
 
 @media (max-width: 820px) {
-  .site-col,
-  .site-bar {
+  .site-col {
     width: auto;
     margin-left: 16px;
     margin-right: 16px;
@@ -454,6 +451,7 @@ span.day-box {
   caret-color: var(--ink);
   font-size: 20px;
   line-height: 1.6em;
+  font-family: Helvetica, Arial, sans-serif;
 }
 .write-area:focus-visible {
   box-shadow: none;
@@ -838,6 +836,7 @@ input:focus-visible {
   border: 0;
 }
 
+.field input.search-box,
 .search-box {
   color: #666;
   font-size: 16px;
@@ -849,6 +848,7 @@ input:focus-visible {
   margin-top: 6px;
   display: block;
 }
+.field input.search-box:focus-visible,
 .search-box:focus-visible {
   outline: 2px solid var(--ink);
   outline-offset: 2px;
