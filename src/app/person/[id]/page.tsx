@@ -77,12 +77,28 @@ export default function PersonPage() {
     <main className="page site-col">
       <div className="persons-header">
         <h1 className="page-title">{score.displayName}</h1>
-        <p className="person-score" data-testid="person-score">
-          {score.monthPoints} points this month · {score.daysCompleted}{" "}
-          {score.daysCompleted === 1 ? "day" : "days"} of 500 · {score.monthWords} words · streak{" "}
-          {score.streak}
+        <p className="big person-score" data-testid="person-score">
+          <strong>{score.monthPoints}</strong> points this month · {score.daysCompleted}{" "}
+          {score.daysCompleted === 1 ? "day" : "days"} of 500 · {score.monthWords} words
         </p>
       </div>
+      <table className="person-stats" data-testid="person-stats">
+        <caption className="sr-only">This month’s public score</caption>
+        <tbody>
+          <tr>
+            <td className="stat-key">Days of 500</td>
+            <td className="score">{score.daysCompleted}</td>
+          </tr>
+          <tr>
+            <td className="stat-key">Words</td>
+            <td className="score">{score.monthWords}</td>
+          </tr>
+          <tr>
+            <td className="stat-key">Streak</td>
+            <td className="score">{score.streak}</td>
+          </tr>
+        </tbody>
+      </table>
       {earned.length ? (
         <ul className="badge-list" data-testid="person-badges">
           {earned.map((badge) => (

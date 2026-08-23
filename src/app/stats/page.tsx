@@ -27,6 +27,7 @@ export default function StatsPage() {
 
       <h2 className="page-h2">Today</h2>
       <table className="entry-stats">
+        <caption className="sr-only">Today’s words, time, pauses, pace, and points</caption>
         <tbody>
           <tr>
             <td>
@@ -131,6 +132,7 @@ export default function StatsPage() {
       <section>
         <h2 className="page-h2">All time</h2>
         <table className="lifetime-stats" data-testid="stat-alltime">
+          <caption className="sr-only">All-time words, days finished, and streak</caption>
           <tbody>
             <tr>
               <td>

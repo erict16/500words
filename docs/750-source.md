@@ -28,13 +28,28 @@ textarea#entry_body              width 770px, border 0, padding 10px 0, resize n
 #footer a.count                  color green
 #bowling-score-tally             width 800px
 table#months_progress tr td      11px bold, width 20px, center, padding 0
+table.entry_stats tr td          width 20%, vertical-align top
+table.entry_stats tr td div.header  12px, border-bottom 1px #333
 table.entry_stats tr td strong   40px / 30px line, color #4DB559
-table#stats tr td strong         30px #666
+table.entry_stats tr td span     11px #666
+table#stats tr td                padding 5px, 12px
+table#stats tr td strong         30px #666, weight 800
+.persons-header                  bg #DCFFFD, padding 15px 15px 10px, radius 5px, shadow 0 1px 5px rgba(0,0,0,.5)
+.persons-header .big             18px #000
+.persons-header .big strong      #4392F1
+.person_stats td.stat_key        18px
+.person_stats td.score           30px #666 bold
+.person_stats .positive          #4DB559
+.person_stats .negative          #B30909
+#challenge_nav a                 radius 10px, 1px #ccc, padding 10px, color #000
+#challenge_nav span strong       color/border #45DED7, radius 10px, padding 10px
 body.one-col h1                  35px #4DB559, sniglet
 .notice                          georgia 11pt, bg #d4eef7
 #search-box                      16px #666, no border, 245px
 .subdued                         12px #666, no underline
 #signin_form                     350px, sniglet
+form#update_settings input       20px, height 37px, inset shadow
+#footer                          800px, 4em, logo not underlined black
 ```
 
 Typekit: `https://use.typekit.com/onu2kal.js` (sniglet + bree). Fallback: Helvetica, not Georgia, for the original chrome. Georgia is only on `.notice`.

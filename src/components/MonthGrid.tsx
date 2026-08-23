@@ -11,7 +11,7 @@ export function MonthGrid() {
   const daysLeft = monthDays.filter((d) => d.date >= today).length;
 
   return (
-    <div className="month-wrap">
+    <div className="month-wrap bowling-score-tally">
       <div className="month-head">
         <p className="month-name">
           <button

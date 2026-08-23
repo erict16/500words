@@ -28,22 +28,19 @@ export default function ChallengePage() {
           </p>
         </div>
       </div>
-      {!joinedChallenge ? (
-        <button
-          type="button"
-          onClick={() => void joinThisMonth()}
-          className="btn-teal"
-          data-testid="join-challenge"
-        >
-          I’m in
-        </button>
-      ) : (
-        <p className="page-kicker" data-testid="joined-challenge">
-          You’re in this month.
-        </p>
-      )}
+      <nav className="challenge-nav" data-testid="challenge-nav">
+        {!joinedChallenge ? (
+          <button type="button" onClick={() => void joinThisMonth()} data-testid="join-challenge">
+            I’m in
+          </button>
+        ) : (
+          <span data-testid="joined-challenge">
+            <strong>You’re in this month.</strong>
+          </span>
+        )}
+      </nav>
       {joinedChallenge ? (
-        <p className="muted" data-testid="challenge-progress">
+        <p className="subdued" data-testid="challenge-progress">
           {you?.completedDays ?? 0} {(you?.completedDays ?? 0) === 1 ? "day" : "days"} done ·{" "}
           {daysLeft} left in {monthLabel(today)}. Days before you joined don’t count against you.
         </p>

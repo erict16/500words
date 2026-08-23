@@ -23,7 +23,7 @@ export function SignInGate({ children }: { children: React.ReactNode }) {
             </button>
           ) : null}
           <div>
-            <button type="button" onClick={startLocal} className="chrome-link" data-testid="local-write">
+            <button type="button" onClick={startLocal} className="subdued" data-testid="local-write">
               Write on this device
             </button>
           </div>

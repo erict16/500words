@@ -32,7 +32,7 @@ export default function SearchPage() {
   return (
     <main className="page site-col">
       <h1 className="page-title">Search</h1>
-      <p className="page-kicker">Your writing only. Nothing leaves this account.</p>
+      <p className="subdued">Your writing only. Nothing leaves this account.</p>
       <label className="field">
         Find a word, a date, a sentence
         <input
@@ -45,7 +45,7 @@ export default function SearchPage() {
           autoFocus
         />
       </label>
-      {busy ? <p className="muted">Looking…</p> : null}
+      {busy ? <p className="subdued">Looking…</p> : null}
       <ul className="archive" data-testid="search-hits">
         {hits.map((hit) => (
           <li key={hit.date}>
@@ -69,7 +69,7 @@ export default function SearchPage() {
         ))}
       </ul>
       {!busy && hits.length === 0 ? (
-        <p className="muted" data-testid="search-empty">
+        <p className="subdued" data-testid="search-empty">
           {query.trim() ? "Nothing matches." : "No entries yet."}
         </p>
       ) : null}

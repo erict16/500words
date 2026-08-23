@@ -153,6 +153,9 @@ try {
   const colW = await page.locator("main.write-page").evaluate((el) => el.getBoundingClientRect().width);
   console.log("colW=" + Math.round(colW));
   if (colW < 760 || colW > 820) fail("wrapper not ~800px, got " + colW);
+  const tallyW = await page.locator(".bowling-score-tally").evaluate((el) => Math.round(el.getBoundingClientRect().width));
+  console.log("tallyW=" + tallyW);
+  if (tallyW < 760 || tallyW > 820) fail("bowling tally not ~800px, got " + tallyW);
 
   const words = Array.from({ length: 500 }, (_, i) => "word" + i).join(" ");
   await editor.fill(words);
@@ -196,6 +199,29 @@ try {
 
   await page.goto(SITE + "/settings", { waitUntil: "domcontentloaded" });
   await page.waitForSelector('[data-testid="font-size"]');
+  const settingsInput = await page.locator('[data-testid="display-name"]').evaluate((el) => {
+    const s = getComputedStyle(el);
+    return {
+      fontSize: s.fontSize,
+      height: s.height,
+      borderTopColor: s.borderTopColor,
+      radius: s.borderTopLeftRadius,
+      shadow: s.boxShadow,
+    };
+  });
+  console.log("settingsInput=" + JSON.stringify(settingsInput));
+  if (settingsInput.fontSize !== "20px") fail("settings input not 20px, got " + settingsInput.fontSize);
+  if (settingsInput.height !== "37px") fail("settings input height not 37px, got " + settingsInput.height);
+  if (!settingsInput.borderTopColor.includes("255, 255, 255")) fail("settings input border not #fff, got " + settingsInput.borderTopColor);
+  if (settingsInput.radius !== "4px") fail("settings input radius not 4px, got " + settingsInput.radius);
+  if (!settingsInput.shadow.includes("187, 187, 187")) fail("settings input missing inset #bbb shadow");
+  const subdued = await page.locator(".subdued").first().evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { fontSize: s.fontSize, color: s.color, fontWeight: s.fontWeight, textDecorationLine: s.textDecorationLine };
+  });
+  console.log("subdued=" + JSON.stringify(subdued));
+  if (subdued.fontSize !== "12px") fail("subdued not 12px, got " + subdued.fontSize);
+  if (!subdued.color.includes("102, 102, 102")) fail("subdued not #666, got " + subdued.color);
   await page.locator('[data-testid="font-size"]').fill("28");
   await page.goto(SITE, { waitUntil: "domcontentloaded" });
   await page.waitForSelector('[data-testid="editor"]');
@@ -215,19 +241,48 @@ try {
   await page.waitForSelector('[data-testid="join-challenge"], [data-testid="joined-challenge"]', {
     timeout: 10000,
   });
+  const joinStyle = await page.locator('[data-testid="join-challenge"]').evaluate((el) => {
+    const s = getComputedStyle(el);
+    return {
+      radius: s.borderTopLeftRadius,
+      border: s.borderTopColor,
+      padding: s.paddingTop,
+      color: s.color,
+    };
+  });
+  console.log("joinStyle=" + JSON.stringify(joinStyle));
+  if (joinStyle.radius !== "10px") fail("challenge join radius not 10px, got " + joinStyle.radius);
+  if (!joinStyle.border.includes("204, 204, 204")) fail("challenge join border not #ccc, got " + joinStyle.border);
+  if (joinStyle.padding !== "10px") fail("challenge join padding not 10px, got " + joinStyle.padding);
   await page.locator('[data-testid="join-challenge"]').click();
   await page.waitForSelector('[data-testid="joined-challenge"]');
+  const joinedStyle = await page.locator('[data-testid="joined-challenge"] strong').evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { color: s.color, border: s.borderTopColor, radius: s.borderTopLeftRadius, fontSize: s.fontSize };
+  });
+  console.log("joinedStyle=" + JSON.stringify(joinedStyle));
+  if (!joinedStyle.color.includes("69, 222, 215")) fail("joined challenge not #45DED7, got " + joinedStyle.color);
+  if (!joinedStyle.border.includes("69, 222, 215")) fail("joined challenge border not #45DED7, got " + joinedStyle.border);
+  if (joinedStyle.radius !== "10px") fail("joined challenge radius not 10px, got " + joinedStyle.radius);
   const progress = await page.locator('[data-testid="challenge-progress"]').textContent();
   console.log("challengeProgress=" + progress);
   if (!progress?.includes("left")) fail("missing challenge progress");
   if (!progress?.includes("1 day")) fail("joining after a strike should count today");
-  const shameEmpty = await page.locator('[data-testid="shame-empty"]').evaluate((el) => {
+  const noticeStyle = await page.locator('[data-testid="shame-empty"]').evaluate((el) => {
     const s = getComputedStyle(el);
-    return { fontFamily: s.fontFamily, fontSize: s.fontSize, background: s.backgroundColor };
+    return { bg: s.backgroundColor, font: s.fontFamily, size: s.fontSize };
   });
-  console.log("shameEmpty=" + JSON.stringify(shameEmpty));
-  if (!/georgia/i.test(shameEmpty.fontFamily)) fail("challenge empty is not Georgia notice");
-  if (!shameEmpty.background.includes("212, 238, 247")) fail("notice not #d4eef7, got " + shameEmpty.background);
+  console.log("notice=" + JSON.stringify(noticeStyle));
+  if (!noticeStyle.bg.includes("212, 238, 247")) fail("notice not #d4eef7, got " + noticeStyle.bg);
+  if (!/georgia/i.test(noticeStyle.font)) fail("notice not Georgia, got " + noticeStyle.font);
+  const joined = await page.locator('[data-testid="joined-challenge"] strong').evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { color: s.color, border: s.borderTopColor, radius: s.borderRadius, pad: s.paddingTop };
+  });
+  console.log("joined=" + JSON.stringify(joined));
+  if (!joined.color.includes("69, 222, 215")) fail("joined challenge not #45DED7, got " + joined.color);
+  if (!joined.border.includes("69, 222, 215")) fail("joined challenge border not #45DED7, got " + joined.border);
+  if (joined.radius !== "10px") fail("joined challenge radius not 10px, got " + joined.radius);
 
   await page.goto(SITE + "/stats", { waitUntil: "domcontentloaded" });
   await page.waitForFunction(
@@ -260,6 +315,19 @@ try {
   console.log("statHero=" + JSON.stringify(statHero));
   if (statHero.fontSize !== "40px") fail("stats number not 40px, got " + statHero.fontSize);
   if (!statHero.color.includes("77, 181, 89")) fail("stats number not #4DB559, got " + statHero.color);
+  const entryCols = await page.locator("table.entry-stats td").count();
+  console.log("entryCols=" + entryCols);
+  if (entryCols !== 5) fail("today stats should be a 5-column entry_stats table, got " + entryCols);
+  const lifeStrong = await page.locator("table.lifetime-stats strong").first().evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { fontSize: s.fontSize, color: s.color, fontWeight: s.fontWeight };
+  });
+  console.log("lifeStrong=" + JSON.stringify(lifeStrong));
+  if (lifeStrong.fontSize !== "30px") fail("all-time stats not 30px, got " + lifeStrong.fontSize);
+  if (!lifeStrong.color.includes("102, 102, 102")) fail("all-time stats not #666, got " + lifeStrong.color);
+  if (!(lifeStrong.fontWeight === "800" || lifeStrong.fontWeight === "700")) {
+    fail("all-time stats not weight 800, got " + lifeStrong.fontWeight);
+  }
   const statLabel = await page.locator('[data-testid="stat-goal"]').evaluate((el) => getComputedStyle(el).fontSize);
   const statHead = await page.locator(".stat-head").first().evaluate((el) => getComputedStyle(el).fontSize);
   const lifeCell = await page.locator(".lifetime-stats td").first().evaluate((el) => getComputedStyle(el).fontSize);
@@ -273,6 +341,12 @@ try {
   if (lifeCell !== "12px") fail("stats table cell not 12px, got " + lifeCell);
   if (timeHero.fontSize !== "40px") fail("stats time not 40px, got " + timeHero.fontSize);
   if (!timeHero.color.includes("77, 181, 89")) fail("stats time not #4DB559, got " + timeHero.color);
+  const publicLink = await page.locator('[data-testid="public-link"]').evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { color: s.color, textDecorationLine: s.textDecorationLine };
+  });
+  console.log("publicLink=" + JSON.stringify(publicLink));
+  if (!publicLink.color.includes("0, 0, 153")) fail("page link not #000099, got " + publicLink.color);
 
   await page.goto(SITE + "/person/local", { waitUntil: "domcontentloaded" });
   await page.waitForSelector('[data-testid="person-score"]', { timeout: 10000 });
@@ -292,16 +366,32 @@ try {
   const personHead = await page.locator(".persons-header").evaluate((el) => {
     const s = getComputedStyle(el);
     return {
-      background: s.backgroundColor,
-      paddingTop: s.paddingTop,
+      bg: s.backgroundColor,
+      pad: s.paddingTop,
       radius: s.borderRadius,
       shadow: s.boxShadow,
     };
   });
   console.log("personHead=" + JSON.stringify(personHead));
-  if (!personHead.background.includes("220, 255, 253")) fail("persons-header not #DCFFFD, got " + personHead.background);
-  if (personHead.paddingTop !== "15px") fail("persons-header padding not 15px, got " + personHead.paddingTop);
-  if (personHead.radius !== "5px") fail("persons-header radius not 5px, got " + personHead.radius);
+  if (!personHead.bg.includes("220, 255, 253")) fail("person header not #DCFFFD, got " + personHead.bg);
+  if (personHead.pad !== "15px") fail("person header padding-top not 15px, got " + personHead.pad);
+  if (personHead.radius !== "5px") fail("person header radius not 5px, got " + personHead.radius);
+  const personBig = await page.locator('[data-testid="person-score"]').evaluate((el) => {
+    const s = getComputedStyle(el);
+    const strong = el.querySelector("strong");
+    const sc = strong ? getComputedStyle(strong) : null;
+    return { fontSize: s.fontSize, color: s.color, strong: sc?.color };
+  });
+  console.log("personBig=" + JSON.stringify(personBig));
+  if (personBig.fontSize !== "18px") fail("person header .big not 18px, got " + personBig.fontSize);
+  if (!personBig.strong?.includes("67, 146, 241")) fail("person strong not #4392F1, got " + personBig.strong);
+  const personScoreCell = await page.locator("[data-testid='person-stats'] td.score").first().evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { fontSize: s.fontSize, color: s.color, fontWeight: s.fontWeight };
+  });
+  console.log("personScoreCell=" + JSON.stringify(personScoreCell));
+  if (personScoreCell.fontSize !== "30px") fail("person score not 30px, got " + personScoreCell.fontSize);
+  if (!personScoreCell.color.includes("102, 102, 102")) fail("person score not #666, got " + personScoreCell.color);
   if (!personHead.shadow.includes("0, 0, 0")) fail("persons-header missing box-shadow");
   const personH1 = await page.locator(".page-title").evaluate((el) => {
     const s = getComputedStyle(el);

@@ -49,7 +49,7 @@ export default function SettingsPage() {
   return (
     <main className="page site-col">
       <h1 className="page-title">Settings</h1>
-      <p className="page-kicker">Signed in as {profile?.email}</p>
+      <p className="subdued">Signed in as {profile?.email}</p>
 
       <label className="field">
         Name on the public page
@@ -197,7 +197,7 @@ export default function SettingsPage() {
         </button>
       </div>
 
-      <p className="page-kicker">Typing autosaves. ⌘S (or Ctrl-S) saves now.</p>
+      <p className="subdued">Typing autosaves. ⌘S (or Ctrl-S) saves now.</p>
 
       <p
         className={`font-${settings.font}`}
