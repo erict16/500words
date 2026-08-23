@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useApp } from "@/components/AppProvider";
-import { prettyDate } from "@/lib/dates";
+import { prettyDate, prettyLongDate } from "@/lib/dates";
 import type { SearchHit } from "@/lib/search";
 
 export default function SearchPage() {
@@ -32,48 +32,52 @@ export default function SearchPage() {
   return (
     <main className="page site-col search-page">
       <h1 className="page-title">Search</h1>
-      <p className="subdued">Your writing only. Nothing leaves this account.</p>
-      <label className="field">
-        Find a word, a date, a sentence
-        <div className="search-row">
-          <input
-            type="search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder=""
-            className="search-box"
-            data-testid="search-input"
-            autoFocus
-          />
-        </div>
-      </label>
+      <p className="page-description">Find entries by keyword across your writing.</p>
+      <div className="search-row">
+        <input
+          type="search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search your writing..."
+          className="search-box"
+          data-testid="search-input"
+          aria-label="Search your writing"
+          autoFocus
+        />
+        <button type="button" className="search-btn" tabIndex={-1}>
+          Search
+        </button>
+      </div>
       {busy ? <p className="subdued">Looking…</p> : null}
-      <ul className="archive" data-testid="search-hits">
+      <ul className="results-list" data-testid="search-hits">
         {hits.map((hit) => (
           <li key={hit.date}>
             <button
               type="button"
+              className="result-card"
               data-testid={`search-hit-${hit.date}`}
               onClick={() => {
                 setDate(hit.date);
                 router.push("/");
               }}
             >
-              <span>
-                <span className="archive-date">{prettyDate(hit.date)}</span>
-                <span className="muted" style={{ display: "block", marginTop: 4 }}>
-                  {hit.snippet}
-                </span>
-              </span>
-              <span className="archive-words">{hit.wordCount} words</span>
+              <div className="result-header">
+                <span className="result-date">{prettyDate(hit.date)}</span>
+                <span className="result-words">{hit.wordCount} words</span>
+              </div>
+              <div className="result-title">{prettyLongDate(hit.date)}</div>
+              <p className="result-snippet">{hit.snippet}</p>
             </button>
           </li>
         ))}
       </ul>
       {!busy && hits.length === 0 ? (
-        <p className="subdued" data-testid="search-empty">
-          {query.trim() ? "Nothing matches." : "No entries yet."}
-        </p>
+        <div className="empty-state" data-testid="search-empty">
+          <p className="empty-title">{query.trim() ? "Nothing matches." : "Search your writing archive"}</p>
+          <p className="empty-hint">
+            {query.trim() ? "Try another word or a date." : "Find entries by keyword across your entire journal."}
+          </p>
+        </div>
       ) : null}
     </main>
   );

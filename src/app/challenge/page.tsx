@@ -54,8 +54,9 @@ export default function ChallengePage() {
           ) : (
             <ul className="wall-list">
               {awesome.map((p) => (
-                <li key={p.uid} className={p.uid === user?.uid ? "you" : ""}>
-                  {p.displayName} · {p.completedDays} days
+                <li key={p.uid} className={`participant-card ${p.uid === user?.uid ? "you" : ""}`}>
+                  <span className="participant-name">{p.displayName}</span>
+                  <span className="participant-meta">{p.completedDays} days</span>
                 </li>
               ))}
             </ul>
@@ -71,8 +72,9 @@ export default function ChallengePage() {
           ) : (
             <ul className="wall-list">
               {shame.map((p) => (
-                <li key={p.uid} className={p.uid === user?.uid ? "you" : ""}>
-                  {p.displayName} · missed {p.missedDays}
+                <li key={p.uid} className={`participant-card ${p.uid === user?.uid ? "you" : ""}`}>
+                  <span className="participant-name">{p.displayName}</span>
+                  <span className="participant-meta">missed {p.missedDays}</span>
                 </li>
               ))}
             </ul>

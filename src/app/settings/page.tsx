@@ -115,11 +115,15 @@ export default function SettingsPage() {
         />
       </label>
 
-      <fieldset className="field" style={{ border: 0, padding: 0 }}>
+      <fieldset className="field theme-field">
         <legend>Theme</legend>
-        <div className="choice-row">
+        <p className="field-hint">Choose your preferred theme. This affects the appearance across the site.</p>
+        <div className="theme-selector-wrapper">
           {(["light", "dark", "sepia"] as ThemeId[]).map((theme) => (
-            <label key={theme} className="check">
+            <label
+              key={theme}
+              className={`theme-activator ${settings.theme === theme ? "is-active" : ""}`}
+            >
               <input
                 type="radio"
                 name="theme"
@@ -127,7 +131,7 @@ export default function SettingsPage() {
                 onChange={() => updateSettings({ theme })}
                 data-testid={`theme-${theme}`}
               />
-              {theme}
+              <span className="theme-name">{theme}</span>
             </label>
           ))}
         </div>

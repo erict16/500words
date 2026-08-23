@@ -178,6 +178,21 @@ try {
   if (!settingsInput.borderTopColor.includes("204, 204, 204")) fail("settings input border not #ccc, got " + settingsInput.borderTopColor);
   if (settingsInput.radius !== "4px") fail("settings input radius not 4px, got " + settingsInput.radius);
   if (settingsInput.shadow !== "none") fail("settings input still has inset shadow, got " + settingsInput.shadow);
+  const themeActivator = await page.locator(".theme-activator").first().evaluate((el) => {
+    const s = getComputedStyle(el);
+    return {
+      height: Math.round(el.getBoundingClientRect().height),
+      radius: s.borderTopLeftRadius,
+      border: s.borderTopColor,
+      fontSize: s.fontSize,
+    };
+  });
+  console.log("themeActivator=" + JSON.stringify(themeActivator));
+  if (themeActivator.height !== 48) fail("theme activator not 48px, got " + themeActivator.height);
+  if (themeActivator.radius !== "4px") fail("theme activator radius not 4px, got " + themeActivator.radius);
+  if (!themeActivator.border.includes("204, 204, 204") && !themeActivator.border.includes("0, 200, 83")) {
+    fail("theme activator border not #ccc, got " + themeActivator.border);
+  }
   const subdued = await page.locator(".subdued").first().evaluate((el) => {
     const s = getComputedStyle(el);
     return { fontSize: s.fontSize, color: s.color, fontWeight: s.fontWeight, textDecorationLine: s.textDecorationLine };
@@ -421,11 +436,29 @@ try {
   if (searchStyle.borderTopWidth !== "1px") fail("search should have a 1px border, got " + searchStyle.borderTopWidth);
   if (searchStyle.height < 44) fail("search shorter than 48px, got " + searchStyle.height);
   if (searchStyle.width < 400) fail("search still a 245px Rails box, got " + searchStyle.width);
+  const searchBtn = await page.locator(".search-btn").evaluate((el) => Math.round(el.getBoundingClientRect().height));
+  console.log("searchBtn=" + searchBtn);
+  if (searchBtn < 44) fail("search button shorter than 48px, got " + searchBtn);
   await page.locator('[data-testid="search-input"]').fill("word0");
   await page.waitForSelector('[data-testid="search-hits"] button', { timeout: 10000 });
   const hitCount = await page.locator('[data-testid="search-hits"] button').count();
   console.log("searchHits=" + hitCount);
   if (hitCount < 1) fail("search did not find the entry");
+  const resultDate = await page.locator(".result-date").first().evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { size: s.fontSize, weight: s.fontWeight, color: s.color };
+  });
+  console.log("resultDate=" + JSON.stringify(resultDate));
+  if (resultDate.size !== "12.8px") fail("result date not 0.8rem, got " + resultDate.size);
+  if (resultDate.weight !== "600") fail("result date not weight 600, got " + resultDate.weight);
+  if (!resultDate.color.includes("0, 200, 83")) fail("result date not #00c853, got " + resultDate.color);
+  const resultTitle = await page.locator(".result-title").first().evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { size: s.fontSize, font: s.fontFamily };
+  });
+  console.log("resultTitle=" + JSON.stringify(resultTitle));
+  if (resultTitle.size !== "16.8px") fail("result title not 1.05rem, got " + resultTitle.size);
+  if (!/georgia|ui-serif|cambria|times/i.test(resultTitle.font)) fail("result title not serif, got " + resultTitle.font);
   await page.locator('[data-testid="search-hits"] button').first().click();
   await page.waitForSelector('[data-testid="editor"]');
   const fromSearch = (await page.locator('[data-testid="editor"]').inputValue())

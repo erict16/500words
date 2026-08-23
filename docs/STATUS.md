@@ -12,6 +12,7 @@ STOP only when that is true.
 - Write page: long date heading, Jul | Aug, 18px rounded squares, green check at 500, placeholder, tagline
 - Inner pages: serif ink titles (1.875rem), 48px outlined fields, full-width search, no mint person header, no #45DED7 challenge pills, no Georgia #d4eef7 notices
 - Badges: current-750 card grid (2/3/4 cols, 280px cards, green check, 18px serif titles). Tag Savage PNGs still 404; keep SVG drawings.
+- Search: 48px Search button + result cards (0.8rem green date, 1.05rem serif title). Settings: 48px theme activators. Challenge walls: participant cards.
 
 ## Next
 

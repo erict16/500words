@@ -79,9 +79,12 @@ badge grid                     v-col cols 6 / sm 4 / md 3 (2 / 3 / 4)
 badge-card                     min-height 280px, 1px #e0e0e0, elevation 0
 earned-checkmark               absolute top-right, green mdi-check-bold
 badge images                   /images/badges/* (404 without a session; not in CSS)
+search-btn                     48px, sans 0.9rem / 500, primary fill
 search result date             sans 0.8rem / 600 / primary
-search result title            serif 1.05rem
-search result snippet          sans 0.85rem
+search result title            serif 1.05rem / 500
+search result snippet          sans 0.85rem / #666 / 1.6
+theme-activator                48px, min-width 200px, 1px #ccc, radius 4px
+participant-card               8px radius, 1px #e0e0e0, sans row
 person page                    no #DCFFFD mint card; ink serif
 v-alert / notice               sans, 1px #ccc, 4px radius — not Georgia #d4eef7
 challenge pills                not #45DED7; primary green / #ccc
