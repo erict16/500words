@@ -195,16 +195,31 @@ try {
   await page.goto(SITE + "/badges", { waitUntil: "domcontentloaded" });
   await page.waitForSelector("[data-badge]", { timeout: 10000 });
   const badgeCount = await page.locator("[data-badge]").count();
-  const badgeRows = await page.locator(".badge-row").count();
-  console.log("badges=" + badgeCount + " rows=" + badgeRows);
+  const badgeCards = await page.locator(".badge-card").count();
+  console.log("badges=" + badgeCount + " cards=" + badgeCards);
   if (badgeCount < 20) fail("expected animal badges, got " + badgeCount);
-  if (badgeRows < 20) fail("badges page should be a catalog of rows, got " + badgeRows);
+  if (badgeCards < 20) fail("badges page should be a card grid, got " + badgeCards);
+  const eggCard = await page.locator('[data-testid="badge-egg"]').evaluate((el) => {
+    const s = getComputedStyle(el);
+    return {
+      minHeight: s.minHeight,
+      display: s.display,
+      borderTopWidth: s.borderTopWidth,
+    };
+  });
+  console.log("eggCard=" + JSON.stringify(eggCard));
+  if (eggCard.minHeight !== "280px") fail("badge card min-height not 280px, got " + eggCard.minHeight);
+  if (eggCard.display !== "flex") fail("badge card not flex column, got " + eggCard.display);
+  if (eggCard.borderTopWidth !== "1px") fail("badge card missing 1px border");
   const eggHow = (await page.locator('[data-testid="badge-egg"] .badge-copy p').first().textContent()) ?? "";
   console.log("eggHow=" + eggHow.slice(0, 80));
   if (!/how we all start/i.test(eggHow)) fail("egg catalog copy is not the original 750 blurb");
   const streakHead = await page.locator("h2.page-h2").first().textContent();
   console.log("streakHead=" + streakHead);
-  if (streakHead !== "Streak badges") fail("badge groups should start with Streak badges, got " + streakHead);
+  if (streakHead !== "Streak Badges") fail("badge groups should start with Streak Badges, got " + streakHead);
+  const titleSize = await page.locator('[data-testid="badge-egg"] .badge-title').evaluate((el) => getComputedStyle(el).fontSize);
+  console.log("badgeTitle=" + titleSize);
+  if (titleSize !== "18px") fail("badge title not 18px serif, got " + titleSize);
   const horseFill = await page.locator('[data-badge="turquoise-horse"]').evaluate((el) => {
     const paints = [...el.querySelectorAll("path, ellipse, circle")].map((n) => getComputedStyle(n).fill);
     return paints.join(" ");

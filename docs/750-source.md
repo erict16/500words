@@ -73,8 +73,12 @@ inner column                   max-width 50rem (search 44rem)
 --radius-base                  4px
 fields / search                48px tall, 16px sans, 1px #ccc, hover #00c853
 theme activator                48px, 1px #ccc
-badge-title                    serif 18px
+badge-title                    serif 18px, min-height 3em
 badge-subtitle                 sans 0.875rem #666
+badge grid                     v-col cols 6 / sm 4 / md 3 (2 / 3 / 4)
+badge-card                     min-height 280px, 1px #e0e0e0, elevation 0
+earned-checkmark               absolute top-right, green mdi-check-bold
+badge images                   /images/badges/* (404 without a session; not in CSS)
 search result date             sans 0.8rem / 600 / primary
 search result title            serif 1.05rem
 search result snippet          sans 0.85rem

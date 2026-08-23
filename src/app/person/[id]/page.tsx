@@ -100,14 +100,11 @@ export default function PersonPage() {
         </tbody>
       </table>
       {earned.length ? (
-        <ul className="badge-list" data-testid="person-badges">
+        <ul className="badge-sheet" data-testid="person-badges">
           {earned.map((badge) => (
-            <li key={badge.id} className="badge-row">
+            <li key={badge.id} className="badge-tile">
               <BadgeArt badge={badge} earned />
-              <div className="badge-copy">
-                <h3>{badge.name}</h3>
-                <p>{badge.how}</p>
-              </div>
+              <h3>{badge.name}</h3>
             </li>
           ))}
         </ul>
