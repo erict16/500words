@@ -93,6 +93,10 @@ person page                    no #DCFFFD mint card; ink serif
 person summary                 sans 1rem; “This month, {handle} has written…”
 person kicker                  sans “DAY N OF MONTH”
 CURRENT BADGES                 sans 1.125rem / 600 heading + wrapping tiles
+account mini-calendar          7-col grid, 4–8px dots
+day-dot empty                  #8080804d
+day-dot has-writing            rgba(0,200,83,.6)
+day-dot completed              #00c853 + 6px glow
 v-alert / notice               sans, 1px #ccc, 4px radius — not Georgia #d4eef7
 challenge pills                not #45DED7; primary green / #ccc
 ```

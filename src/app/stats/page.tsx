@@ -2,13 +2,18 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { DayCheck } from "@/components/MonthGrid";
 import { EntryArchive } from "@/components/EntryArchive";
 import { useApp } from "@/components/AppProvider";
+import { parseDate } from "@/lib/dates";
 import { formatDuration, wordsPerMinute } from "@/lib/session";
 import { countWords } from "@/lib/words";
 import { WORD_GOAL } from "@/lib/types";
 import { Leaderboard } from "./Leaderboard";
+
+function leadingBlanks(dateStr: string): number {
+  const { year, month } = parseDate(dateStr);
+  return new Date(year, month - 1, 1).getDay();
+}
 
 export default function StatsPage() {
   const { entry, monthDays, monthPoints, lifetime, profile, today, setDate } = useApp();
@@ -89,28 +94,41 @@ export default function StatsPage() {
         <p className="muted" data-testid="stat-month">
           {monthPoints} points · {completed} strikes · {started} days started
         </p>
-        <div className="scorecard" data-testid="stats-month">
-          {monthDays.map((day) => {
-            const future = day.date > today;
-            return (
-              <div key={day.date} className="score-cell">
+        <div className="mini-calendar" data-testid="stats-month">
+          <div className="calendar-grid">
+            {Array.from({ length: monthDays[0] ? leadingBlanks(monthDays[0].date) : 0 }).map((_, i) => (
+              <span key={`blank-${i}`} className="calendar-day isEmpty" />
+            ))}
+            {monthDays.map((day) => {
+              const future = day.date > today;
+              const cls = [
+                "calendar-day",
+                day.mark === "strike" ? "completed" : "",
+                day.wordCount > 0 && day.mark !== "strike" ? "has-writing" : "",
+                day.date === today ? "today" : "",
+                future ? "future" : "",
+              ]
+                .filter(Boolean)
+                .join(" ");
+              return (
                 <button
+                  key={day.date}
                   type="button"
-                  className={`day-box ${day.mark} ${day.date === today ? "today" : ""} ${future ? "future" : ""}`}
+                  className={cls}
                   data-mark={day.mark}
                   disabled={future}
                   title={`${day.date}: ${day.wordCount} words`}
+                  aria-label={`${day.date}: ${day.wordCount} words`}
                   onClick={() => {
                     setDate(day.date);
                     router.push("/");
                   }}
                 >
-                  {day.mark === "strike" ? <DayCheck /> : null}
+                  <span className="day-dot" />
                 </button>
-                <span className="score-pts">{day.points || ""}</span>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
         <div className="score-bars" data-testid="word-bars">
           {monthDays.map((day) => (

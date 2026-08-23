@@ -303,12 +303,22 @@ try {
   const statWords = (await page.locator('[data-testid="stat-words"]').textContent())?.trim();
   const statGoal = await page.locator('[data-testid="stat-goal"]').textContent();
   const statPoints = Number((await page.locator('[data-testid="stat-points"]').textContent())?.trim());
-  const statMonthBoxes = await page.locator("[data-testid='stats-month'] .day-box").count();
+  const statMonthBoxes = await page.locator("[data-testid='stats-month'] .calendar-day:not(.isEmpty)").count();
   console.log("statWords=" + statWords + " goal=" + statGoal + " points=" + statPoints + " monthBoxes=" + statMonthBoxes);
   if (statWords !== "500") fail("stats words expected 500, got " + statWords);
   if (!statGoal?.includes("Strike")) fail("stats goal is not Strike");
   if (!(statPoints >= 2)) fail("stats points expected >= 2, got " + statPoints);
   if (statMonthBoxes < 28) fail("stats month grid missing");
+  const statsDots = await page.locator("[data-testid='stats-month'] .day-dot").count();
+  console.log("statsDots=" + statsDots);
+  if (statsDots < 28) fail("stats month missing current-750 day dots");
+  const completedDot = await page.locator("[data-testid='stats-month'] .calendar-day.completed .day-dot").first().evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { size: s.width, bg: s.backgroundColor, radius: s.borderRadius };
+  });
+  console.log("completedDot=" + JSON.stringify(completedDot));
+  if (completedDot.size !== "8px") fail("completed day-dot not 8px, got " + completedDot.size);
+  if (!completedDot.bg.includes("0, 200, 83")) fail("completed day-dot not #00c853, got " + completedDot.bg);
   const bars = await page.locator("[data-testid='word-bars'] .score-bar").count();
   console.log("wordBars=" + bars);
   if (bars < 28) fail("stats word bars missing");

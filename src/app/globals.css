@@ -777,23 +777,78 @@ input:focus-visible {
   margin-top: 12px;
 }
 
-.score-cell {
+.mini-calendar {
+  margin: 12px 0 8px;
+  max-width: 22rem;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  width: 100%;
+}
+
+.calendar-day {
+  aspect-ratio: 1;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 1px;
-}
-
-.score-cell .day-box {
+  justify-content: center;
   margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  min-width: 0;
 }
 
-.score-pts {
-  font-size: 9px;
-  line-height: 1;
-  color: var(--muted);
-  min-height: 10px;
-  font-variant-numeric: tabular-nums;
+.calendar-day.isEmpty {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.calendar-day:disabled {
+  cursor: default;
+}
+
+.day-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #8080804d;
+}
+
+.calendar-day.has-writing .day-dot {
+  background: rgba(0, 200, 83, 0.6);
+}
+
+.calendar-day.completed .day-dot {
+  background: #00c853;
+  box-shadow: 0 0 6px #00c85366;
+}
+
+.calendar-day.today .day-dot {
+  outline: 2px solid var(--brand-green);
+  outline-offset: 2px;
+}
+
+.calendar-day.future .day-dot {
+  opacity: 0.35;
+}
+
+.calendar-day:hover:not(:disabled) .day-dot {
+  transform: scale(1.2);
+}
+
+.calendar-day.completed:hover:not(:disabled) .day-dot {
+  background: #00a845;
+  box-shadow: 0 0 8px #00c85399;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .calendar-day:hover:not(:disabled) .day-dot {
+    transform: none;
+  }
 }
 
 .walls {
