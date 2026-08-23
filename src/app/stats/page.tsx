@@ -75,19 +75,35 @@ export default function StatsPage() {
         <p className="mt-3 text-[16px]" data-testid="stat-month">
           {monthPoints} points · {completed} strikes · {started} days started
         </p>
-        <div className="month-grid mt-3" data-testid="stats-month">
+        <div className="scorecard mt-4" data-testid="stats-month">
+          {monthDays.map((day) => (
+            <div key={day.date} className="score-cell">
+              <span
+                className={`day-box ${day.mark} ${day.date === today ? "today" : ""}`}
+                data-mark={day.mark}
+                title={`${day.date}: ${day.wordCount} words`}
+              >
+                <span className="num">{day.day}</span>
+                <BowlingMark mark={day.mark} />
+              </span>
+              <span className="score-pts">{day.points || ""}</span>
+            </div>
+          ))}
+        </div>
+        <div className="score-bars mt-6" data-testid="word-bars">
           {monthDays.map((day) => (
             <span
               key={day.date}
-              className={`day-box ${day.mark} ${day.date === today ? "today" : ""}`}
-              data-mark={day.mark}
+              className="score-bar"
               title={`${day.date}: ${day.wordCount} words`}
-            >
-              <span className="num">{day.day}</span>
-              <BowlingMark mark={day.mark} />
-            </span>
+              style={{
+                height: `${Math.min(100, (day.wordCount / WORD_GOAL) * 100)}%`,
+                opacity: day.wordCount >= WORD_GOAL ? 1 : 0.45,
+              }}
+            />
           ))}
         </div>
+        <p className="mt-1 text-[12px] text-[var(--muted)]">Words per day. Height is 500.</p>
       </section>
 
       <section className="mt-10">

@@ -157,6 +157,9 @@ try {
   if (!statGoal?.includes("Strike")) fail("stats goal is not Strike");
   if (!(statPoints >= 2)) fail("stats points expected >= 2, got " + statPoints);
   if (statMonthBoxes < 28) fail("stats month grid missing");
+  const bars = await page.locator("[data-testid='word-bars'] .score-bar").count();
+  console.log("wordBars=" + bars);
+  if (bars < 28) fail("stats word bars missing");
 
   await page.goto(SITE + "/person/local", { waitUntil: "domcontentloaded" });
   await page.waitForSelector('[data-testid="person-score"]', { timeout: 10000 });
@@ -173,6 +176,22 @@ try {
   if (egg < 1) fail("person page missing egg badge");
   const leaked = await page.locator("textarea, [data-testid='editor']").count();
   if (leaked) fail("person page leaked writing");
+
+  await page.goto(SITE + "/search", { waitUntil: "domcontentloaded" });
+  await page.waitForSelector('[data-testid="search-input"]');
+  await page.locator('[data-testid="search-input"]').fill("word0");
+  await page.waitForSelector('[data-testid="search-hits"] button', { timeout: 10000 });
+  const hitCount = await page.locator('[data-testid="search-hits"] button').count();
+  console.log("searchHits=" + hitCount);
+  if (hitCount < 1) fail("search did not find the entry");
+  await page.locator('[data-testid="search-hits"] button').first().click();
+  await page.waitForSelector('[data-testid="editor"]');
+  const fromSearch = (await page.locator('[data-testid="editor"]').inputValue())
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean).length;
+  console.log("searchOpenWords=" + fromSearch);
+  if (fromSearch < 500) fail("search did not open the day");
 
   await page.goto(SITE + "/settings", { waitUntil: "domcontentloaded" });
   await page.locator('[data-testid="theme-dark"]').check();

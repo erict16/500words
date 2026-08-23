@@ -12,9 +12,10 @@ Live: [500words-ink.vercel.app](https://500words-ink.vercel.app)
 - Month grid: empty, a dot if you started, `/` spare (100+ words), `X` strike (500)
 - Points like bowling (spare adds yesterday, strike adds two days, turkey is 6)
 - Confetti at 500
-- Font, size, spacing, light/dark
+- Font, size, spacing, light/dark/sepia
 - Autosave, Google sign-in, writing stays in your Firebase account
 - Time and break stats (not “what your words mean”)
+- Search your own writing, print a day, optional lock after 500
 - Animal badges, one-month challenge, public score page (never the writing)
 - Miss yesterday? Write 1000 today to keep the streak
 
@@ -23,7 +24,7 @@ Live: [500words-ink.vercel.app](https://500words-ink.vercel.app)
 1. Create a Firebase project (Auth → Google, Firestore).
 2. Copy `.env.example` to `.env.local` and fill the `NEXT_PUBLIC_FIREBASE_*` keys.
 3. Deploy `firestore.rules`.
-4. Auth authorized domains already include `localhost` and `500words-inky.vercel.app`.
+4. Auth authorized domains should include `localhost` and `500words-ink.vercel.app`.
 
 ```bash
 npm install

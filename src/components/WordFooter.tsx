@@ -33,19 +33,28 @@ export function WordFooter() {
             {words} / {WORD_GOAL}
           </p>
         )}
-        {savedFlash ? (
-          <p
-            className="bg-[var(--good)] px-2 py-0.5 text-[12px] text-white"
-            aria-live="polite"
-            data-testid="saved-flash"
+        <div className="flex items-baseline gap-3">
+          <button
+            type="button"
+            className="chrome-link no-print"
+            onClick={() => window.print()}
           >
-            saved
-          </p>
-        ) : (
-          <p className="text-[var(--muted)]" aria-live="polite" data-testid="saved-status">
-            {saved}
-          </p>
-        )}
+            Print
+          </button>
+          {savedFlash ? (
+            <p
+              className="bg-[var(--good)] px-2 py-0.5 text-[12px] text-white"
+              aria-live="polite"
+              data-testid="saved-flash"
+            >
+              saved
+            </p>
+          ) : (
+            <p className="text-[var(--muted)]" aria-live="polite" data-testid="saved-status">
+              {saved}
+            </p>
+          )}
+        </div>
       </div>
     </footer>
   );

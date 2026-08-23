@@ -10,11 +10,12 @@ const LINKS = [
   { href: "/stats", label: "Stats" },
   { href: "/badges", label: "Badges" },
   { href: "/challenge", label: "One month" },
+  { href: "/search", label: "Search" },
   { href: "/settings", label: "Settings" },
 ];
 
 export function AppChrome({ children }: { children: React.ReactNode }) {
-  const { user, settings, signOut } = useApp();
+  const { user, settings, signOut, profile } = useApp();
   const pathname = usePathname();
   const hideEnabled = settings.hideChrome;
   const [idleHidden, setIdleHidden] = useState(false);
@@ -69,6 +70,11 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
               {link.label}
             </Link>
           ))}
+          {profile ? (
+            <Link href={`/person/${profile.uid}`} className="bar-link" data-testid="you-link">
+              {profile.displayName}
+            </Link>
+          ) : null}
           <button type="button" className="bar-link" onClick={() => void signOut()}>
             Sign out
           </button>

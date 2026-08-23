@@ -23,6 +23,7 @@ import {
   ensureUser,
   exportEntries,
   joinChallenge as joinChallengeDb,
+  searchEntries,
   listenBadges,
   listenChallenge,
   listenDay,
@@ -46,12 +47,15 @@ import {
   localMonth,
   localSaveDay,
   localSaveSettings,
+  localSearch,
+  localSetName,
   localUser,
   hasLocalSession,
   setLocalSession,
 } from "@/lib/local-store";
 import { hideSession, showSession, touchSession } from "@/lib/session";
 import { tipForAccountDay } from "@/lib/tips";
+import type { SearchHit } from "@/lib/search";
 import type { BadgeStats } from "@/lib/badges";
 import {
   defaultSettings,
@@ -98,6 +102,8 @@ type AppContextValue = {
   updateSettings: (patch: Partial<Settings>) => void;
   joinThisMonth: () => Promise<void>;
   downloadExport: () => Promise<void>;
+  searchWriting: (query: string) => Promise<SearchHit[]>;
+  updateProfile: (patch: { displayName: string }) => void;
   clearCelebration: () => void;
 };
 
@@ -306,6 +312,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const setText = useCallback(
     (text: string) => {
       if (date !== today) return;
+      if (settings.lockEdits && entry.locked) return;
       dirtyRef.current = true;
       textRef.current = text;
       sessionRef.current = touchSession(sessionRef.current);
@@ -315,7 +322,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         void persist(text);
       }, 800);
     },
-    [date, today, persist],
+    [date, today, persist, settings.lockEdits, entry.locked],
   );
 
   const saveNow = useCallback(() => {
@@ -409,6 +416,31 @@ export function AppProvider({ children }: { children: ReactNode }) {
     );
   }, [user, profile, today, offline]);
 
+  const searchWriting = useCallback(
+    async (query: string): Promise<SearchHit[]> => {
+      if (e2e || offline) return localSearch(query);
+      if (!user) return [];
+      return searchEntries(user.uid, query);
+    },
+    [user, offline],
+  );
+
+  const updateProfile = useCallback(
+    (patch: { displayName: string }) => {
+      const name = patch.displayName.trim();
+      if (!name) return;
+      if (e2e || offline) {
+        const next = localSetName(name);
+        setProfile(next);
+        return;
+      }
+      if (!user) return;
+      setProfile((prev) => (prev ? { ...prev, displayName: name } : prev));
+      void saveSettings(user.uid, settings, { displayName: name });
+    },
+    [user, offline, settings],
+  );
+
   const downloadExport = useCallback(async () => {
     const body = e2e || offline
       ? localExport()
@@ -469,6 +501,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     updateSettings,
     joinThisMonth,
     downloadExport,
+    searchWriting,
+    updateProfile,
     clearCelebration: () => {
       setJustFinished(false);
       setNewBadges([]);

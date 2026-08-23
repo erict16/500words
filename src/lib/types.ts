@@ -6,7 +6,7 @@ export type DayMark = "none" | "dot" | "spare" | "strike";
 
 export type FontId = "georgia" | "palatino" | "times" | "helvetica" | "courier";
 
-export type ThemeId = "light" | "dark";
+export type ThemeId = "light" | "dark" | "sepia";
 
 export type Settings = {
   font: FontId;
@@ -16,6 +16,7 @@ export type Settings = {
   theme: ThemeId;
   timezone: string;
   hideChrome: boolean;
+  lockEdits: boolean;
 };
 
 export type UserProfile = {
@@ -88,6 +89,7 @@ export const defaultSettings = (): Settings => ({
   theme: "light",
   timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC",
   hideChrome: false,
+  lockEdits: false,
 });
 
 export const emptySession = (): SessionStats => ({

@@ -53,11 +53,13 @@ This is the original bowling calendar, not a green check-mark month view.
 
 ## Other pages (after login)
 
-- **Stats:** today’s words, time, pauses, WPM, points. This month. All time. No mood/theme AI. Optional `MOOD: 7` style tags the user typed.
+- **Stats:** today’s words, time, pauses, WPM, points. This month bowling scorecard with points under each box, plus a words-per-day bar (counts only). All time. No mood/theme AI. Optional `MOOD: 7` style tags the user typed.
 - **Badges:** Tag Savage animals (egg, turkey, penguin, flamingo, albatross, phoenix, pterodactyl, spacebird, spirit versions, cheetah, hamster, early bird, night bat, oxalis, word-count animals, turquoise horse). Drawings, not stick-figure outlines.
 - **One month:** write 500 every day this month. Wall of awesomeness / wall of shame. Turquoise horse on a win. Join mid-month does not shame days before you joined.
-- **Settings:** fonts, size, spacing, theme, timezone, hide chrome while typing, export.
+- **Search:** find your own writing by word or date. Click a hit to open that day read-only (today stays editable).
+- **Settings:** fonts, size, spacing, theme (light / dark / sepia), timezone, hide chrome while typing, lock today after 500, display name, export, print.
 - **Public person page:** counts and badges only. Never the writing.
+- **Header:** Write · Stats · Badges · One month · Search · Settings · your name · Sign out
 
 ## Login look
 

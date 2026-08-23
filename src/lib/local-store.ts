@@ -19,6 +19,7 @@ import {
   type Settings,
   type UserProfile,
 } from "./types";
+import { filterHits, type SearchHit } from "./search";
 import { markForWords } from "./words";
 
 const KEY = "fivehundred-local-v1";
@@ -230,6 +231,17 @@ export function localJoinChallenge(month: string, today: string) {
 export function localChallenge(month: string): ChallengeEntrant[] {
   const row = load().challenges[month];
   return row ? [row] : [];
+}
+
+export function localSearch(query: string): SearchHit[] {
+  return filterHits(Object.values(load().days), query);
+}
+
+export function localSetName(displayName: string) {
+  const db = load();
+  db.profile.displayName = displayName.trim() || db.profile.displayName;
+  persist(db);
+  return db.profile;
 }
 
 export function localExport(): string {

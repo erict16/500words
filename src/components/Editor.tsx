@@ -7,6 +7,7 @@ import { useApp } from "./AppProvider";
 
 export function Editor() {
   const { entry, isToday, setText, settings, missedYesterday, tip } = useApp();
+  const locked = !isToday || (settings.lockEdits && entry.locked);
   const ref = useRef<HTMLTextAreaElement>(null);
   const words = countWords(entry.text);
   const className = `write-area font-${settings.font}`;
@@ -42,6 +43,11 @@ export function Editor() {
           {entry.date} is closed. You can read it. You can’t add words to a past day.
         </p>
       ) : null}
+      {isToday && settings.lockEdits && entry.locked ? (
+        <p className="mx-auto mb-2 max-w-2xl text-[13px] text-[var(--muted)]">
+          Today is locked. Turn that off in Settings if you want to keep going.
+        </p>
+      ) : null}
       {isToday && missedYesterday ? (
         <p className="mx-auto mb-2 max-w-2xl text-[13px] text-[var(--muted)]">
           You missed yesterday. Write {WORD_GOAL * 2} words today to keep the streak
@@ -59,7 +65,7 @@ export function Editor() {
         className={className}
         value={entry.text}
         onChange={(e) => setText(e.target.value)}
-        readOnly={!isToday}
+        readOnly={locked}
         spellCheck
         autoCapitalize="sentences"
         autoCorrect="on"

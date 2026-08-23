@@ -35,7 +35,7 @@ function timeZones(): string[] {
 }
 
 export default function SettingsPage() {
-  const { settings, updateSettings, profile, downloadExport } = useApp();
+  const { settings, updateSettings, profile, downloadExport, updateProfile, entry } = useApp();
   const zones = timeZones();
   const extra = zones.filter((z) => !COMMON_ZONES.includes(z));
   if (
@@ -54,6 +54,17 @@ export default function SettingsPage() {
       </p>
 
       <label className="mt-8 block text-[13px] text-[var(--muted)]">
+        Name on the public page
+        <input
+          type="text"
+          defaultValue={profile?.displayName ?? ""}
+          onBlur={(e) => updateProfile({ displayName: e.target.value })}
+          className="mt-1 block w-full border border-[var(--line)] bg-[var(--paper)] px-2 py-2 text-[15px] text-[var(--ink)]"
+          data-testid="display-name"
+        />
+      </label>
+
+      <label className="mt-6 block text-[13px] text-[var(--muted)]">
         Font
         <select
           className="mt-1 block w-full border border-[var(--line)] bg-[var(--paper)] px-2 py-2 text-[15px] text-[var(--ink)]"
@@ -114,7 +125,7 @@ export default function SettingsPage() {
       <fieldset className="mt-6">
         <legend className="text-[13px] text-[var(--muted)]">Theme</legend>
         <div className="mt-2 flex gap-4">
-          {(["light", "dark"] as ThemeId[]).map((theme) => (
+          {(["light", "dark", "sepia"] as ThemeId[]).map((theme) => (
             <label key={theme} className="text-[15px]">
               <input
                 type="radio"
@@ -137,6 +148,16 @@ export default function SettingsPage() {
           onChange={(e) => updateSettings({ hideChrome: e.target.checked })}
         />
         Hide the header while typing
+      </label>
+
+      <label className="mt-4 flex items-center gap-2 text-[15px]">
+        <input
+          type="checkbox"
+          checked={settings.lockEdits}
+          onChange={(e) => updateSettings({ lockEdits: e.target.checked })}
+          data-testid="lock-edits"
+        />
+        Lock today after 500 words (you can still read it)
       </label>
 
       <label className="mt-6 block text-[13px] text-[var(--muted)]">
@@ -166,14 +187,24 @@ export default function SettingsPage() {
         </select>
       </label>
 
-      <button
-        type="button"
-        className="mt-8 border border-[var(--ink)] px-3 py-2 text-[14px] active:scale-[0.97]"
-        onClick={() => void downloadExport()}
-        data-testid="export"
-      >
-        Export entries
-      </button>
+      <div className="mt-8 flex flex-wrap gap-3">
+        <button
+          type="button"
+          className="border border-[var(--ink)] px-3 py-2 text-[14px] active:scale-[0.97]"
+          onClick={() => void downloadExport()}
+          data-testid="export"
+        >
+          Export entries
+        </button>
+        <button
+          type="button"
+          className="border border-[var(--ink)] px-3 py-2 text-[14px] active:scale-[0.97]"
+          onClick={() => window.print()}
+          data-testid="print"
+        >
+          Print {entry.date}
+        </button>
+      </div>
 
       <p
         className={`mt-10 font-${settings.font} text-[var(--ink)]`}

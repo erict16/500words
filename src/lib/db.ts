@@ -34,6 +34,7 @@ import {
   type Settings,
   type UserProfile,
 } from "./types";
+import { filterHits, type SearchHit } from "./search";
 import { markForWords } from "./words";
 
 const asNumber = (value: unknown, fallback = 0) =>
@@ -473,6 +474,13 @@ export async function joinChallenge(
     joinedAt: Date.now(),
     joinDate: today,
   });
+}
+
+export async function searchEntries(uid: string, query: string): Promise<SearchHit[]> {
+  const snap = await getDocs(collection(getDb(), "users", uid, "days"));
+  const days: DayEntry[] = [];
+  snap.forEach((d) => days.push(entryFromSnap(d.id, d.data())));
+  return filterHits(days, query);
 }
 
 export async function exportEntries(uid: string): Promise<string> {
