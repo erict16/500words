@@ -55,6 +55,27 @@ export function prettyDate(dateStr: string): string {
   });
 }
 
+function ordinal(n: number) {
+  const v = n % 100;
+  if (v >= 11 && v <= 13) return `${n}th`;
+  if (n % 10 === 1) return `${n}st`;
+  if (n % 10 === 2) return `${n}nd`;
+  if (n % 10 === 3) return `${n}rd`;
+  return `${n}th`;
+}
+
+export function prettyLongDate(dateStr: string): string {
+  const { year, month, day } = parseDate(dateStr);
+  const weekday = new Date(year, month - 1, day).toLocaleString("en-US", { weekday: "long" });
+  const monthName = new Date(year, month - 1, 1).toLocaleString("en-US", { month: "long" });
+  return `${weekday}, ${monthName} ${ordinal(day)}, ${year}`;
+}
+
+export function monthAbbr(dateStr: string): string {
+  const { year, month } = parseDate(dateStr);
+  return new Date(year, month - 1, 1).toLocaleString("en-US", { month: "short" });
+}
+
 export function isFutureDay(dateStr: string, today: string): boolean {
   return dateStr > today;
 }

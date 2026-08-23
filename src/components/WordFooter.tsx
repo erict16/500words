@@ -24,13 +24,8 @@ export function WordFooter() {
   return (
     <footer className="site-foot word-foot">
       <div className="site-col foot-bar">
-        <Link href="/" className="foot-logo">
-          500 Words
-        </Link>
+        <p className="foot-tagline">Private, unfiltered, spontaneous, daily</p>
         <div className="word-foot-inner">
-          <button type="button" className="foot-link no-print" onClick={() => window.print()}>
-            Print
-          </button>
           {savedFlash ? (
             <p className="saved-flash" aria-live="polite" data-testid="saved-flash">
               saved
@@ -46,7 +41,7 @@ export function WordFooter() {
             </Link>
           ) : (
             <p className="word-count" data-testid="word-count">
-              {words} / {WORD_GOAL}
+              {words > 0 ? `${words} / ${WORD_GOAL}` : String(WORD_GOAL)}
             </p>
           )}
         </div>

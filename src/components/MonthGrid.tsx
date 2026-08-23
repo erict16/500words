@@ -1,49 +1,47 @@
 "use client";
 
-import { monthKey, monthLabel, shiftMonth } from "@/lib/dates";
+import { monthAbbr, prettyLongDate, shiftMonth } from "@/lib/dates";
 import { useApp } from "./AppProvider";
-import { BowlingMark } from "./BowlingMark";
+
+function Check() {
+  return (
+    <svg className="day-check" viewBox="0 0 16 16" aria-hidden>
+      <path
+        d="M3.2 8.4 6.1 11.2 12.8 4.4"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
 
 export function MonthGrid() {
-  const { date, today, monthDays, monthPoints, setDate, lifetime } = useApp();
-  const label = monthLabel(date);
-  const thisMonth = monthKey(today);
-  const daysLeft = monthDays.filter((d) => d.date >= today).length;
+  const { date, today, monthDays, setDate, lifetime } = useApp();
+  const prev = shiftMonth(date, -1);
+  const completed = lifetime?.completedEver ?? 0;
 
   return (
-    <div className="month-wrap bowling-score-tally">
-      <div className="month-head">
-        <p className="month-name">
-          <button
-            type="button"
-            className="chrome-link mr-2"
-            aria-label="Previous month"
-            onClick={() => setDate(shiftMonth(date, -1))}
-          >
-            ‹
+    <div className="write-head">
+      <h1 className="write-date" data-testid="write-date">
+        {prettyLongDate(date)}
+      </h1>
+      <div className="cal-row">
+        <div className="cal-months">
+          <button type="button" className="cal-nav" aria-label="Previous month" onClick={() => setDate(prev)}>
+            ◀
           </button>
-          {label}
-          {monthKey(date) < thisMonth ? (
-            <button
-              type="button"
-              className="chrome-link ml-2"
-              aria-label="Next month"
-              onClick={() => {
-                const next = shiftMonth(date, 1);
-                setDate(next > today ? today : next);
-              }}
-            >
-              ›
-            </button>
-          ) : null}
-          {lifetime?.currentStreak ? ` · ${lifetime.currentStreak} day streak` : ""}
-          {monthKey(date) === thisMonth ? (
-            <span className="days-left" data-testid="days-left">
-              {daysLeft} {daysLeft === 1 ? "day" : "days"} left
-            </span>
-          ) : null}
+          <button type="button" className="cal-month" onClick={() => setDate(prev)}>
+            {monthAbbr(prev)}
+          </button>
+          <span className="cal-sep">|</span>
+          <span className="cal-month current">{monthAbbr(date)}</span>
+        </div>
+        <p className="cal-done" data-testid="days-completed">
+          {completed} {completed === 1 ? "day" : "days"} completed
         </p>
-        <p className="month-pts">{monthPoints} pts</p>
       </div>
       <div className="month-grid" data-testid="month-grid">
         {monthDays.map((day) => {
@@ -55,7 +53,6 @@ export function MonthGrid() {
             day.date === today ? "today" : "",
             future ? "future" : "",
             selected ? "selected" : "",
-            day.madeUp ? "madeup" : "",
           ]
             .filter(Boolean)
             .join(" ");
@@ -68,17 +65,12 @@ export function MonthGrid() {
               data-mark={day.mark}
               data-testid={day.date === today ? "today-box" : undefined}
               disabled={future}
-              title={
-                future
-                  ? day.date
-                  : `${day.date}: ${day.wordCount} words${day.points ? ` · ${day.points} pts` : ""}`
-              }
+              title={future ? day.date : `${day.date}: ${day.wordCount} words`}
               onClick={() => setDate(day.date)}
-              aria-label={`Day ${day.day}${day.mark === "strike" ? ", strike" : day.mark === "spare" ? ", spare" : ""}`}
+              aria-label={`Day ${day.day}${day.mark === "strike" ? ", done" : ""}`}
               aria-current={selected ? "date" : undefined}
             >
-              <span className="num">{day.day}</span>
-              <BowlingMark mark={day.mark} />
+              {day.mark === "strike" ? <Check /> : null}
             </button>
           );
         })}

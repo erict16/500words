@@ -1,45 +1,27 @@
 # STATUS
 
-Keep going until a stranger can open https://500words-ink.vercel.app, sign in or write locally, hit 500, see an X, and not think this is a different product than 750 Words (no landing, no AI).
+Keep going until a stranger can open https://500words-ink.vercel.app and the write page looks like current 750words.com (serif date, empty green-check squares, “Write something here…”, tagline). 500 words. No landing. No AI.
 
-STOP only when that is true. Firebase wiring is not STOP. A 30-minute slice is not STOP.
+STOP only when that is true.
 
 ## Done
 
-- Live `500words-ink.vercel.app` HTTP 200
-- Google + “Write on this device” (never infinite Loading)
-- Local write survives reload
-- Chrome matches `original.750words.com` / `docs/750-source.md` (not Materialize teal, not Nuxt V2):
-  - 800px column, 16px
-  - Header is not a teal bar. 30px sniglet/bree (Helvetica fallback) “500 Words” in black, no underline. Nav black, bold, 15px margin-right
-  - Editor Helvetica 20px / 1.6em, 770px, border 0, padding 10px 0
-  - Footer count 14px #666; at 500 CSS `green` + bold (stats link)
-  - Month cells ~20px, 11px bold day numbers; drawn `/` and `X`
-  - Stats big numbers 40px #4DB559
-  - Search 16px #666, no border
-  - Sign-in form ~350px, not a centered hero
-  - Makeup/strike notice: Georgia 11pt, #d4eef7
-- Confetti + “500. That’s a strike.”
-- After-login pages share the 800px column; h1 is 35px #4DB559
-- Stats today is `entry_stats`: 5× 40px #4DB559, 12px headers, 11px #666; all-time table 12px / 30px #666 weight 800
-- Person page: `#DCFFFD` header, 18px `.big` / `#4392F1` strong, score table 30px #666
-- Footer logo bree/sniglet, line-height 45px; footer links 16px
-- Challenge join uses original `#challenge_nav` (1px #ccc, 10px pad, 10px radius; in-state `#45DED7`); empty walls use `.notice`
-- `.subdued` is 12px #666, no underline; settings text/select match `#update_settings` (1px #fff, 4px radius, inset `#bbb`)
-- Inner-page links `#000099` / hover `#000`; nav stays black
-- Badge catalog copy and groups match original.750words.com (500 instead of 750). Unearned grey. `data-badge` kept. Drawings are ours (watercolor plates, no Materialize `#2bbbad`)
-- Stats scorecard + word bars + dated archive; one month walls; person page is a scoreboard
-- Unit + Playwright e2e (original CSS tokens, 20–28px boxes, 14px count, green, 27 badge rows, archive, #DCFFFD, notice, egg blurb)
+- Live `500words-ink.vercel.app`
+- Google + Write on this device
+- Copied tokens from `750words.com/_nuxt/entry` CSS: `ui-serif, Georgia, Cambria, Times`, `#4caf50`, `#00c853`
+- Write page: long date heading, Jul | Aug, 18px rounded squares, green check at 500, placeholder, tagline
+- Stats/search/badges/challenge still exist
 
 ## Next
 
-- Tag Savage PNG/GIF files are not in the public CSS, so drawings stay ours
-- Firestore owner-only rules file exists, not published
-- `500words-inky.vercel.app` still 404 (ink is the live host)
+- Inner pages still mix old Rails CSS
+- Tag Savage images are not in the public CSS
+- Firestore rules unpublished
+- `500words-inky` 404
 
 ## Do not
 
+- Restore Sniglet / numbered bowling boxes on the write page
 - Add a marketing landing
-- Add AI mood/theme/Silly Robot
-- Copy current 750words.com Nuxt V2
-- Stop because Firebase is linked
+- Add AI
+- Copy Nuxt V2 analysis

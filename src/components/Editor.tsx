@@ -6,7 +6,7 @@ import { WORD_GOAL } from "@/lib/types";
 import { useApp } from "./AppProvider";
 
 export function Editor() {
-  const { entry, isToday, setText, settings, missedYesterday, tip } = useApp();
+  const { entry, isToday, setText, settings, missedYesterday } = useApp();
   const locked = !isToday || (settings.lockEdits && entry.locked);
   const ref = useRef<HTMLTextAreaElement>(null);
   const words = countWords(entry.text);
@@ -54,7 +54,6 @@ export function Editor() {
           (a makeup day).
         </p>
       ) : null}
-      {isToday && tip ? <p className="write-note italic">{tip}</p> : null}
       <textarea
         ref={ref}
         id="write"
@@ -66,7 +65,7 @@ export function Editor() {
         autoCapitalize="sentences"
         autoCorrect="on"
         name="entry"
-        placeholder=""
+        placeholder={isToday ? "Write something here..." : ""}
         data-testid="editor"
         style={{
           fontSize: `${settings.fontSize}px`,

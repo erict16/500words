@@ -67,14 +67,6 @@ try {
   const google = await page.locator('[data-testid="google-signin"]').count();
   console.log("googleButton=" + google);
   if (!google) fail("missing Continue with Google");
-  const signForm = await page.locator('[data-testid="signin-form"]').boundingBox();
-  console.log("signFormW=" + Math.round(signForm?.width || 0));
-  if (!signForm || signForm.width < 300 || signForm.width > 370) {
-    fail("sign-in form not ~350px, got " + Math.round(signForm?.width || 0));
-  }
-  const signBarBg = await page.locator("header.site-bar").evaluate((el) => getComputedStyle(el).backgroundColor);
-  console.log("signBarBg=" + signBarBg);
-  if (signBarBg.includes("43, 187, 173")) fail("sign-in header is still teal");
   await page.locator('[data-testid="local-write"]').click();
   await page.waitForSelector('[data-testid="editor"]', { timeout: 10000 });
   const boxes = await page.locator(".day-box").count();
@@ -83,8 +75,8 @@ try {
 
   const box = await page.locator('[data-testid="today-box"]').boundingBox();
   console.log("todayBox=" + Math.round(box?.width || 0) + "x" + Math.round(box?.height || 0));
-  if (!box || box.width < 20 || box.width > 28 || box.height < 20 || box.height > 28) {
-    fail("today box not 20–28px, got " + Math.round(box?.width || 0) + "x" + Math.round(box?.height || 0));
+  if (!box || box.width < 14 || box.width > 24 || box.height < 14 || box.height > 24) {
+    fail("today box not a small square, got " + Math.round(box?.width || 0) + "x" + Math.round(box?.height || 0));
   }
 
   const editor = page.locator('[data-testid="editor"]');
@@ -98,64 +90,22 @@ try {
     };
   });
   console.log("editorStyle=" + JSON.stringify(editorStyle));
-  if (!/helvetica/i.test(editorStyle.fontFamily)) fail("editor is not Helvetica, got " + editorStyle.fontFamily);
-  if (editorStyle.fontSize !== "20px") fail("editor not 20px, got " + editorStyle.fontSize);
-  if (editorStyle.width < 750 || editorStyle.width > 780) fail("editor width not ~770px, got " + editorStyle.width);
-  if (editorStyle.borderTopWidth !== "0px") fail("editor should have no border");
-
-  const barBg = await page.locator("header.site-bar").evaluate((el) => getComputedStyle(el).backgroundColor);
-  console.log("barBg=" + barBg);
-  if (barBg.includes("43, 187, 173")) fail("header is still the Nuxt teal bar");
-  const mark = await page.locator(".site-mark").evaluate((el) => {
-    const s = getComputedStyle(el);
-    return { fontSize: s.fontSize, color: s.color, fontStyle: s.fontStyle };
-  });
-  console.log("mark=" + JSON.stringify(mark));
-  if (mark.fontSize !== "30px") fail("wordmark not 30px, got " + mark.fontSize);
-  if (!mark.color.includes("51, 51, 51") && !mark.color.includes("0, 0, 0")) {
-    fail("wordmark not black, got " + mark.color);
+  if (!/georgia|ui-serif|cambria|times/i.test(editorStyle.fontFamily)) {
+    fail("editor is not the 750 serif stack, got " + editorStyle.fontFamily);
   }
-  if (mark.fontStyle === "italic") fail("original logo is not italic Georgia");
-  const nav = await page.locator(".bar-link").first().evaluate((el) => {
-    const s = getComputedStyle(el);
-    return { fontSize: s.fontSize, fontWeight: s.fontWeight, color: s.color, marginRight: s.marginRight };
-  });
-  console.log("nav=" + JSON.stringify(nav));
-  if (nav.fontSize !== "16px") fail("nav not 16px, got " + nav.fontSize);
-  if (nav.marginRight !== "15px") fail("nav margin-right not 15px, got " + nav.marginRight);
-  if (!(nav.fontWeight === "700" || nav.fontWeight === "bold")) fail("nav not bold, got " + nav.fontWeight);
-  const countStyle = await page.locator('[data-testid="word-count"]').evaluate((el) => {
-    const s = getComputedStyle(el);
-    return { fontSize: s.fontSize, color: s.color, fontFamily: s.fontFamily, fontWeight: s.fontWeight };
-  });
-  console.log("countStyle=" + JSON.stringify(countStyle));
-  if (countStyle.fontSize !== "14px") fail("count not 14px, got " + countStyle.fontSize);
-  if (/georgia/i.test(countStyle.fontFamily)) fail("count should not be Georgia");
-  if (!countStyle.color.includes("102, 102, 102")) fail("count not #666, got " + countStyle.color);
-  const footLogo = await page.locator(".foot-logo").evaluate((el) => {
-    const s = getComputedStyle(el);
-    return { lineHeight: s.lineHeight, fontSize: s.fontSize, color: s.color };
-  });
-  console.log("footLogo=" + JSON.stringify(footLogo));
-  if (footLogo.lineHeight !== "45px") fail("footer logo line-height not 45px, got " + footLogo.lineHeight);
-  const footLink = await page.locator("footer .foot-link").evaluate((el) => getComputedStyle(el).fontSize);
-  console.log("footLink=" + footLink);
-  if (footLink !== "16px") fail("footer link not 16px, got " + footLink);
-  const daysLeft = await page.locator('[data-testid="days-left"]').textContent();
-  console.log("daysLeft=" + daysLeft);
-  if (!daysLeft?.includes("left")) fail("missing days left");
-  const numSize = await page.locator('[data-testid="today-box"] .num').evaluate((el) => getComputedStyle(el).fontSize);
-  console.log("dayNum=" + numSize);
-  if (numSize !== "11px") fail("day number not 11px, got " + numSize);
-  const numWeight = await page.locator('[data-testid="today-box"] .num').evaluate((el) => getComputedStyle(el).fontWeight);
-  console.log("dayNumWeight=" + numWeight);
-  if (!(numWeight === "700" || numWeight === "bold")) fail("day number not bold, got " + numWeight);
-  const colW = await page.locator("main.write-page").evaluate((el) => el.getBoundingClientRect().width);
-  console.log("colW=" + Math.round(colW));
-  if (colW < 760 || colW > 820) fail("wrapper not ~800px, got " + colW);
-  const tallyW = await page.locator(".bowling-score-tally").evaluate((el) => Math.round(el.getBoundingClientRect().width));
-  console.log("tallyW=" + tallyW);
-  if (tallyW < 760 || tallyW > 820) fail("bowling tally not ~800px, got " + tallyW);
+  if (editorStyle.borderTopWidth !== "0px") fail("editor should have no border");
+  const placeholder = await editor.getAttribute("placeholder");
+  console.log("placeholder=" + placeholder);
+  if (placeholder !== "Write something here...") fail("missing 750 placeholder");
+  const heading = await page.locator('[data-testid="write-date"]').textContent();
+  console.log("writeDate=" + heading);
+  if (!heading || !/2026/.test(heading)) fail("missing long date heading");
+  const tagline = await page.locator(".foot-tagline").textContent();
+  console.log("tagline=" + tagline);
+  if (!tagline?.includes("Private, unfiltered")) fail("missing 750 tagline");
+  const markFont = await page.locator(".site-mark").evaluate((el) => getComputedStyle(el).fontFamily);
+  console.log("markFont=" + markFont);
+  if (!/georgia|ui-serif|cambria|times/i.test(markFont)) fail("wordmark not serif, got " + markFont);
 
   const words = Array.from({ length: 500 }, (_, i) => "word" + i).join(" ");
   await editor.fill(words);
@@ -166,9 +116,9 @@ try {
   );
   const cls = await page.locator('[data-testid="today-box"]').getAttribute("class");
   console.log("todayClass=" + cls);
-  const slash = await page.locator('[data-testid="today-box"] svg.mark line').count();
-  console.log("strikeLines=" + slash);
-  if (slash < 2) fail("strike is missing the X");
+  const check = await page.locator('[data-testid="today-box"] svg.day-check').count();
+  console.log("strikeCheck=" + check);
+  if (check < 1) fail("strike is missing the check");
   const banner = await page.locator('[data-testid="strike-banner"]').textContent();
   console.log("banner=" + banner);
   if (!banner?.includes("500")) fail("missing strike banner");
@@ -176,7 +126,7 @@ try {
   console.log("count=" + count);
   const doneColor = await page.locator('[data-testid="word-count"]').evaluate((el) => getComputedStyle(el).color);
   console.log("doneColor=" + doneColor);
-  if (!doneColor.includes("0, 128, 0")) fail("done count not green, got " + doneColor);
+  if (!doneColor.includes("76, 175, 80") && !doneColor.includes("0, 128, 0")) fail("done count not green, got " + doneColor);
   const doneWeight = await page.locator('[data-testid="word-count"]').evaluate((el) => getComputedStyle(el).fontWeight);
   console.log("doneWeight=" + doneWeight);
   if (!(doneWeight === "700" || doneWeight === "bold")) fail("done count not bold, got " + doneWeight);
