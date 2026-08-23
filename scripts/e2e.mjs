@@ -318,6 +318,16 @@ try {
   console.log("archive=" + archive + " archiveText=" + archiveText.replace(/\s+/g, " ").trim());
   if (archive < 1) fail("stats archive missing");
   if (!/words/i.test(archiveText)) fail("archive row missing word count");
+  const monthTitle = await page.locator("[data-testid='archive'] .month-title strong").first().evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { weight: s.fontWeight, color: s.color, font: s.fontFamily };
+  });
+  console.log("monthTitle=" + JSON.stringify(monthTitle));
+  if (monthTitle.weight !== "600") fail("browse title not semibold, got " + monthTitle.weight);
+  if (!monthTitle.color.includes("0, 200, 83")) fail("browse title not #00c853, got " + monthTitle.color);
+  const monthStats = await page.locator("[data-testid='archive'] .month-stats").first().evaluate((el) => getComputedStyle(el).fontSize);
+  console.log("monthStats=" + monthStats);
+  if (monthStats !== "14px") fail("browse stats not 0.875rem, got " + monthStats);
   const statHero = await page.locator('[data-testid="stat-words"]').evaluate((el) => {
     const s = getComputedStyle(el);
     return { fontSize: s.fontSize, color: s.color };

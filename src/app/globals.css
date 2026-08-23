@@ -214,16 +214,33 @@ button {
 }
 
 .sign-page {
-  width: 350px;
-  max-width: 100%;
+  width: 100%;
+  max-width: 50rem;
   margin: 0;
   padding: 8px 0 48px;
-  font-family: var(--display);
+  font-family: var(--font-serif-primary);
 }
 
 .sign-page .btn-google {
-  display: inline-block;
-  margin-bottom: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  margin-bottom: 16px;
+  padding: 0 20px;
+  border: 1px solid var(--brand-green);
+  background: var(--brand-green);
+  color: #fff;
+  font-family: var(--font-sans-metadata);
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: var(--radius-base);
+  letter-spacing: 0;
+  text-transform: none;
+}
+.sign-page .btn-google:hover {
+  background: var(--brand-green-dark);
+  border-color: var(--brand-green-dark);
 }
 
 .write-page {
@@ -892,7 +909,8 @@ input:focus-visible {
   line-height: 24px;
 }
 
-.archive {
+.archive,
+.browse-list {
   list-style: none;
   margin: 8px 0 0;
   padding: 0;
@@ -914,10 +932,6 @@ input:focus-visible {
   text-align: left;
 }
 
-.archive button:hover .archive-date {
-  color: #000;
-}
-
 .archive-date {
   font-family: var(--font-sans-metadata);
   font-size: 0.8rem;
@@ -931,6 +945,57 @@ input:focus-visible {
   color: var(--text-muted);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+}
+
+.month-entry {
+  border-bottom: 1px solid var(--border-light);
+  padding: 16px 0;
+}
+
+.month-entry:last-child {
+  border-bottom: none;
+}
+
+.month-entry button {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.month-entry:hover {
+  background: var(--paper);
+  border-radius: var(--radius-base);
+  margin-left: -8px;
+  margin-right: -8px;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.month-title {
+  margin-bottom: 4px;
+}
+
+.month-title strong {
+  font-family: var(--font-sans-metadata);
+  font-weight: 600;
+  color: var(--link);
+}
+
+.month-entry:hover .month-title strong {
+  text-decoration: underline;
+}
+
+.month-stats {
+  font-family: var(--font-sans-metadata);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
 }
 
 .badge-list {

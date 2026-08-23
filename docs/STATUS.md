@@ -13,6 +13,7 @@ STOP only when that is true.
 - Inner pages: serif ink titles (1.875rem), 48px outlined fields, full-width search, no mint person header, no #45DED7 challenge pills, no Georgia #d4eef7 notices
 - Badges: current-750 card grid (2/3/4 cols, 280px cards, green check, 18px serif titles). Tag Savage PNGs still 404; keep SVG drawings.
 - Search: 48px Search button + result cards (0.8rem green date, 1.05rem serif title). Settings: 48px theme activators. Challenge walls: participant cards.
+- Stats browse list matches `/account/browse` month-entry rows. Sign-in Google is a 48px primary button (no 350px Rails box).
 
 ## Next
 

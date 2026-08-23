@@ -35,14 +35,14 @@ export function EntryArchive() {
 
   return (
     <section>
-      <h2 className="page-h2">Your pages</h2>
-      <ul className="archive" data-testid="archive">
+      <h2 className="page-h2">Browse your writing</h2>
+      <ul className="browse-list" data-testid="archive">
         {hits.map((hit) => {
           const live = hit.date === entry.date;
           const words = live ? countWords(entry.text) || hit.wordCount : hit.wordCount;
           const active = live ? entry.session.activeMs || hit.activeMs : hit.activeMs;
           return (
-            <li key={hit.date}>
+            <li key={hit.date} className="month-entry">
               <button
                 type="button"
                 data-testid="archive-hit"
@@ -52,8 +52,10 @@ export function EntryArchive() {
                   router.push("/");
                 }}
               >
-                <span className="archive-date">{prettyDate(hit.date)}</span>
-                <span className="archive-words">{meta(words, active)}</span>
+                <div className="month-title">
+                  <strong>{prettyDate(hit.date)}</strong>
+                </div>
+                <div className="month-stats">{meta(words, active)}</div>
               </button>
             </li>
           );
