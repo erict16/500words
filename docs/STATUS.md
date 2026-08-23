@@ -4,24 +4,26 @@ Keep going until a stranger can open https://500words-ink.vercel.app, sign in or
 
 STOP only when that is true. Firebase wiring is not STOP. A 30-minute slice is not STOP.
 
+Clone **original.750words.com** (Rails bowling). Do not clone 750words.com Nuxt teal/Vuetify. Tokens: `docs/750-source.md`.
+
 ## Done
 
 - Live `500words-ink.vercel.app` HTTP 200
 - Google + “Write on this device” (never infinite Loading)
 - Local write survives reload
-- Teal bar `#2bbbad`, Materialize 64px + shadow, italic Georgia wordmark `2.1rem`, nav `15px` / `0.8px` tracking, 70% container
-- Day boxes **28×28**, day number **9px**, `/` spare and `X` strike
-- Editor Georgia 21px / 640px; footer count **24px Georgia `#9e9e9e`**, at 500 **`#4caf50`** stats link; `.days-left`; confetti + “500. That’s a strike.”
-- After-login pages share the same 70% paper column: Georgia titles, `#9e9e9e` helpers, teal `#2bbbad` links
-- Badges are a catalog of rows (drawing + name + how), not a tile grid. Unearned grey. `data-badge` kept
-- Stats scorecard + word bars + dated archive; one month walls with hairlines; person page is a scoreboard of earned rows
-- Sign-in: same teal bar, Georgia title, Continue with Google, quiet local fallback
-- Unit + Playwright e2e (chrome tokens, 28px box, 24px count, `#4caf50`, 27 badge rows, archive)
+- Original chrome: **800px** paper, **30px Sniglet** black wordmark, **bold black Helvetica** nav (`margin-right: 15px`), no teal bar
+- Day boxes **22px**, day number **11px bold**, `/` spare and `X` strike, wrapping row
+- Editor Georgia 21px (settings) on a **770px** measure; footer count **14px `#666`**, at 500 **green bold** stats link; `.days-left`; confetti + “500. That’s a strike.”
+- Page titles **35px `#4DB559` Sniglet**; stats hero **40px `#4DB559`**; search box 16px `#666` borderless
+- Badges catalog of rows (drawing + name + how). Unearned grey. `data-badge` kept
+- Stats scorecard + word bars + dated archive; one month walls; person page is counts + badges only
+- Sign-in: same 800px header, Sniglet title, Continue with Google, quiet local fallback
+- Unit + Playwright e2e (no teal bar, 30px wordmark, 14px count, green at 500, 22px boxes, 800px column)
 
 ## Next
 
 - Drawings are ours, not Tag Savage’s originals
-- Inner pages closer (same paper/type/links), still not a screenshot overlay of 2014 Materialize 750
+- Inner pages still not a logged-in HTML overlay of original.750words.com (auth-gated)
 - Firestore owner-only rules file exists, not published
 - `500words-inky.vercel.app` still 404 (ink is the live host)
 
@@ -29,4 +31,5 @@ STOP only when that is true. Firebase wiring is not STOP. A 30-minute slice is n
 
 - Add a marketing landing
 - Add AI mood/theme/Silly Robot
+- Copy Nuxt V2 teal/Material chrome
 - Stop because Firebase is linked

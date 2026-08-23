@@ -24,15 +24,6 @@ export function WordFooter() {
   return (
     <footer className="word-foot">
       <div className="site-col word-foot-inner">
-        {done ? (
-          <Link href="/stats" className="word-count word-good" data-testid="word-count" title="Today’s stats">
-            {words}
-          </Link>
-        ) : (
-          <p className="word-count" data-testid="word-count">
-            {words} / {WORD_GOAL}
-          </p>
-        )}
         <div className="flex items-baseline gap-3">
           <button
             type="button"
@@ -55,6 +46,15 @@ export function WordFooter() {
             </p>
           )}
         </div>
+        {done ? (
+          <Link href="/stats" className="word-count word-good" data-testid="word-count" title="Today’s stats">
+            {words}
+          </Link>
+        ) : (
+          <p className="word-count" data-testid="word-count">
+            {words} / {WORD_GOAL}
+          </p>
+        )}
       </div>
     </footer>
   );

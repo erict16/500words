@@ -75,8 +75,8 @@ try {
 
   const box = await page.locator('[data-testid="today-box"]').boundingBox();
   console.log("todayBox=" + Math.round(box?.width || 0) + "x" + Math.round(box?.height || 0));
-  if (!box || box.width < 27 || box.width > 30 || box.height < 27 || box.height > 30) {
-    fail("today box not 28px, got " + Math.round(box?.width || 0) + "x" + Math.round(box?.height || 0));
+  if (!box || box.width < 20 || box.width > 28 || box.height < 20 || box.height > 28) {
+    fail("today box not 20–28px, got " + Math.round(box?.width || 0) + "x" + Math.round(box?.height || 0));
   }
 
   const editor = page.locator('[data-testid="editor"]');
@@ -84,30 +84,40 @@ try {
   console.log("editorFont=" + georgia);
   if (!/georgia/i.test(georgia)) fail("editor is not Georgia");
 
-  const barH = await page.locator("header.site-bar").evaluate((el) => el.getBoundingClientRect().height);
-  console.log("barH=" + Math.round(barH));
-  if (barH < 60 || barH > 70) fail("header not ~64px, got " + barH);
-  const markSize = await page.locator(".site-mark").evaluate((el) => getComputedStyle(el).fontSize);
-  console.log("markSize=" + markSize);
-  const markPx = Number.parseFloat(markSize);
-  if (markPx < 32 || markPx > 36) fail("wordmark not ~2.1rem, got " + markSize);
-  const navSize = await page.locator(".bar-link").first().evaluate((el) => getComputedStyle(el).fontSize);
-  const navTrack = await page.locator(".bar-link").first().evaluate((el) => getComputedStyle(el).letterSpacing);
-  console.log("navSize=" + navSize + " track=" + navTrack);
-  if (navSize !== "15px") fail("nav not 15px, got " + navSize);
+  const barBg = await page.locator("header.site-bar").evaluate((el) => getComputedStyle(el).backgroundColor);
+  console.log("barBg=" + barBg);
+  if (barBg.includes("43, 187, 173")) fail("header is still the Nuxt teal bar");
+  const mark = await page.locator(".site-mark").evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { fontSize: s.fontSize, color: s.color, fontStyle: s.fontStyle };
+  });
+  console.log("mark=" + JSON.stringify(mark));
+  if (mark.fontSize !== "30px") fail("wordmark not 30px, got " + mark.fontSize);
+  if (!mark.color.includes("51, 51, 51") && !mark.color.includes("0, 0, 0")) {
+    fail("wordmark not black, got " + mark.color);
+  }
+  if (mark.fontStyle === "italic") fail("original logo is not italic Georgia");
+  const nav = await page.locator(".bar-link").first().evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { fontSize: s.fontSize, fontWeight: s.fontWeight, color: s.color };
+  });
+  console.log("nav=" + JSON.stringify(nav));
+  if (nav.fontSize !== "16px") fail("nav not 16px, got " + nav.fontSize);
   const countStyle = await page.locator('[data-testid="word-count"]').evaluate((el) => {
     const s = getComputedStyle(el);
-    return { fontSize: s.fontSize, fontFamily: s.fontFamily, color: s.color };
+    return { fontSize: s.fontSize, color: s.color };
   });
   console.log("countStyle=" + JSON.stringify(countStyle));
-  if (countStyle.fontSize !== "24px") fail("count not 24px, got " + countStyle.fontSize);
-  if (!/georgia/i.test(countStyle.fontFamily)) fail("count not Georgia");
+  if (countStyle.fontSize !== "14px") fail("count not 14px, got " + countStyle.fontSize);
   const daysLeft = await page.locator('[data-testid="days-left"]').textContent();
   console.log("daysLeft=" + daysLeft);
   if (!daysLeft?.includes("left")) fail("missing days left");
   const numSize = await page.locator('[data-testid="today-box"] .num').evaluate((el) => getComputedStyle(el).fontSize);
   console.log("dayNum=" + numSize);
-  if (numSize !== "9px") fail("day number not 9px, got " + numSize);
+  if (numSize !== "11px") fail("day number not 11px, got " + numSize);
+  const colW = await page.locator("main.write-page").evaluate((el) => el.getBoundingClientRect().width);
+  console.log("colW=" + Math.round(colW));
+  if (colW < 760 || colW > 820) fail("wrapper not ~800px, got " + colW);
 
   const words = Array.from({ length: 500 }, (_, i) => "word" + i).join(" ");
   await editor.fill(words);
@@ -128,7 +138,7 @@ try {
   console.log("count=" + count);
   const doneColor = await page.locator('[data-testid="word-count"]').evaluate((el) => getComputedStyle(el).color);
   console.log("doneColor=" + doneColor);
-  if (!doneColor.includes("76, 175, 80")) fail("done count not #4caf50, got " + doneColor);
+  if (!doneColor.includes("0, 128, 0")) fail("done count not green, got " + doneColor);
 
   await page.keyboard.press("Meta+s");
   await page.waitForSelector('[data-testid="saved-flash"]', { timeout: 5000 });

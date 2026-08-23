@@ -85,7 +85,7 @@ export const defaultSettings = (): Settings => ({
   font: "georgia",
   fontSize: 21,
   paragraphSpacing: 0,
-  lineHeight: 1.52,
+  lineHeight: 1.6,
   theme: "light",
   timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC",
   hideChrome: false,

@@ -30,7 +30,7 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
       timer = window.setTimeout(() => setIdleHidden(true), 2500);
     };
     const onMove = (e: MouseEvent) => {
-      if (e.clientY < 64) setIdleHidden(false);
+      if (e.clientY < 80) setIdleHidden(false);
     };
     bump();
     window.addEventListener("keydown", bump);

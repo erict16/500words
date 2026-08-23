@@ -40,7 +40,7 @@ export default function SearchPage() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder=""
-          className="field-control"
+          className="search-box"
           data-testid="search-input"
           autoFocus
         />
