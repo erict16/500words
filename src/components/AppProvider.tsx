@@ -22,40 +22,45 @@ import {
   ensureUser,
   exportEntries,
   joinChallenge as joinChallengeDb,
-  searchEntries,
   listenBadges,
   listenChallenge,
   listenDay,
   listenLifetime,
   listenMonth,
-  loadDay,
+  loadAllDays,
   saveDayText,
   saveSettings,
+  writeDaySnapshot,
 } from "@/lib/db";
-import { monthKey, todayInZone } from "@/lib/dates";
+import { addDays, monthKey, todayInZone } from "@/lib/dates";
 import { emptyMonth, missedYesterday as missedYesterdayFn } from "@/lib/engine";
+import { filterHits, formatExport, type SearchHit } from "@/lib/search";
+import { mergeDiaries, shouldMergeLocalIntoCloud } from "@/lib/sync";
 import { isE2E } from "@/lib/env";
 import { getFirebaseAuth, googleProvider, isFirebaseConfigured } from "@/lib/firebase";
 import { localSessionUser, sessionFromFirebase, type SessionUser } from "@/lib/identity";
 import {
   localBadges,
   localChallenge,
+  localCloudUid,
+  localDaysMap,
   localEnsureUser,
-  localEntriesWithText,
   localExport,
   localJoinChallenge,
   localLifetime,
   localLoadDay,
   localMonth,
+  localPutDays,
+  localReplaceDays,
   localSaveDay,
   localSaveSettings,
   localSearch,
+  localSetCloudUid,
   localSetName,
   setLocalSession,
 } from "@/lib/local-store";
 import { hideSession, showSession, touchSession } from "@/lib/session";
 import { tipForAccountDay } from "@/lib/tips";
-import type { SearchHit } from "@/lib/search";
 import type { BadgeStats } from "@/lib/badges";
 import {
   defaultSettings,
@@ -128,6 +133,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [badges, setBadges] = useState<EarnedBadge[]>([]);
   const [lifetime, setLifetime] = useState<AppContextValue["lifetime"]>(null);
   const [challenge, setChallenge] = useState<ChallengeEntrant[]>([]);
+  const [yesterdayInfo, setYesterdayInfo] = useState<{ wordCount: number; madeUp: boolean } | null>(
+    null,
+  );
   const [saving, setSaving] = useState(false);
   const [lastSavedAt, setLastSavedAt] = useState<number | null>(null);
   const [savedFlash, setSavedFlash] = useState(false);
@@ -139,6 +147,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const saveTimer = useRef<number | null>(null);
   const flashTimer = useRef<number | null>(null);
   const dirtyRef = useRef(false);
+  const archiveRef = useRef<DayEntry[] | null>(null);
+  const archiveLoad = useRef<Promise<DayEntry[]> | null>(null);
 
   useEffect(() => {
     offlineRef.current = offline;
@@ -157,6 +167,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const bootLocal = useCallback(() => {
     offlineRef.current = true;
+    archiveRef.current = null;
+    archiveLoad.current = null;
     setLocalSession(true);
     setOffline(true);
     setUser(localSessionUser);
@@ -168,6 +180,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setDateState(t);
     setEntry(localLoadDay(t));
     setMonthDays(localMonth(monthKey(t)));
+    const yDay = localLoadDay(addDays(t, -1));
+    setYesterdayInfo({ wordCount: yDay.wordCount, madeUp: yDay.madeUp });
     setBadges(localBadges());
     setLifetime(localLifetime());
     setChallenge(localChallenge(monthKey(t)));
@@ -191,10 +205,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
       void getRedirectResult(auth).catch(() => undefined);
       unsub = onAuthStateChanged(auth, async (next) => {
         if (offlineRef.current && !next) return;
-        if (next) {
-          setLocalSession(false);
-          setOffline(false);
-        }
         if (!next) {
           setReady(true);
           return;
@@ -207,20 +217,20 @@ export function AppProvider({ children }: { children: ReactNode }) {
             settings: guest.settings,
           });
           const t = todayInZone(ensured.settings.timezone);
-          for (const day of localEntriesWithText()) {
-            const cloud = await loadDay(next.uid, day.date);
-            if (cloud.text.trim()) continue;
-            await saveDayText({
-              uid: next.uid,
-              displayName: ensured.displayName,
-              photoURL: ensured.photoURL,
-              date: day.date,
-              today: t,
-              timezone: ensured.settings.timezone,
-              text: day.text,
-              session: day.session || emptySession(),
-            });
+          const cloudDays = await loadAllDays(next.uid);
+          if (shouldMergeLocalIntoCloud(localCloudUid(), next.uid)) {
+            const merged = mergeDiaries(localDaysMap(), cloudDays);
+            await Promise.all(merged.toUpload.map((day) => writeDaySnapshot(next.uid, day)));
+            localPutDays(Object.values(merged.days));
+            archiveRef.current = Object.values(merged.days);
+          } else {
+            localReplaceDays(cloudDays);
+            archiveRef.current = Object.values(cloudDays);
           }
+          localSetCloudUid(next.uid);
+          archiveLoad.current = null;
+          setLocalSession(false);
+          setOffline(false);
           setProfile(ensured);
           setSettings(ensured.settings);
           setToday(t);
@@ -257,6 +267,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setEntry(next);
       textRef.current = next.text;
       sessionRef.current = next.session || emptySession();
+      if (next.text.trim() || next.wordCount > 0 || next.madeUp) {
+        localPutDays([next]);
+      }
     });
     const unsubMonth = listenMonth(user.uid, monthKey(date), setMonthDays);
     const unsubBadges = listenBadges(user.uid, setBadges);
@@ -309,6 +322,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
             : null;
         if (!result) return;
         dirtyRef.current = false;
+        localPutDays([result.entry]);
+        if (archiveRef.current) {
+          const i = archiveRef.current.findIndex((d) => d.date === result.entry.date);
+          if (i >= 0) archiveRef.current[i] = result.entry;
+          else archiveRef.current.push(result.entry);
+        }
         if (dateRef.current === date) setEntry(result.entry);
         setLastSavedAt(Date.now());
         setSavedFlash(true);
@@ -378,6 +397,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
       if (patch.timezone) {
         const t = todayInZone(patch.timezone);
         setToday(t);
+        const yDay = localLoadDay(addDays(t, -1));
+        setYesterdayInfo({ wordCount: yDay.wordCount, madeUp: yDay.madeUp });
       }
     },
     [user, offline],
@@ -411,11 +432,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signOut = useCallback(async () => {
+    if (saveTimer.current) {
+      window.clearTimeout(saveTimer.current);
+      saveTimer.current = null;
+    }
+    if (dirtyRef.current) await persist(textRef.current);
     if (isFirebaseConfigured() && !offline) {
       await firebaseSignOut(getFirebaseAuth());
     }
     bootLocal();
-  }, [offline, bootLocal]);
+  }, [offline, bootLocal, persist]);
 
   const joinThisMonth = useCallback(async () => {
     if (!profile) return;
@@ -438,7 +464,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
     async (query: string): Promise<SearchHit[]> => {
       if (e2e || offline) return localSearch(query);
       if (!user) return [];
-      return searchEntries(user.uid, query);
+      if (archiveRef.current) return filterHits(archiveRef.current, query);
+      if (!archiveLoad.current) {
+        archiveLoad.current = loadAllDays(user.uid).then((days) => {
+          archiveRef.current = Object.values(days);
+          return archiveRef.current;
+        });
+      }
+      const days = await archiveLoad.current;
+      return filterHits(days, query);
     },
     [user, offline],
   );
@@ -463,8 +497,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const body = e2e || offline
       ? localExport()
       : user
-        ? await exportEntries(user.uid)
-        : "";
+        ? await exportEntries(user.uid, archiveRef.current ?? undefined)
+        : formatExport(Object.values(localDaysMap()));
     const blob = new Blob([body || "(empty)"], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -500,7 +534,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
     lifetime,
     challenge,
     joinedChallenge,
-    missedYesterday: missedYesterdayFn(today, lifetime?.lastCompleted ?? null),
+    missedYesterday: missedYesterdayFn(
+      today,
+      lifetime?.lastCompleted ?? null,
+      monthDays.find((d) => d.date === addDays(today, -1)) ?? yesterdayInfo,
+    ),
     tip: tipForAccountDay(profile?.daysWithAccount ?? 1),
     saving,
     lastSavedAt,

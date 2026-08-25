@@ -23,7 +23,6 @@ export type QueryParts = {
 };
 
 const SNIP = 90;
-const MAX = 40;
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 export function parseQuery(raw: string): QueryParts {
@@ -99,12 +98,20 @@ export function filterHits(days: DayEntry[], query: string): SearchHit[] {
     .filter((d) => d.wordCount > 0 && d.text.trim())
     .sort((a, b) => b.date.localeCompare(a.date));
   const matched = q ? sorted.filter((d) => matchesQuery(d.text, d.date, q)) : sorted;
-  return matched.slice(0, MAX).map((d) => ({
+  return matched.map((d) => ({
     date: d.date,
     wordCount: d.wordCount,
     snippet: snippet(d.text, snippetNeedle(d.text, q)),
     activeMs: d.session?.activeMs ?? 0,
   }));
+}
+
+/** Whole-diary .txt. Oldest first. */
+export function formatExport(days: DayEntry[]): string {
+  return [...days]
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .map((d) => `===== ${d.date} (${d.wordCount} words) =====\n${d.text}\n`)
+    .join("\n");
 }
 
 export function sortHits(hits: SearchHit[], sort: SortId): SearchHit[] {

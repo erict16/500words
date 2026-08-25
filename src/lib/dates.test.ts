@@ -23,3 +23,10 @@ test("prettyDate is a dated archive label", () => {
   assert.match(prettyDate("2026-08-23"), /23/);
   assert.match(prettyDate("2026-08-23"), /2026/);
 });
+
+test("a day starts at midnight in the chosen timezone", () => {
+  const lateUtc = new Date("2026-08-22T18:00:00Z");
+  assert.equal(todayInZone("Asia/Tokyo", lateUtc), "2026-08-23");
+  assert.equal(todayInZone("America/Chicago", lateUtc), "2026-08-22");
+  assert.equal(todayInZone("UTC", lateUtc), "2026-08-22");
+});

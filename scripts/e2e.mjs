@@ -512,6 +512,8 @@ try {
   if (egg < 1) fail("person page missing egg badge");
   const leaked = await page.locator("textarea, [data-testid='editor']").count();
   if (leaked) fail("person page leaked writing");
+  const personBody = (await page.locator("main").textContent()) ?? "";
+  if (/word0|word12|word499/.test(personBody)) fail("person page leaked diary text");
   const personHead = await page.locator(".persons-header").evaluate((el) => {
     const s = getComputedStyle(el);
     return {
@@ -641,6 +643,58 @@ try {
   console.log("searchOpenWords=" + fromSearch);
   if (fromSearch < 500) fail("search did not open the day");
 
+  const seeded = await page.evaluate(() => {
+    const key = "fivehundred-local-v1";
+    const db = JSON.parse(localStorage.getItem(key) || "{}");
+    db.days = db.days || {};
+    const today = Object.keys(db.days).sort().at(-1) || new Date().toISOString().slice(0, 10);
+    const [y, m, d] = today.split("-").map(Number);
+    for (let i = 1; i <= 50; i += 1) {
+      const dt = new Date(Date.UTC(y, m - 1, d - i));
+      const date = dt.toISOString().slice(0, 10);
+      db.days[date] = {
+        date,
+        text: `archive unique-${i} filler words here`,
+        wordCount: 5,
+        basePoints: 0,
+        points: 0,
+        mark: "dot",
+        locked: false,
+        celebrated: false,
+        completedAt: null,
+        updatedAt: Date.now() - i * 86400000,
+        session: {
+          startedAt: null,
+          activeMs: 0,
+          pauseCount: 0,
+          pauseMs: 0,
+          lastTypedAt: null,
+          hiddenAt: null,
+        },
+        madeUp: false,
+        tags: {},
+      };
+    }
+    localStorage.setItem(key, JSON.stringify(db));
+    return Object.keys(db.days).length;
+  });
+  console.log("seededDays=" + seeded);
+  if (seeded < 51) fail("failed to seed a year-ish archive, got " + seeded);
+
+  await page.goto(SITE + "/stats", { waitUntil: "domcontentloaded" });
+  await page.waitForSelector("[data-testid='archive'] [data-testid='archive-hit']", { timeout: 10000 });
+  const archiveMany = await page.locator("[data-testid='archive'] [data-testid='archive-hit']").count();
+  console.log("archiveMany=" + archiveMany);
+  if (archiveMany < 41) fail("browse still capped near 40 days, got " + archiveMany);
+
+  await page.goto(SITE + "/search", { waitUntil: "domcontentloaded" });
+  await page.locator('[data-testid="search-input"]').fill("unique-41");
+  await page.waitForSelector('[data-testid="search-hits"] button', { timeout: 10000 });
+  const oldHit = await page.locator("[data-testid='search-hits'] button").count();
+  const oldSnippet = (await page.locator(".result-snippet").first().textContent()) ?? "";
+  console.log("oldSearchHits=" + oldHit + " snippet=" + oldSnippet);
+  if (oldHit < 1 || !/unique-41/.test(oldSnippet)) fail("search did not find a day past the old 40 cap");
+
   await page.goto(SITE + "/settings", { waitUntil: "domcontentloaded" });
   await page.locator('[data-testid="theme-dark"]').check();
   await page.waitForFunction(() => document.documentElement.dataset.theme === "dark", null, {
@@ -653,6 +707,11 @@ try {
   console.log("timezones=" + tzCount);
   if (tzCount < 8) fail("timezone list too short");
   if (tzCount > 20) fail("timezone dump is back, got " + tzCount);
+  const streakPolicy = (await page.locator('[data-testid="streak-policy"]').textContent()) ?? "";
+  console.log("streakPolicy=" + streakPolicy);
+  if (!/1000/.test(streakPolicy) || !/timezone/i.test(streakPolicy) || !/yesterday/i.test(streakPolicy)) {
+    fail("settings missing explicit miss/makeup rule");
+  }
   await page.locator('[data-testid="hide-chrome"]').check();
   await page.goto(SITE, { waitUntil: "domcontentloaded" });
   await page.waitForSelector('[data-testid="editor"]');
@@ -680,6 +739,21 @@ try {
   const afterExit = await page.locator(".write-top").evaluate((el) => getComputedStyle(el).opacity);
   console.log("afterExit=" + afterExit);
   if (afterExit !== "1") fail("exit focus did not restore the write header, opacity " + afterExit);
+
+  await page.evaluate(() => {
+    const db = JSON.parse(localStorage.getItem("fivehundred-local-v1") || "{}");
+    const today = Object.keys(db.days || {}).sort().at(-1);
+    if (!today || !db.lifetime) return;
+    const [y, m, d] = today.split("-").map(Number);
+    db.lifetime.lastCompleted = new Date(Date.UTC(y, m - 1, d - 2)).toISOString().slice(0, 10);
+    db.lifetime.hasWritten = true;
+    localStorage.setItem("fivehundred-local-v1", JSON.stringify(db));
+  });
+  await page.goto(SITE, { waitUntil: "domcontentloaded" });
+  await page.waitForSelector('[data-testid="makeup-banner"]', { timeout: 10000 });
+  const makeup = (await page.locator('[data-testid="makeup-banner"]').textContent()) ?? "";
+  console.log("makeup=" + makeup);
+  if (!/1000/.test(makeup) || !/yesterday/i.test(makeup)) fail("write page missing makeup rule");
 
   console.log("pageErrors=" + errors.length);
   if (errors.length) fail(errors.join("\n"));

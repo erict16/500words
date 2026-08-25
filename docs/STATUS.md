@@ -29,7 +29,7 @@ STOP only when that is true.
 ## Next
 
 - Tag Savage PNG/GIF art still isn’t in the public CSS
-- Firestore rules unpublished
+- Firestore rules: owner-only days + no diary body on `public/` (verified in unit tests; deploy with `firebase deploy --only firestore:rules`)
 - `500words-inky` 404
 
 ## Do not

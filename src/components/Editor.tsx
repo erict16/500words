@@ -72,9 +72,10 @@ export function Editor() {
         </p>
       ) : null}
       {isToday && missedYesterday ? (
-        <p className={ui.notice}>
+        <p className={ui.notice} data-testid="makeup-banner">
           You missed yesterday. Write {WORD_GOAL * 2} words today to keep the streak
-          (a makeup day).
+          (a makeup day). A day starts at midnight in your timezone. Older misses break
+          the streak.
         </p>
       ) : null}
       <textarea

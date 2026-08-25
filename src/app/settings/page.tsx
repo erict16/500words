@@ -2,6 +2,7 @@
 
 import { useApp } from "@/components/AppProvider";
 import { cx, ui } from "@/lib/css";
+import { STREAK_POLICY_TEXT } from "@/lib/engine";
 import { isLocalUid } from "@/lib/identity";
 import type { FontId, ThemeId } from "@/lib/types";
 
@@ -164,6 +165,9 @@ export default function SettingsPage() {
           ))}
         </select>
       </label>
+      <p className={ui.subdued} data-testid="streak-policy">
+        {STREAK_POLICY_TEXT}
+      </p>
 
       <div className={ui.btnRow}>
         <button
@@ -172,7 +176,7 @@ export default function SettingsPage() {
           onClick={() => void downloadExport()}
           data-testid="export"
         >
-          Export entries
+          Export all entries
         </button>
         <button
           type="button"

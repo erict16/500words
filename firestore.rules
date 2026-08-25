@@ -7,6 +7,10 @@ service cloud.firestore {
     function isSelf(uid) {
       return signedIn() && request.auth.uid == uid;
     }
+    // Diary body lives only under users/{uid}/days. Never on public or challenge rows.
+    function noDiaryBody() {
+      return !request.resource.data.keys().hasAny(['text', 'body', 'writing', 'entry', 'snippet']);
+    }
 
     match /users/{uid} {
       allow read, write: if isSelf(uid);
@@ -17,12 +21,14 @@ service cloud.firestore {
 
     match /challenges/{month}/entrants/{uid} {
       allow read: if signedIn();
-      allow create, update, delete: if isSelf(uid);
+      allow create, update: if isSelf(uid) && noDiaryBody();
+      allow delete: if isSelf(uid);
     }
 
     match /public/{month}/people/{uid} {
       allow read: if true;
-      allow create, update, delete: if isSelf(uid);
+      allow create, update: if isSelf(uid) && noDiaryBody();
+      allow delete: if isSelf(uid);
     }
   }
 }

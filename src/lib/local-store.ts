@@ -19,7 +19,7 @@ import {
   type Settings,
   type UserProfile,
 } from "./types.ts";
-import { filterHits, type SearchHit } from "./search.ts";
+import { filterHits, formatExport, type SearchHit } from "./search.ts";
 import { countWords, markForWords } from "./words.ts";
 import { LOCAL_UID } from "./identity.ts";
 
@@ -51,6 +51,7 @@ type DB = {
   lifetime: Lifetime;
   badges: Record<string, EarnedBadge>;
   challenges: Record<string, ChallengeEntrant & { joinDate: string }>;
+  cloudUid: string | null;
 };
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -74,6 +75,7 @@ export function parseLocalDb(raw: unknown): DB {
     lifetime: isRecord(raw.lifetime) ? { ...base.lifetime, ...raw.lifetime } : base.lifetime,
     badges: parseBadges(raw.badges),
     challenges: parseChallenges(raw.challenges),
+    cloudUid: typeof raw.cloudUid === "string" && raw.cloudUid ? raw.cloudUid : null,
   };
 }
 
@@ -198,6 +200,7 @@ function seed(): DB {
     lifetime: emptyLifetime(),
     badges: {},
     challenges: {},
+    cloudUid: null,
   };
 }
 
@@ -209,6 +212,34 @@ function persist(db: DB) {
 
 export function localEntriesWithText(): DayEntry[] {
   return Object.values(load().days).filter((day) => day.text.trim().length > 0);
+}
+
+export function localDaysMap(): Record<string, DayEntry> {
+  return { ...load().days };
+}
+
+export function localPutDays(days: DayEntry[]) {
+  const db = load();
+  for (const day of days) {
+    db.days[day.date] = day;
+  }
+  persist(db);
+}
+
+export function localReplaceDays(days: Record<string, DayEntry>) {
+  const db = load();
+  db.days = { ...days };
+  persist(db);
+}
+
+export function localCloudUid(): string | null {
+  return load().cloudUid ?? null;
+}
+
+export function localSetCloudUid(uid: string | null) {
+  const db = load();
+  db.cloudUid = uid;
+  persist(db);
 }
 
 export function localEnsureUser(): UserProfile {
@@ -360,11 +391,7 @@ export function localSetName(displayName: string) {
 }
 
 export function localExport(): string {
-  const db = load();
-  const days = Object.values(db.days).sort((a, b) => a.date.localeCompare(b.date));
-  return days
-    .map((d) => `===== ${d.date} (${d.wordCount} words) =====\n${d.text}\n`)
-    .join("\n");
+  return formatExport(Object.values(load().days));
 }
 
 export { emptySession };

@@ -8,7 +8,7 @@ import { BADGE_MAP } from "@/lib/badges";
 import { monthKey, parseDate, todayInZone } from "@/lib/dates";
 import { isFirebaseConfigured } from "@/lib/firebase";
 import { loadPublicPerson } from "@/lib/db";
-import { publicScore } from "@/lib/engine";
+import { publicScore, readPublicScore } from "@/lib/engine";
 
 type Score = ReturnType<typeof publicScore>;
 
@@ -39,19 +39,7 @@ export default function PersonPage() {
     });
   }, [params.id, settings.timezone, self]);
 
-  const score: Score | null = selfScore
-    ? selfScore
-    : row
-      ? {
-          displayName: String(row.displayName || "Anonymous"),
-          monthPoints: Number(row.monthPoints ?? 0),
-          monthWords: Number(row.monthWords ?? 0),
-          daysStarted: Number(row.daysStarted ?? 0),
-          daysCompleted: Number(row.daysCompleted ?? 0),
-          streak: Number(row.streak ?? 0),
-          badgeIds: Array.isArray(row.badgeIds) ? (row.badgeIds as string[]) : [],
-        }
-      : null;
+  const score: Score | null = selfScore ? selfScore : row ? readPublicScore(row) : null;
 
   if (!self && (missing || !isFirebaseConfigured())) {
     return (

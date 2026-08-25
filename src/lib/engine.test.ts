@@ -6,8 +6,13 @@ import {
   applySave,
   emptyLifetime,
   emptyMonth,
+  hasDiaryBody,
   missedYesterday,
+  PUBLIC_SCORE_KEYS,
   publicScore,
+  readPublicScore,
+  STREAK_POLICY_TEXT,
+  stripDiaryBody,
 } from "./engine.ts";
 import { emptyEntry, emptySession, WORD_GOAL } from "./types.ts";
 
@@ -137,13 +142,33 @@ test("challenge shame after a miss post-join", () => {
   assert.equal(result.status, "shame");
 });
 
-test("missedYesterday is false for a new account", () => {
+test("missedYesterday is false for a new account that never wrote", () => {
   assert.equal(missedYesterday("2026-08-22", null), false);
+  assert.equal(missedYesterday("2026-08-22", null, null), false);
+  assert.equal(missedYesterday("2026-08-22", null, { wordCount: 0 }), false);
 });
 
 test("missedYesterday is true when last strike was two days ago", () => {
   assert.equal(missedYesterday("2026-08-22", "2026-08-20"), true);
   assert.equal(missedYesterday("2026-08-22", "2026-08-21"), false);
+});
+
+test("missedYesterday is true for a new account that started yesterday but did not finish", () => {
+  assert.equal(
+    missedYesterday("2026-08-22", null, { wordCount: 40, madeUp: false }),
+    true,
+  );
+  assert.equal(
+    missedYesterday("2026-08-22", null, { wordCount: 40, madeUp: true }),
+    false,
+  );
+});
+
+test("streak policy names timezone midnight and yesterday-only makeup", () => {
+  assert.match(STREAK_POLICY_TEXT, /midnight/i);
+  assert.match(STREAK_POLICY_TEXT, /timezone/i);
+  assert.match(STREAK_POLICY_TEXT, /1000/);
+  assert.match(STREAK_POLICY_TEXT, /yesterday/i);
 });
 
 test("emptyMonth has the right number of August days", () => {
@@ -181,4 +206,28 @@ test("publicScore never includes writing", () => {
   assert.equal(row.monthPoints, 2);
   assert.deepEqual(row.badgeIds, ["egg"]);
   assert.equal("text" in row, false);
+  assert.deepEqual(Object.keys(row).sort(), [...PUBLIC_SCORE_KEYS].sort());
+  assert.equal(hasDiaryBody(row as Record<string, unknown>), false);
+});
+
+test("readPublicScore drops leaked diary fields", () => {
+  const secret = "SECRET_DIARY_LINE_never_on_person_page";
+  const leaky = {
+    displayName: "Ada",
+    monthPoints: 2,
+    monthWords: 500,
+    daysStarted: 1,
+    daysCompleted: 1,
+    streak: 3,
+    badgeIds: ["egg"],
+    text: secret,
+    body: secret,
+    writing: secret,
+    entry: secret,
+    snippet: secret,
+  };
+  const row = readPublicScore(leaky);
+  assert.equal("text" in row, false);
+  assert.equal(JSON.stringify(row).includes(secret), false);
+  assert.equal(hasDiaryBody(stripDiaryBody(leaky)), false);
 });

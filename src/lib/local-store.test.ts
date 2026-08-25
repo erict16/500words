@@ -17,10 +17,17 @@ test("keeps a valid day and drops a bad date key", () => {
       "2026-08-23": { text: "hello world", wordCount: 2, mark: "dot" },
       junk: { text: "nope" },
     },
+    cloudUid: "google-1",
   });
   assert.equal(db.profile.displayName, "Eric");
   assert.equal(db.profile.email, "");
   assert.equal(db.profile.settings.fontSize, 28);
   assert.equal(db.days["2026-08-23"]?.text, "hello world");
   assert.equal(db.days.junk, undefined);
+  assert.equal(db.cloudUid, "google-1");
+});
+
+test("missing cloudUid stays null so a later sign-in can merge", () => {
+  const db = parseLocalDb({ days: {} });
+  assert.equal(db.cloudUid, null);
 });

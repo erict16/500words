@@ -2,6 +2,7 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import {
   filterHits,
+  formatExport,
   highlightParts,
   matchesQuery,
   monthSparkline,
@@ -109,6 +110,36 @@ describe("search", () => {
       { t: "world", hit: true },
       { t: " from the desk" },
     ]);
+  });
+
+  it("lists more than 40 days for browse and search", () => {
+    const days = Array.from({ length: 50 }, (_, i) => {
+      const n = String(i + 1).padStart(2, "0");
+      const date = i < 31 ? `2026-07-${n}` : `2026-08-${String(i - 30).padStart(2, "0")}`;
+      return { ...emptyEntry(date), text: `entry number ${i + 1} unique-${i + 1}`, wordCount: 4 };
+    });
+    const browse = filterHits(days, "");
+    assert.equal(browse.length, 50);
+    assert.equal(browse[0].date >= browse[browse.length - 1].date, true);
+    const hits = filterHits(days, "unique-41");
+    assert.equal(hits.length, 1);
+    assert.match(hits[0].snippet, /unique-41/);
+  });
+
+  it("exports the whole diary, not one day", () => {
+    const days = Array.from({ length: 50 }, (_, i) => {
+      const date =
+        i < 30
+          ? `2026-04-${String(i + 1).padStart(2, "0")}`
+          : `2026-05-${String(i - 29).padStart(2, "0")}`;
+      return { ...emptyEntry(date), text: `day ${i + 1} body`, wordCount: 3 };
+    });
+    const body = formatExport(days);
+    assert.match(body, /===== 2026-04-01 \(3 words\) =====/);
+    assert.match(body, /===== 2026-05-20 \(3 words\) =====/);
+    assert.equal((body.match(/===== /g) || []).length, 50);
+    assert.match(body, /day 1 body/);
+    assert.match(body, /day 50 body/);
   });
 
   it("builds a monthly sparkline when hits span months", () => {

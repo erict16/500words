@@ -179,9 +179,48 @@ export function applyChallenge(opts: {
   return { completedDays, missedDays, status };
 }
 
-export function missedYesterday(today: string, lastCompleted: string | null): boolean {
-  if (!lastCompleted) return false;
-  return lastCompleted < addDays(today, -1);
+/** Midnight in Settings timezone. Makeup covers yesterday only, at 1000 words. */
+export const STREAK_POLICY_TEXT =
+  "A day starts at midnight in your timezone. Miss yesterday? Write 1000 words today to keep the streak. Older misses break it.";
+
+export const MAKEUP_WORDS = WORD_GOAL * 2;
+
+export function missedYesterday(
+  today: string,
+  lastCompleted: string | null,
+  yesterday?: { wordCount: number; madeUp?: boolean } | null,
+): boolean {
+  const y = addDays(today, -1);
+  if (yesterday?.madeUp) return false;
+  if (yesterday && yesterday.wordCount >= WORD_GOAL) return false;
+  if (lastCompleted === y) return false;
+  if (lastCompleted && lastCompleted < y) return true;
+  if (yesterday && yesterday.wordCount > 0 && yesterday.wordCount < WORD_GOAL) return true;
+  return false;
+}
+
+export const PUBLIC_FORBIDDEN_KEYS = ["text", "body", "writing", "entry", "snippet"] as const;
+
+export const PUBLIC_SCORE_KEYS = [
+  "displayName",
+  "monthPoints",
+  "monthWords",
+  "daysStarted",
+  "daysCompleted",
+  "streak",
+  "badgeIds",
+] as const;
+
+export function hasDiaryBody(data: Record<string, unknown>): boolean {
+  return PUBLIC_FORBIDDEN_KEYS.some((key) => key in data);
+}
+
+export function stripDiaryBody<T extends Record<string, unknown>>(data: T): T {
+  const next: Record<string, unknown> = { ...data };
+  for (const key of PUBLIC_FORBIDDEN_KEYS) {
+    delete next[key];
+  }
+  return next as T;
 }
 
 /** Public scoreboard. Never includes the writing. */
@@ -200,6 +239,23 @@ export function publicScore(opts: {
     daysCompleted: monthDays.filter((d) => d.mark === "strike" || d.wordCount >= WORD_GOAL).length,
     streak,
     badgeIds: badges.map((b) => b.id),
+  };
+}
+
+export type PublicScore = ReturnType<typeof publicScore>;
+
+/** Read a public person row without ever taking diary body fields. */
+export function readPublicScore(row: Record<string, unknown>): PublicScore {
+  return {
+    displayName: String(row.displayName || "Anonymous"),
+    monthPoints: Number(row.monthPoints ?? 0),
+    monthWords: Number(row.monthWords ?? 0),
+    daysStarted: Number(row.daysStarted ?? 0),
+    daysCompleted: Number(row.daysCompleted ?? 0),
+    streak: Number(row.streak ?? 0),
+    badgeIds: Array.isArray(row.badgeIds)
+      ? row.badgeIds.filter((id): id is string => typeof id === "string")
+      : [],
   };
 }
 

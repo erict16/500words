@@ -1,12 +1,15 @@
 import {
   collection,
   doc,
+  documentId,
   getDoc,
   getDocs,
   onSnapshot,
+  query,
   serverTimestamp,
   setDoc,
   updateDoc,
+  where,
   type Unsubscribe,
 } from "firebase/firestore";
 import { badgesToAward, type BadgeStats } from "./badges";
@@ -17,6 +20,7 @@ import {
   applySave,
   emptyLifetime,
   publicScore,
+  stripDiaryBody,
   type Lifetime,
 } from "./engine";
 import { getDb } from "./firebase";
@@ -33,7 +37,7 @@ import {
   type Settings,
   type UserProfile,
 } from "./types";
-import { filterHits, type SearchHit } from "./search";
+import { filterHits, formatExport, type SearchHit } from "./search";
 import { markForWords } from "./words";
 
 const asNumber = (value: unknown, fallback = 0) =>
@@ -148,7 +152,7 @@ function entryFromSnap(date: string, data: Record<string, unknown> | undefined):
     locked: Boolean(data.locked),
     celebrated: Boolean(data.celebrated),
     completedAt: data.completedAt ? asNumber(data.completedAt) : null,
-    updatedAt: asNumber(data.updatedAt, Date.now()),
+    updatedAt: asNumber(data.updatedAt, 0),
     session: { ...base.session, ...(data.session as SessionStats | undefined) },
     madeUp: Boolean(data.madeUp),
     tags: (data.tags as Record<string, string>) || {},
@@ -158,6 +162,31 @@ function entryFromSnap(date: string, data: Record<string, unknown> | undefined):
 export async function loadDay(uid: string, date: string): Promise<DayEntry> {
   const snap = await getDoc(dayRef(uid, date));
   return entryFromSnap(date, snap.data());
+}
+
+function monthDaysQuery(uid: string, yearMonth: string) {
+  return query(
+    collection(getDb(), "users", uid, "days"),
+    where(documentId(), ">=", `${yearMonth}-01`),
+    where(documentId(), "<=", `${yearMonth}-31`),
+  );
+}
+
+export async function loadAllDays(uid: string): Promise<Record<string, DayEntry>> {
+  const snap = await getDocs(collection(getDb(), "users", uid, "days"));
+  const days: Record<string, DayEntry> = {};
+  snap.forEach((docSnap) => {
+    days[docSnap.id] = entryFromSnap(docSnap.id, docSnap.data());
+  });
+  return days;
+}
+
+export async function writeDaySnapshot(uid: string, entry: DayEntry) {
+  await setDoc(
+    dayRef(uid, entry.date),
+    { ...entry, serverUpdatedAt: serverTimestamp() },
+    { merge: true },
+  );
 }
 
 export async function loadPreviousBase(
@@ -185,11 +214,9 @@ export function listenMonth(
   yearMonth: string,
   cb: (days: MonthDay[]) => void,
 ): Unsubscribe {
-  const col = collection(getDb(), "users", uid, "days");
-  return onSnapshot(col, (snap) => {
+  return onSnapshot(monthDaysQuery(uid, yearMonth), (snap) => {
     const byDate = new Map<string, MonthDay>();
     snap.forEach((docSnap) => {
-      if (!docSnap.id.startsWith(yearMonth)) return;
       const data = docSnap.data();
       const day = Number(docSnap.id.slice(-2));
       byDate.set(docSnap.id, {
@@ -349,10 +376,9 @@ async function syncPublic(
   streak: number,
 ) {
   const month = monthKey(date);
-  const monthDaysSnap = await getDocs(collection(getDb(), "users", uid, "days"));
+  const monthDaysSnap = await getDocs(monthDaysQuery(uid, month));
   const byDate = new Map<string, MonthDay>();
   monthDaysSnap.forEach((d) => {
-    if (!d.id.startsWith(month)) return;
     const data = d.data();
     byDate.set(d.id, {
       date: d.id,
@@ -397,12 +423,12 @@ async function syncPublic(
   const score = publicScore({ displayName, monthDays, streak, badges });
   await setDoc(
     publicMonthRef(month, uid),
-    {
+    stripDiaryBody({
       uid,
       photoURL,
       ...score,
       updatedAt: Date.now(),
-    },
+    }),
     { merge: true },
   );
 }
@@ -423,10 +449,10 @@ async function syncChallenge(
     typeof snap.data()?.joinDate === "string"
       ? (snap.data()?.joinDate as string)
       : date;
-  const daySnaps = await getDocs(collection(getDb(), "users", uid, "days"));
+  const daySnaps = await getDocs(monthDaysQuery(uid, month));
   const wordsByDate: Record<string, number> = {};
   daySnaps.forEach((d) => {
-    if (d.id.startsWith(month)) wordsByDate[d.id] = asNumber(d.data().wordCount);
+    wordsByDate[d.id] = asNumber(d.data().wordCount);
   });
   wordsByDate[date] = entry.wordCount;
   const next = applyChallenge({
@@ -462,10 +488,10 @@ export async function joinChallenge(
   month: string,
   today: string,
 ) {
-  const daySnaps = await getDocs(collection(getDb(), "users", uid, "days"));
+  const daySnaps = await getDocs(monthDaysQuery(uid, month));
   const wordsByDate: Record<string, number> = {};
   daySnaps.forEach((d) => {
-    if (d.id.startsWith(month)) wordsByDate[d.id] = asNumber(d.data().wordCount);
+    wordsByDate[d.id] = asNumber(d.data().wordCount);
   });
   const next = applyChallenge({
     monthDates: datesInMonth(month),
@@ -483,21 +509,18 @@ export async function joinChallenge(
   });
 }
 
-export async function searchEntries(uid: string, query: string): Promise<SearchHit[]> {
-  const snap = await getDocs(collection(getDb(), "users", uid, "days"));
-  const days: DayEntry[] = [];
-  snap.forEach((d) => days.push(entryFromSnap(d.id, d.data())));
-  return filterHits(days, query);
+export async function searchEntries(
+  uid: string,
+  queryText: string,
+  cached?: DayEntry[],
+): Promise<SearchHit[]> {
+  const days = cached ?? Object.values(await loadAllDays(uid));
+  return filterHits(days, queryText);
 }
 
-export async function exportEntries(uid: string): Promise<string> {
-  const snap = await getDocs(collection(getDb(), "users", uid, "days"));
-  const days: DayEntry[] = [];
-  snap.forEach((d) => days.push(entryFromSnap(d.id, d.data())));
-  days.sort((a, b) => a.date.localeCompare(b.date));
-  return days
-    .map((d) => `===== ${d.date} (${d.wordCount} words) =====\n${d.text}\n`)
-    .join("\n");
+export async function exportEntries(uid: string, cached?: DayEntry[]): Promise<string> {
+  const days = cached ?? Object.values(await loadAllDays(uid));
+  return formatExport(days);
 }
 
 export function listenChallenge(
