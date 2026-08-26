@@ -267,13 +267,13 @@ html[data-write-focus="1"] .exit-focus-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  min-width: 32px;
-  min-height: 32px;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  min-height: 36px;
   padding: 0;
   border: 0;
-  border-radius: 4px;
+  border-radius: 50%;
   background: transparent;
   color: var(--muted);
   text-decoration: none;
@@ -371,7 +371,7 @@ html[data-write-focus="1"] .exit-focus-btn {
   font-family: var(--font-serif-primary);
   font-size: 26px;
   font-weight: 700;
-  line-height: 1.15;
+  line-height: normal;
   margin: 0 0 1rem;
   color: var(--ink);
   background: transparent;
@@ -454,11 +454,13 @@ html[data-write-focus="1"] .exit-focus-btn {
 }
 
 .cal-month.current {
-  font-weight: 400;
+  font-weight: 700;
   text-decoration: none;
 }
 
-.cal-sep { color: #bbb; }
+.cal-sep {
+  color: inherit;
+}
 
 .cal-done {
   margin: 0;
@@ -618,12 +620,17 @@ a.subdued:hover {
   }
 }
 
-.day-box .day-check {
-  width: 14px;
-  height: 14px;
+.day-box .day-check,
+.today-checkmark,
+.patched-checkmark {
   display: block;
   margin: 0 auto;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
   filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.3));
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .day-box.dot,
@@ -678,7 +685,7 @@ a.subdued:hover {
   min-width: 24px;
   margin-left: 0;
   padding: 2px 6px;
-  border: thin solid currentColor;
+  border: 1px solid var(--border-medium, #ccc);
   border-radius: 4px;
   background: transparent;
   color: var(--ink);
@@ -914,8 +921,7 @@ input:focus-visible {
 }
 .footer-text.mono,
 .mono {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
-    monospace;
+  font-family: var(--font-mono-code);
 }
 
 .word-foot-inner {
@@ -948,24 +954,48 @@ input:focus-visible {
 }
 
 .stats-button-link,
-.word-good,
-.word-foot a.word-good {
-  color: green;
+.footer-button,
+.word-foot a.stats-button-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: 28px;
+  min-height: 28px;
+  padding: 0 12px;
+  margin-right: 4px;
+  border: 1px solid var(--brand-green, #00c853);
+  border-radius: 4px;
+  background-color: var(--brand-green, #00c853);
+  color: #fff;
   font-family: var(--font-sans-metadata);
   font-size: 13px;
-  font-weight: 700;
-  text-decoration: none;
-  padding: 8px 12px;
+  font-weight: 500;
+  letter-spacing: 0.089em;
   line-height: 1;
-  margin-right: 4px;
-  background: var(--paper);
-  border-radius: var(--radius-base);
-}
-.word-good:hover,
-.word-foot a.word-good:hover,
-.stats-button-link:hover {
-  color: green;
   text-decoration: none;
+  white-space: nowrap;
+  box-shadow: none;
+}
+.stats-button-link:link,
+.stats-button-link:visited,
+.footer-button:link,
+.footer-button:visited {
+  background-color: var(--brand-green, #00c853);
+  border-color: var(--brand-green, #00c853);
+  color: #fff;
+  text-decoration: none;
+}
+.stats-button-link:hover,
+.footer-button:hover,
+.word-foot a.stats-button-link:hover {
+  background-color: var(--brand-green-dark, #00a047);
+  border-color: var(--brand-green-dark, #00a047);
+  color: #fff;
+  text-decoration: none;
+}
+.word-good {
+  color: var(--brand-green, #00c853);
 }
 
 [data-theme="dark"] .word-count {

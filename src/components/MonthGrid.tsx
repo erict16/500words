@@ -7,18 +7,12 @@ import { dayFillColor, dayWordBand } from "@/lib/words";
 import { useApp } from "./AppProvider";
 import { useWriteFocus } from "./WriteFocus";
 
+/** Live 750: span.today-checkmark / .patched-checkmark with ✔ #fff 14px */
 export function DayCheck() {
   return (
-    <svg className={ui.dayCheck} viewBox="0 0 16 16" aria-hidden>
-      <path
-        d="M3.2 8.4 6.1 11.2 12.8 4.4"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
+    <span className={cx(ui.dayCheck, "today-checkmark")} aria-hidden>
+      ✔
+    </span>
   );
 }
 
@@ -63,10 +57,7 @@ export function MonthGrid() {
         <div className={cx(ui.calRow, "font-sans")}>
           <div className={ui.calMonths}>
             <button type="button" className={ui.calNav} aria-label="Previous month" onClick={() => setDate(prev)}>
-              ◀
-            </button>
-            <button type="button" className={ui.calMonth} onClick={() => setDate(prev)}>
-              {monthAbbr(prev)}
+              ◄ {monthAbbr(prev)}
             </button>
             <span className={ui.calSep}>|</span>
             <span className={cx(ui.calMonth, "current")}>{monthAbbr(date)}</span>

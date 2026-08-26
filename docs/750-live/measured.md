@@ -50,7 +50,7 @@ Legal substitutes: **Bitter** (serif), **Source Sans 3** (sans).
 - No “Menu” label
 - `#words-app-bar` fixed, 64px, opacity 0.9
 - `#logo`: 20px / 700 / serif
-- Close: `.header-close-btn` / `#focus-close-btn` 32×32, icon 20×20
+- Close: WritingLayout `#focus-close-btn` v-btn icon **36×36** (`.writing-control-btn`). Unused `.header-close-btn` is 32×32. Icon 20×20. Screenshot × is gray, not `#1a1a1a`
 - Content: **820px**, padding 12px 16px, padding-bottom 50px
 - Date `.title-input`: **26px / 700** serif. Focus: **28px** + bottom rule
 - Editor: **19px** / 400 / line-height 1.6 serif. Placeholder opacity 0.6, weight 300, `Write something here...`
@@ -64,7 +64,7 @@ Hides: month grid / entry-browser (`v-if !focusMode`), footer (`.write-footer--f
 
 ## Calendar
 
-- Month nav: `◀ Jul | Aug` gap **0.25rem**. Next month `Sep ►` when that month is not the future. Current month is **not** bold/underlined.
+- Month nav: `◄ Jul | Aug` (U+25C4 + MMM), gap **0.25rem**. Next month `Sep ►` when that month is not the future. Current month is wrapped in `<strong>` (**700**). No speaker icon.
 - `.streak-display`: 12px, `#4a4a4a`, copy **“N day streak”**
 - `.day-grid-item`: **21×21**, **2px** border, **border-radius 20%**, margin 2px, hover `translateY(-2px)`
 - Empty: bg `#fbfbfb`, border `#e0e0e0`
@@ -85,7 +85,7 @@ showStatsButton() { return this.currentWords >= 750 }
 - 0 words → `Private, unfiltered, spontaneous, daily`
 - words > 0 → **`N words`** (never `N/500`)
 - saved: ` •` + floppy icon (not the word “saved”)
-- ≥ goal → `🎉 SEE STATS` plus papers plus `N words`
+- ≥ goal → green filled `BaseButton type=primary` **28px / 13px / 500 / white** `🎉 SEE STATS` (screenshot fill `#00c853`, radius ~4px) plus papers plus `N words`. Not a text link. `.mono` count uses Roboto Mono.
 
 500 Words: three papers fill toward 500 (`words / (500/3)`).
 

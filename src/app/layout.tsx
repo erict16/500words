@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bitter, Source_Sans_3 } from "next/font/google";
+import { Bitter, Roboto_Mono, Source_Sans_3 } from "next/font/google";
 import { AppProvider } from "@/components/AppProvider";
 import { Shell } from "@/components/Shell";
 import { ThemeSync } from "@/components/ThemeSync";
@@ -21,6 +21,13 @@ const sans = Source_Sans_3({
   weight: ["400", "500", "600", "700"],
 });
 
+const mono = Roboto_Mono({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-roboto-mono",
+  weight: ["400", "500"],
+});
+
 export const metadata: Metadata = {
   title: "500 Words",
   description: "Private daily writing. Five hundred words.",
@@ -37,7 +44,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`h-full ${serif.variable} ${sans.variable}`}>
+    <html lang="en" className={`h-full ${serif.variable} ${sans.variable} ${mono.variable}`}>
       <body className="min-h-full font-serif">
         <AppProvider>
           <ThemeSync />

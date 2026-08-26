@@ -204,7 +204,7 @@ try {
   );
   const cls = await page.locator('[data-testid="today-box"]').getAttribute("class");
   console.log("todayClass=" + cls);
-  const check = await page.locator('[data-testid="today-box"] svg.day-check').count();
+  const check = await page.locator('[data-testid="today-box"] .day-check').count();
   console.log("strikeCheck=" + check);
   if (check < 1) fail("strike is missing the check");
   const banner = await page.locator('[data-testid="strike-banner"]').textContent();
@@ -220,6 +220,28 @@ try {
   const seeStats = await page.locator('[data-testid="see-stats"]').count();
   console.log("seeStats=" + seeStats);
   if (!seeStats) fail("missing 🎉 SEE STATS after 500");
+  const statsChrome = await page.locator('[data-testid="see-stats"]').evaluate((el) => {
+    const s = getComputedStyle(el);
+    const r = el.getBoundingClientRect();
+    return {
+      bg: s.backgroundColor,
+      color: s.color,
+      size: s.fontSize,
+      weight: s.fontWeight,
+      height: Math.round(r.height),
+      text: (el.textContent || "").trim(),
+    };
+  });
+  console.log("statsChrome=" + JSON.stringify(statsChrome));
+  if (statsChrome.bg !== "rgb(0, 200, 83)") fail("SEE STATS not #00c853 fill, got " + statsChrome.bg);
+  if (statsChrome.color !== "rgb(255, 255, 255)") fail("SEE STATS not white text, got " + statsChrome.color);
+  if (statsChrome.size !== "13px") fail("SEE STATS not 13px, got " + statsChrome.size);
+  if (!(statsChrome.weight === "500" || statsChrome.weight === "400")) fail("SEE STATS weight, got " + statsChrome.weight);
+  if (statsChrome.height < 26 || statsChrome.height > 32) fail("SEE STATS height not ~28px, got " + statsChrome.height);
+  if (!statsChrome.text.includes("SEE STATS")) fail("SEE STATS label missing, got " + statsChrome.text);
+  const monthWeight = await page.locator(".cal-month.current").evaluate((el) => getComputedStyle(el).fontWeight);
+  console.log("currentMonthWeight=" + monthWeight);
+  if (!(monthWeight === "700" || monthWeight === "bold")) fail("current month not 700, got " + monthWeight);
 
   await page.keyboard.press("Meta+s");
   await page.waitForSelector('[data-testid="saved-flash"]', { timeout: 5000 });

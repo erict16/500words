@@ -36,7 +36,7 @@ export function WordFooter() {
           {done ? (
             <Link
               href="/stats"
-              className={cx(ui.statsButton, ui.wordGood)}
+              className={cx(ui.statsButton, "footer-button")}
               data-testid="see-stats"
               title="Today’s stats"
             >
