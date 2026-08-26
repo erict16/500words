@@ -18,6 +18,6 @@ Live CSS and computed type: `docs/750-live/`. Prefer that over `docs/750-source.
 
 Sentinel SSm and Gotham Narrow are paid. Do not pirate them. Defaults: **Zilla Slab** (serif) and **Barlow Semi Condensed** (sans). Also loaded (OFL / Google Fonts): Merriweather, Bitter, Montserrat, Figtree, Source Sans 3, Roboto Mono.
 
-Guests see 750’s logged-out chrome at `/` (serif wordmark, outlined Log In + Sign Up). No Menu. No doodle. No Let’s write. Write page (`/write`) is 750-identical: no Menu, no ⋮; fixed 64px bar; serif wordmark 20px/700; gray ×; 26px date; month nav; avatar + streak + `.focus-toggle-btn` (mdi-fullscreen, F11); 21px day cells; F11 focus mode with `.exit-focus-btn`; **three paper icons** filling toward 500 (not N/500). Inner pages later.
+Guests see 750’s logged-out chrome at `/` (serif wordmark, outlined Log In + Sign Up). No Menu. No doodle. No Let’s write. Write page (`/write`) is 750-identical: no Menu, no ⋮; fixed 64px bar; serif wordmark 22px/700 (Zilla optical bump); gray ×; 28px date (30px in focus); month nav; avatar + streak + wider `.focus-toggle-btn` (outlined ~52×24, mdi-fullscreen, F11); 21px day cells; F11 focus mode with `.exit-focus-btn`; **three paper icons** filling toward 500 (not N/500). Inner pages later.
 
 Do not merge `750-parity` into main unless asked. Do not revive `feat/overnight-750-lock`.

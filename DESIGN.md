@@ -20,16 +20,18 @@ we use:            Barlow Semi Condensed default (closest to Gotham Narrow, OFL)
 
 | Surface | Size | Weight | Face |
 | --- | --- | --- | --- |
-| Wordmark “500 Words” | 20px / 30px line | **700** | serif |
-| Landing wordmark | 20px / 30px line | **700** | serif |
+| Wordmark “500 Words” (write) | 22px / 32px line | **700** | serif |
+| Landing / inner wordmark | 20px / 30px line | **700** | serif |
 | Landing welcome | 32px | **600** | serif, `#00c853` |
-| Write date | **26px** (28px in focus) | **700** | serif |
-| Editor | **19px** (20px in focus) | 400, line-height ~1.6 | serif |
-| Placeholder | 19px | 300, opacity 0.6 | serif |
+| Write date | **28px** (30px in focus) | **700** | serif |
+| Editor | **21px** (22px in focus) | 400, line-height ~1.6 | serif |
+| Placeholder | 21px | 300, opacity 0.6 | serif |
 | Streak / chrome | 12px | 400 | sans |
 | Footer | 14px | 400 | serif |
 | Inner nav | 16px | 400 | sans |
 | Landing Log In / Sign Up | 14px / 36px outlined | **500** | sans |
+
+Zilla Slab reads smaller than Sentinel SSm at the same CSS px. Write-page type is +2px vs live 750 so the optical size matches Eric’s 750 shot. Day cells stay **21×21**. Do not pirate Sentinel / Gotham.
 
 Green: `#00c853` primary (today ring, links, outlined header buttons). Success checks `#4caf50`. Ink `#1a1a1a`. Secondary `#4a4a4a`.
 
@@ -40,6 +42,7 @@ Guests see 750’s logged-out header: serif wordmark left, outlined **Log In** +
 - **Do not** copy the 750 ★ manifesto (Artist Way, charts, fake writer counts) or post-write AI screenshots.
 - **Do not** use a doodle, Notion illustration, photo, or any drawing.
 - Welcome heading in brand green. Short private-writing blurb. Filled LOG IN / SIGN UP. Quiet guest path: Write on this device → `/write`.
+- Hero sits in the remaining viewport (top padding ~12vh, centered block), not glued under the 64px bar. Same chrome, no extra sections.
 - Sign in is Google (Log In / Sign Up). Guests can still write locally at `/write`.
 - Signed-in visitors at `/` go to `/write`.
 - Write page is **not** restyled to match the landing.
@@ -49,9 +52,10 @@ Guests see 750’s logged-out header: serif wordmark left, outlined **Log In** +
 Match the current 750 write overlay:
 
 - **No “Menu”.** No Write / Stats / Badges row on this page.
-- Top: **fixed 64px** bar, opacity 0.9, wordmark left (20px / 700 serif), **gray ×** right (close / exit). Close hides in focus mode.
-- Long date, **26px / 700**. In focus mode: **28px** with a light bottom rule.
+- Top: **fixed 64px** bar, opacity 0.9, wordmark left (22px / 700 serif), **gray ×** right (close / exit). Close hides in focus mode.
+- Long date, **28px / 700**. In focus mode: **30px** with a light bottom rule.
 - Under the date: left `◀ Jul \| Aug` (and `Sep ►` when that month is not the future); right **avatar + “N day streak” + `.focus-toggle-btn`**. **No ⋮ / kebab / Menu** on this page (Eric, 2026-08-26 — 750 still has a ⋮; ours stays gone).
+- **Focus toggle** is 750’s outlined `v-btn` small: height **24px**, padding **2px 6px**, min-width ~**52px** (a horizontal rectangle, not a 24×24 square), light gray outline, mdi-fullscreen, opacity 0.6. Guests may hide the streak; the focus tab always shows.
 - **Focus mode:** F11 or EntryBrowser `.focus-toggle-btn` (mdi-fullscreen, title `Enter focus mode (F11)`). Hides the month grid, streak row, close ×, and footer. Logo and date stay. Exit: F11, Esc, or fixed top-right `.exit-focus-btn` (mdi-fullscreen-exit, 36px on small screens).
 - Guests / no photo: empty 750-style (no homemade “0 days completed”).
 - Month squares: **21px**, 2px border, ~20% radius, 2px margin. Empty = `#fbfbfb` / `#e0e0e0`. Words fill the live Bunny green scale (750 index × 500/750). Done = fill + **white check**. Today not done = `#00c853` ring. Hover lifts 2px.

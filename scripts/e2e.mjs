@@ -165,6 +165,19 @@ try {
   if (await kebab.count()) fail("write page still has kebab; Eric asked it gone");
   const focusTitle = await page.locator('[data-testid="focus-toggle"]').getAttribute("title");
   if (focusTitle !== "Enter focus mode (F11)") fail("focus toggle title should match 750, got " + focusTitle);
+  const focusBox = await page.locator('[data-testid="focus-toggle"]').evaluate((el) => {
+    const r = el.getBoundingClientRect();
+    const s = getComputedStyle(el);
+    return {
+      w: Math.round(r.width),
+      h: Math.round(r.height),
+      minWidth: s.minWidth,
+      padding: s.padding,
+    };
+  });
+  console.log("focusToggle=" + JSON.stringify(focusBox));
+  if (focusBox.h !== 24) fail("focus toggle height not 24px, got " + focusBox.h);
+  if (focusBox.w < 40) fail("focus toggle still a 24px square, width=" + focusBox.w);
   const completedCopy = await page.locator("text=days completed").count();
   if (completedCopy) fail("homemade days-completed copy is still on the write page");
   const align = await page.locator(".write-top-inner").evaluate((el) => {
@@ -192,7 +205,7 @@ try {
   if (align.markLeft > 24) fail("wordmark should sit at the left of the write header, left=" + align.markLeft);
   if (align.closeRight > 40) fail("close x should sit at the right of the write header, inset=" + align.closeRight);
   if (align.closeSize < 28 || align.closeSize > 36) fail("close x not ~32px, got " + align.closeSize);
-  if (align.dateSize !== "26px") fail("date not 26px, got " + align.dateSize);
+  if (align.dateSize !== "28px") fail("date not 28px, got " + align.dateSize);
   if (!(align.dateWeight === "700" || align.dateWeight === "bold")) fail("date not 700, got " + align.dateWeight);
 
   const words = Array.from({ length: 500 }, (_, i) => "word" + i).join(" ");
@@ -796,7 +809,7 @@ try {
   console.log("focusGrid=" + JSON.stringify(focusGrid) + " focusLogo=" + focusLogo + " focusDate=" + focusDate + " focusExit=" + focusExit);
   if (focusGrid && focusGrid.height > 1) fail("focus mode did not hide the month grid");
   if (focusLogo === "0") fail("focus mode hid the wordmark");
-  if (focusDate !== "28px") fail("focus date not 28px, got " + focusDate);
+  if (focusDate !== "30px") fail("focus date not 30px, got " + focusDate);
   if (focusExit === "none") fail("focus mode missing exit control");
   await page.locator('[data-testid="exit-focus"]').click();
   await page.waitForFunction(() => document.documentElement.dataset.writeFocus !== "1", null, { timeout: 5000 });

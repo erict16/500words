@@ -50,6 +50,11 @@
   white-space: nowrap;
   flex-shrink: 0;
 }
+.write-top .site-mark {
+  /* Zilla Slab reads smaller than Sentinel at the same CSS px. */
+  font-size: 22px;
+  line-height: 32px;
+}
 .site-mark:hover {
   color: var(--ink);
   text-decoration: none;
@@ -164,7 +169,7 @@ html[data-write-focus="1"] .word-foot,
 
 html[data-write-focus="1"] .write-date,
 html.focus-mode-active .write-date {
-  font-size: 28px;
+  font-size: 30px;
   line-height: 1.2;
   border-bottom: 1px solid var(--border-light);
   margin-bottom: 32px;
@@ -376,7 +381,7 @@ html[data-write-focus="1"] .exit-focus-btn {
 .write-date,
 .title-input {
   font-family: var(--font-serif-primary);
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 700;
   line-height: 1.2;
   margin: 0 0 1rem;
@@ -685,17 +690,18 @@ a.subdued:hover {
 }
 
 .focus-toggle-btn {
+  /* 750: v-btn outlined size=small. height 24, pad 2px 6px, v-btn small min-width (~52). Not a 24×24 square. */
   appearance: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  width: 24px;
+  width: auto;
   height: 24px;
   min-height: 24px;
-  min-width: 24px;
+  min-width: 52px;
   margin-left: 0;
-  padding: 2px;
+  padding: 2px 6px;
   border: 1px solid var(--border-medium, #ccc);
   border-radius: 4px;
   background: transparent;
@@ -704,6 +710,8 @@ a.subdued:hover {
   opacity: 0.6;
   font-size: 12px;
   line-height: 1;
+  flex-shrink: 0;
+  touch-action: manipulation;
 }
 .focus-toggle-btn svg {
   width: 16px;
@@ -789,14 +797,14 @@ span.day-box {
   margin: 0;
   display: block;
   caret-color: var(--ink);
-  font-size: 19px;
+  font-size: 21px;
   font-weight: 400;
   line-height: var(--line-height-content, 1.6);
   font-family: var(--font-serif-primary);
 }
 html[data-write-focus="1"] .write-area,
 .focus-mode-active .write-area {
-  font-size: 20px;
+  font-size: 22px;
 }
 .write-area::placeholder {
   color: var(--ink);
