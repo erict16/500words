@@ -64,13 +64,30 @@ try {
   page.on("pageerror", (err) => errors.push(String(err)));
   await page.goto(SITE, { waitUntil: "domcontentloaded", timeout: 30000 });
   await page.waitForSelector("html[data-hydrated='1']", { timeout: 20000 });
+  await page.waitForSelector('[data-testid="landing"]', { timeout: 10000 });
+  const editorOnLanding = await page.locator('[data-testid="editor"]').count();
+  console.log("editorOnLanding=" + editorOnLanding);
+  if (editorOnLanding) fail("landing should not have the editor");
+  const landingMenu = await page.locator('[data-testid="landing-menu"]').count();
+  console.log("landingMenu=" + landingMenu);
+  if (!landingMenu) fail("landing missing Menu");
+  const letsWrite = page.locator('[data-testid="landing-write"]');
+  if ((await letsWrite.count()) < 1) fail("landing missing Let’s write");
+  const doodle = await page.locator(".landing-doodle, [class*='doodle']").count();
+  console.log("landingDoodle=" + doodle);
+  if (doodle) fail("landing doodle should be gone");
+  const manifesto = ((await page.locator("body").textContent()) || "").toLowerCase();
+  if (manifesto.includes("artist way") || manifesto.includes("the artist's way")) {
+    fail("Artist Way leaked onto landing");
+  }
+  const landingBg = await page.locator('[data-testid="landing"]').evaluate((el) => getComputedStyle(el).backgroundColor);
+  console.log("landingBg=" + landingBg);
+  if (!landingBg.includes("255, 255, 255")) fail("landing should be white, got " + landingBg);
+  await letsWrite.click();
   await page.waitForSelector('[data-testid="editor"]', { timeout: 10000 });
   const google = await page.locator('[data-testid="google-signin"]').count();
   console.log("googleButton=" + google);
   if (!google) fail("missing optional Sign in");
-  const kicker = await page.locator('[data-testid="landing-kicker"]').count();
-  console.log("landingKicker=" + kicker);
-  if (!kicker) fail("missing type-first landing line");
   const headerNav = await page.locator("header.site-bar .bar-nav").count();
   console.log("writeHeaderNav=" + headerNav);
   if (headerNav) fail("write page should not have the app header nav");
@@ -179,12 +196,14 @@ try {
   if (!banner?.includes("500")) fail("missing strike banner");
   const count = await page.locator('[data-testid="word-count"]').textContent();
   console.log("count=" + count);
-  const doneColor = await page.locator('[data-testid="word-count"]').evaluate((el) => getComputedStyle(el).color);
-  console.log("doneColor=" + doneColor);
-  if (!doneColor.includes("76, 175, 80") && !doneColor.includes("0, 128, 0")) fail("done count not green, got " + doneColor);
-  const doneWeight = await page.locator('[data-testid="word-count"]').evaluate((el) => getComputedStyle(el).fontWeight);
-  console.log("doneWeight=" + doneWeight);
-  if (!(doneWeight === "700" || doneWeight === "bold")) fail("done count not bold, got " + doneWeight);
+  if (!count?.includes("500 words")) fail("footer should say N words, got " + count);
+  if (/\d+\s*\/\s*500/.test(count || "")) fail("N/500 is back in the footer");
+  const papers = await page.locator('[data-testid="page-icons"] img.page-icon').count();
+  console.log("papers=" + papers);
+  if (papers !== 3) fail("expected three paper icons at 500, got " + papers);
+  const seeStats = await page.locator('[data-testid="see-stats"]').count();
+  console.log("seeStats=" + seeStats);
+  if (!seeStats) fail("missing 🎉 SEE STATS after 500");
 
   await page.keyboard.press("Meta+s");
   await page.waitForSelector('[data-testid="saved-flash"]', { timeout: 5000 });
@@ -279,7 +298,7 @@ try {
   if (subdued.fontSize !== "14px") fail("subdued not 14px, got " + subdued.fontSize);
   if (!subdued.color.includes("102, 102, 102")) fail("subdued not #666, got " + subdued.color);
   await page.locator('[data-testid="font-size"]').fill("28");
-  await page.goto(SITE, { waitUntil: "domcontentloaded" });
+  await page.goto(SITE + "/write", { waitUntil: "domcontentloaded" });
   await page.waitForSelector('[data-testid="editor"]');
   const size = await page.locator('[data-testid="editor"]').evaluate((el) => getComputedStyle(el).fontSize);
   console.log("fontSize=" + size);
@@ -726,7 +745,7 @@ try {
     fail("settings missing explicit miss/makeup rule");
   }
   await page.locator('[data-testid="hide-chrome"]').check();
-  await page.goto(SITE, { waitUntil: "domcontentloaded" });
+  await page.goto(SITE + "/write", { waitUntil: "domcontentloaded" });
   await page.waitForSelector('[data-testid="editor"]');
   await page.locator('[data-testid="editor"]').focus();
   await page.waitForFunction(
@@ -762,7 +781,7 @@ try {
     db.lifetime.hasWritten = true;
     localStorage.setItem("fivehundred-local-v1", JSON.stringify(db));
   });
-  await page.goto(SITE, { waitUntil: "domcontentloaded" });
+  await page.goto(SITE + "/write", { waitUntil: "domcontentloaded" });
   await page.waitForSelector('[data-testid="makeup-banner"]', { timeout: 10000 });
   const makeup = (await page.locator('[data-testid="makeup-banner"]').textContent()) ?? "";
   console.log("makeup=" + makeup);

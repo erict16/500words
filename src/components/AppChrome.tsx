@@ -4,13 +4,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cx, ui } from "@/lib/css";
 import { isLocalUid } from "@/lib/identity";
-import { NAV_LINKS } from "@/lib/nav";
+import { NAV_LINKS, isWritePath } from "@/lib/nav";
 import { useApp } from "./AppProvider";
 
 export function AppChrome({ children }: { children: React.ReactNode }) {
   const { user, signOut, signIn, profile, configured } = useApp();
   const pathname = usePathname();
-  const onWrite = pathname === "/";
+  const onWrite = isWritePath(pathname);
   const guest = isLocalUid(profile?.uid);
 
   if (!user) return <>{children}</>;
@@ -27,7 +27,7 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
               500 Words
             </Link>
             <Link
-              href="/stats"
+              href={guest ? "/" : "/stats"}
               className={cx(ui.close, "text-[color:var(--muted)] hover:text-[color:var(--ink)]")}
               aria-label="Close"
               data-testid="write-close"

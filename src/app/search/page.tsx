@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useApp } from "@/components/AppProvider";
+import { WRITE_HREF } from "@/lib/nav";
 import { prettyDate, prettyLongDate } from "@/lib/dates";
 import {
   SORTS,
@@ -204,7 +205,7 @@ export default function SearchPage() {
               data-testid={`search-hit-${hit.date}`}
               onClick={() => {
                 setDate(hit.date);
-                router.push("/");
+                router.push(WRITE_HREF);
               }}
             >
               <div className="result-header">

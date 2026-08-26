@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { EntryArchive } from "@/components/EntryArchive";
 import { useApp } from "@/components/AppProvider";
+import { WRITE_HREF } from "@/lib/nav";
 import { parseDate } from "@/lib/dates";
 import { formatDuration, wordsPerMinute } from "@/lib/session";
 import { countWords } from "@/lib/words";
@@ -124,7 +125,7 @@ export default function StatsPage() {
                   aria-label={`${day.date}: ${day.wordCount} words`}
                   onClick={() => {
                     setDate(day.date);
-                    router.push("/");
+                    router.push(WRITE_HREF);
                   }}
                 >
                   <span className="day-dot" />

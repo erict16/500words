@@ -3,13 +3,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cx, ui } from "@/lib/css";
+import { isLandingPath, isWritePath } from "@/lib/nav";
 import { AppChrome } from "./AppChrome";
 import { SiteFooter } from "./SiteFooter";
 
 export function Shell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isPublic = pathname.startsWith("/person/");
-  const onWrite = pathname === "/";
+  const onWrite = isWritePath(pathname);
+  const onLanding = isLandingPath(pathname);
 
   if (isPublic) {
     return (
@@ -25,6 +27,10 @@ export function Shell({ children }: { children: React.ReactNode }) {
         <SiteFooter />
       </>
     );
+  }
+
+  if (onLanding) {
+    return <>{children}</>;
   }
 
   return (

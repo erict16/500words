@@ -6,6 +6,7 @@ import { prettyDate } from "@/lib/dates";
 import { formatDuration, wordsPerMinute } from "@/lib/session";
 import type { SearchHit } from "@/lib/search";
 import { countWords } from "@/lib/words";
+import { WRITE_HREF } from "@/lib/nav";
 import { useApp } from "./AppProvider";
 
 function meta(wordCount: number, activeMs: number) {
@@ -49,7 +50,7 @@ export function EntryArchive() {
                 data-date={hit.date}
                 onClick={() => {
                   setDate(hit.date);
-                  router.push("/");
+                  router.push(WRITE_HREF);
                 }}
               >
                 <div className="month-title">

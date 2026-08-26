@@ -1,27 +1,21 @@
 "use client";
 
-import { BadgeToast } from "@/components/BadgeToast";
-import { ConfettiBurst } from "@/components/ConfettiBurst";
-import { Editor } from "@/components/Editor";
-import { GuestHero } from "@/components/GuestHero";
-import { MonthGrid } from "@/components/MonthGrid";
-import { WordFooter } from "@/components/WordFooter";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Landing } from "@/components/Landing";
 import { useApp } from "@/components/AppProvider";
-import { cx, ui } from "@/lib/css";
+import { isLocalUid } from "@/lib/identity";
+import { WRITE_HREF } from "@/lib/nav";
 
-export default function WritePage() {
-  const { error } = useApp();
-  return (
-    <main className={cx(ui.page, ui.col)} data-ready="write">
-      <GuestHero />
-      <MonthGrid />
-      {error ? (
-        <p className="px-4 text-[13px] text-red-700">{error}</p>
-      ) : null}
-      <Editor />
-      <WordFooter />
-      <ConfettiBurst />
-      <BadgeToast />
-    </main>
-  );
+export default function HomePage() {
+  const { profile } = useApp();
+  const router = useRouter();
+  const guest = isLocalUid(profile?.uid);
+
+  useEffect(() => {
+    if (profile && !guest) router.replace(WRITE_HREF);
+  }, [profile, guest, router]);
+
+  if (profile && !guest) return null;
+  return <Landing />;
 }

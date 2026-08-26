@@ -123,8 +123,8 @@ export function Editor() {
           </svg>
         </button>
       ) : null}
-      <span className="sr-only">
-        {words} of {WORD_GOAL} words
+      <span className="sr-only" aria-live="polite">
+        {words} {words === 1 ? "word" : "words"}
       </span>
     </div>
   );

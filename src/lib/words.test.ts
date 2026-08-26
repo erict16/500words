@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { countWords, markForWords, parseTags, basePointsForWords } from "./words.ts";
+import { countWords, markForWords, parseTags, basePointsForWords, filledPages, pageTooltipWords } from "./words.ts";
 
 test("empty text is 0 words", () => {
   assert.equal(countWords(""), 0);
@@ -20,6 +20,24 @@ test("marks spare and strike around 500", () => {
   assert.equal(markForWords(500), "strike");
   assert.equal(basePointsForWords(100), 1);
   assert.equal(basePointsForWords(500), 2);
+});
+
+test("three papers fill toward 500, not two, not N/500", () => {
+  assert.equal(filledPages(0), 0);
+  assert.equal(filledPages(166), 0);
+  assert.equal(filledPages(167), 1);
+  assert.equal(filledPages(333), 1);
+  assert.equal(filledPages(334), 2);
+  assert.equal(filledPages(499), 2);
+  assert.equal(filledPages(500), 3);
+  assert.equal(filledPages(667), 4);
+  assert.equal(pageTooltipWords(3), 500);
+});
+
+test("750-sized goal still yields three papers at the goal", () => {
+  assert.equal(filledPages(250, 750), 1);
+  assert.equal(filledPages(500, 750), 2);
+  assert.equal(filledPages(750, 750), 3);
 });
 
 test("parses ALLCAPS tags", () => {

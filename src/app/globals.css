@@ -15,7 +15,7 @@
   --text-secondary: #4a4a4a;
   --text-muted: #6b6b6b;
   --border-light: #e0e0e0;
-  --border-medium: #bdbdbd;
+  --border-medium: #ccc;
   --radius-base: 4px;
   --font-serif-primary: var(--font-bitter), ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
   --font-sans-metadata: var(--font-source-sans), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
@@ -115,6 +115,157 @@ button {
   }
 }
 
+/* One white screen. Type and air. Does not restyle the write page. */
+.landing-page {
+  --landing-ink: #1a1a1a;
+  --landing-muted: #6b6b6b;
+  box-sizing: border-box;
+  min-height: 100dvh;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  color: var(--landing-ink);
+  color-scheme: light;
+  overflow: hidden;
+  padding-top: max(48px, env(safe-area-inset-top));
+  padding-right: max(56px, env(safe-area-inset-right));
+  padding-bottom: max(48px, env(safe-area-inset-bottom));
+  padding-left: max(56px, env(safe-area-inset-left));
+}
+.landing-top {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  flex-shrink: 0;
+}
+.landing-mark {
+  font-family: var(--font-serif-primary);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 30px;
+  color: var(--landing-ink);
+  text-decoration: none;
+  width: fit-content;
+}
+.landing-mark:hover {
+  color: var(--landing-ink);
+  text-decoration: none;
+}
+.landing-menu {
+  position: relative;
+  font-family: var(--font-sans-metadata);
+  margin: 0;
+  width: fit-content;
+}
+.landing-menu-sum {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  line-height: 32px;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0;
+  color: var(--landing-muted);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.landing-menu-sum::-webkit-details-marker {
+  display: none;
+}
+.landing-menu-sum:hover {
+  color: var(--landing-ink);
+}
+.landing-menu-sum:focus-visible {
+  outline: 2px solid var(--landing-ink);
+  outline-offset: 4px;
+}
+.landing-menu[open] .landing-menu-sum {
+  color: var(--landing-ink);
+}
+.landing-menu-list {
+  left: 0;
+  right: auto;
+  z-index: 30;
+  transform-origin: top left;
+}
+.landing-stage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  min-height: 0;
+  padding-bottom: 4vh;
+}
+.landing-lets-write {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  color: var(--landing-ink);
+  text-decoration: none;
+  width: fit-content;
+  max-width: 100%;
+  cursor: pointer;
+  scroll-margin-top: 16px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transform-origin: left center;
+  transition:
+    transform 160ms cubic-bezier(0.23, 1, 0.32, 1),
+    color 160ms ease;
+}
+.landing-lets-write:hover {
+  color: var(--landing-ink);
+  text-decoration: none;
+}
+.landing-lets-write:active {
+  transform: scale(0.985);
+}
+.landing-lets-write:focus-visible {
+  outline: 2px solid var(--landing-ink);
+  outline-offset: 8px;
+  border-radius: 4px;
+}
+.landing-lets-write-text {
+  margin: 0;
+  font-family: var(--font-serif-primary);
+  font-size: clamp(52px, 8.4vw, 96px);
+  font-weight: 700;
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+.landing-rule {
+  display: block;
+  width: 72px;
+  height: 3px;
+  background: #00c853;
+  border-radius: 1px;
+  transform-origin: left center;
+  transition: transform 200ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+@media (hover: hover) and (pointer: fine) {
+  .landing-lets-write:hover .landing-rule {
+    transform: scaleX(1.28);
+  }
+}
+@media (max-width: 720px) {
+  .landing-page {
+    padding: max(24px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right))
+      max(32px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
+    overflow: auto;
+  }
+  .landing-lets-write-text {
+    font-size: clamp(44px, 14vw, 72px);
+  }
+}
+
 @media print {
   .site-bar,
   .no-print,
@@ -133,4 +284,3 @@ button {
     color: #111;
   }
 }
-

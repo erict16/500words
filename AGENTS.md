@@ -10,14 +10,14 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 # 500 Words — product rules (read these, not old Claude notes)
 
-**DESIGN.md is the design source of truth.** It overrides leftover “quiet Menu”, “wordmark 400”, bowling/Sniglet write-page, and “don’t make it look like 750” notes.
+**DESIGN.md is the design source of truth.** It overrides leftover “quiet Menu”, “wordmark 400”, bowling/Sniglet write-page, “don’t make it look like 750”, “no landing”, and “keep N/500” notes.
 
 Copy **current** 750words.com (https://750words.com) for look and interaction. Store name **500 Words**. Goal **500**. Do **not** copy post-write AI / mood / robot analysis.
 
-Live CSS and computed type: `docs/750-live/`. Prefer that over `docs/750-source.md` and over `src/styles/app.css`. Write-page styling is Tailwind plus those live tokens.
+Live CSS and computed type: `docs/750-live/`. Prefer that over `docs/750-source.md` and over `src/styles/app.css`. Styling is Tailwind plus those live tokens.
 
 Sentinel SSm and Gotham Narrow are paid. Use **Bitter** and **Source Sans 3**.
 
-Write page: no Menu; serif wordmark 20px/700; gray ×; 26px date; month nav; avatar + streak + ⋮; solid green checks. Inner pages later.
+Guests see a one-screen white landing at `/` (type and air: wordmark, Menu, Let’s write). No doodle. Write page (`/write`) is 750-identical: no Menu; serif wordmark 20px/700; gray ×; 26px date; month nav; avatar + streak + ⋮; solid green checks; **three paper icons** filling toward 500 (not N/500). Inner pages later.
 
 Do not merge `750-parity` into main unless asked. Do not revive `feat/overnight-750-lock`.

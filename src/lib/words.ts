@@ -1,4 +1,4 @@
-import { SPARE_MIN, WORD_GOAL, type DayMark } from "./types.ts";
+import { PAGE_COUNT, SPARE_MIN, WORD_GOAL, type DayMark } from "./types.ts";
 
 export function countWords(text: string): number {
   const trimmed = text.trim();
@@ -17,6 +17,17 @@ export function basePointsForWords(wordCount: number): number {
   if (wordCount >= WORD_GOAL) return 2;
   if (wordCount >= SPARE_MIN) return 1;
   return 0;
+}
+
+/** Live 750: Math.floor(words / 250). 250 is 750/3. We use 500/3. */
+export function filledPages(wordCount: number, goal = WORD_GOAL): number {
+  if (wordCount <= 0) return 0;
+  const perPage = goal / PAGE_COUNT;
+  return Math.floor(wordCount / perPage);
+}
+
+export function pageTooltipWords(pageIndex: number, goal = WORD_GOAL): number {
+  return Math.round(pageIndex * (goal / PAGE_COUNT));
 }
 
 export function parseTags(text: string): Record<string, string> {

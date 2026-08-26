@@ -1,6 +1,9 @@
 export const WORD_GOAL = 500;
 export const SPARE_MIN = 100;
 export const FAST_MINUTES = 14;
+/** Live 750 fills one paper per 250 words toward 750. We fill three papers toward 500. */
+export const PAGE_COUNT = 3;
+export const WORDS_PER_PAGE = WORD_GOAL / PAGE_COUNT;
 
 export type DayMark = "none" | "dot" | "spare" | "strike";
 
