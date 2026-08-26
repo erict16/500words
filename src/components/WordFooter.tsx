@@ -7,14 +7,17 @@ import { WORD_GOAL } from "@/lib/types";
 import { useApp } from "./AppProvider";
 import { ExitFocusButton, useWriteFocus } from "./WriteFocus";
 
+/** Pictogrammers MDI `mdi-content-save` — same 24 viewBox path as `@mdi/js`. */
+const MDI_CONTENT_SAVE =
+  "M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z";
+
 function SaveGlyph() {
   return (
-    <svg className="footer-mdi-icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden>
-      <path
-        fill="currentColor"
-        d="M15 9V3H5c-1.11 0-2 .89-2 2v14a2 2 0 0 0 2 2h14c1.11 0 2-.89 2-2V9h-6m-6 10H5v-2h4v2m8 0h-6v-4h6v4m0-8H5V5h2v4h8V5h2v6Z"
-      />
-    </svg>
+    <span className="footer-text footer-mdi-icon" aria-hidden>
+      <svg viewBox="0 0 24 24">
+        <path fill="currentColor" d={MDI_CONTENT_SAVE} />
+      </svg>
+    </span>
   );
 }
 

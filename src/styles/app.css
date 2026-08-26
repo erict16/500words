@@ -165,6 +165,7 @@ html[data-write-focus="1"] .word-foot,
 html[data-write-focus="1"] .write-date,
 html.focus-mode-active .write-date {
   font-size: 28px;
+  line-height: 1.2;
   border-bottom: 1px solid var(--border-light);
   margin-bottom: 32px;
   padding-bottom: 12px;
@@ -279,6 +280,12 @@ html[data-write-focus="1"] .exit-focus-btn {
   text-decoration: none;
   cursor: pointer;
 }
+.write-close svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+  flex-shrink: 0;
+}
 .write-close:hover {
   color: var(--ink);
   background: var(--soft);
@@ -371,7 +378,7 @@ html[data-write-focus="1"] .exit-focus-btn {
   font-family: var(--font-serif-primary);
   font-size: 26px;
   font-weight: 700;
-  line-height: normal;
+  line-height: 1.2;
   margin: 0 0 1rem;
   color: var(--ink);
   background: transparent;
@@ -443,10 +450,18 @@ html[data-write-focus="1"] .exit-focus-btn {
   border: 0;
   padding: 0;
   font: inherit;
+  font-size: 14px;
+  line-height: 20px;
   font-weight: 400;
   color: inherit;
   cursor: pointer;
   text-decoration: none;
+}
+.cal-sep {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+  color: inherit;
 }
 .cal-nav:hover,
 .cal-month:hover {
@@ -456,10 +471,6 @@ html[data-write-focus="1"] .exit-focus-btn {
 .cal-month.current {
   font-weight: 700;
   text-decoration: none;
-}
-
-.cal-sep {
-  color: inherit;
 }
 
 .cal-done {
@@ -679,12 +690,12 @@ a.subdued:hover {
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  width: auto;
+  width: 24px;
   height: 24px;
   min-height: 24px;
   min-width: 24px;
   margin-left: 0;
-  padding: 2px 6px;
+  padding: 2px;
   border: 1px solid var(--border-medium, #ccc);
   border-radius: 4px;
   background: transparent;
@@ -693,6 +704,12 @@ a.subdued:hover {
   opacity: 0.6;
   font-size: 12px;
   line-height: 1;
+}
+.focus-toggle-btn svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+  flex-shrink: 0;
 }
 .cal-meta .focus-toggle-btn.ml-2 {
   margin-left: 0;
@@ -776,6 +793,10 @@ span.day-box {
   font-weight: 400;
   line-height: var(--line-height-content, 1.6);
   font-family: var(--font-serif-primary);
+}
+html[data-write-focus="1"] .write-area,
+.focus-mode-active .write-area {
+  font-size: 20px;
 }
 .write-area::placeholder {
   color: var(--ink);
@@ -873,16 +894,6 @@ input:focus-visible {
   position: relative;
 }
 
-.footer-mdi-icon {
-  display: inline-block;
-  font-size: 16px;
-  width: 16px;
-  height: 16px;
-  padding: 0 3px;
-  vertical-align: middle;
-  position: relative;
-  top: -2px;
-}
 @media (max-width: 800px) {
   .write-foot-bar,
   .footer-content {
@@ -922,6 +933,33 @@ input:focus-visible {
 .footer-text.mono,
 .mono {
   font-family: var(--font-mono-code);
+}
+
+/* After .footer-text so 16px / top -2px / padding win — same order as 750. */
+.footer-text.footer-mdi-icon,
+.footer-mdi-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: content-box;
+  font-size: 16px;
+  width: 1em;
+  height: 1em;
+  margin: 0;
+  padding: 0 3px;
+  vertical-align: middle;
+  position: relative;
+  top: -2px;
+  color: inherit;
+  flex-shrink: 0;
+  overflow: visible;
+  font-family: inherit;
+}
+.footer-mdi-icon svg {
+  width: 1em;
+  height: 1em;
+  display: block;
+  fill: currentColor;
 }
 
 .word-foot-inner {
@@ -2110,9 +2148,11 @@ label {
   opacity: 1;
 }
 
-.saved-flash {
-  display: inline;
-  font-size: 12px;
-  color: green;
-  font-weight: 700;
+.saved-flash,
+.foot-saved.save-status--saved,
+.save-status--saved {
+  display: inline-block;
+  font-size: 14px;
+  color: var(--text-secondary);
+  font-weight: 400;
 }
