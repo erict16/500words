@@ -58,9 +58,9 @@ Legal substitutes: **Bitter** (serif), **Source Sans 3** (sans).
 
 ## Focus mode (from WritePage.js)
 
-Enter: **F11**, or EntryBrowser `.focus-toggle-btn` (“Enter focus mode (F11)”).
-Exit: **F11**, **Escape**, or `.exit-focus-btn` (mdi-fullscreen-exit, “Exit focus mode (F11 or ESC)”, fixed top-right 20px, 36px on small screens).
-Hides: month grid / entry-browser, footer (`.write-footer--focus`), header close. Logo and date stay.
+Enter: **F11**, or EntryBrowser `.focus-toggle-btn` (`v-btn` outlined small, mdi-fullscreen, title “Enter focus mode (F11)”). Recrawl: `docs/750-live/WritePage.focus.extract.js` from `/_nuxt/V2vC6_NP.js`.
+Exit: **F11**, **Escape**, or `.exit-focus-btn` (elevated small, mdi-fullscreen-exit, “Exit focus mode (F11 or ESC)”, fixed top-right 20px; **36px circle on ≤800px**).
+Hides: month grid / entry-browser (`v-if !focusMode`), footer (`.write-footer--focus`), header close (`body:has(.focus-mode-active) #focus-close-btn`). Logo and date stay. Write page at 500 Words has **no ⋮** even though 750 still ships one.
 
 ## Calendar
 

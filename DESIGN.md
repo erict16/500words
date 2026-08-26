@@ -51,8 +51,8 @@ Match the current 750 write overlay:
 - **No “Menu”.** No Write / Stats / Badges row on this page.
 - Top: **fixed 64px** bar, opacity 0.9, wordmark left (20px / 700 serif), **gray ×** right (close / exit). Close hides in focus mode.
 - Long date, **26px / 700**. In focus mode: **28px** with a light bottom rule.
-- Under the date: left `◀ Jul \| Aug` (and `Sep ►` when that month is not the future); right **avatar + “N day streak” + focus toggle + square ⋮**.
-- **Focus mode:** F11, the small fullscreen control, or Settings “while typing”. Hides the month grid, streak row, close ×, and footer. Exit: F11, Esc, or the top-right fullscreen-exit control.
+- Under the date: left `◀ Jul \| Aug` (and `Sep ►` when that month is not the future); right **avatar + “N day streak” + `.focus-toggle-btn`**. **No ⋮ / kebab / Menu** on this page (Eric, 2026-08-26 — 750 still has a ⋮; ours stays gone).
+- **Focus mode:** F11 or EntryBrowser `.focus-toggle-btn` (mdi-fullscreen, title `Enter focus mode (F11)`). Hides the month grid, streak row, close ×, and footer. Logo and date stay. Exit: F11, Esc, or fixed top-right `.exit-focus-btn` (mdi-fullscreen-exit, 36px on small screens).
 - Guests / no photo: empty 750-style (no homemade “0 days completed”).
 - Month squares: **21px**, 2px border, ~20% radius, 2px margin. Empty = `#fbfbfb` / `#e0e0e0`. Words fill the live Bunny green scale (750 index × 500/750). Done = fill + **white check**. Today not done = `#00c853` ring. Hover lifts 2px.
 - Placeholder: `Write something here...`
@@ -63,11 +63,11 @@ Match the current 750 write overlay:
   - At 500: `🎉 SEE STATS` plus the papers plus `N words`. Strike + confetti.
 - **No AI analysis.** No mood, theme, Silly Robot, Streak Fairy.
 
-The ⋮ on the write page is the in-session menu (Write, Stats, Badges, …). The landing uses Log In / Sign Up, not the word Menu.
+Do not put Menu or ⋮ on the write page. The landing uses Log In / Sign Up, not the word Menu. Inner pages keep the 16px sans nav.
 
 ## Type first after the landing
 
-Guests land, then write. Sign in is optional (landing Log In / Sign Up, or ⋮ → Sign in). Guest data is local until Google.
+Guests land, then write. Sign in is optional (landing Log In / Sign Up). Guest data is local until Google. Inner pages (Stats, Settings, …) still have Sign in.
 
 No pricing. No AI pitch.
 

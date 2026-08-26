@@ -162,7 +162,9 @@ try {
   const closeBtn = page.locator('[data-testid="write-close"]');
   if ((await closeBtn.count()) < 1) fail("missing write-page close x");
   const kebab = page.locator('[data-testid="write-kebab"]');
-  if ((await kebab.count()) < 1) fail("missing write-page kebab");
+  if (await kebab.count()) fail("write page still has kebab; Eric asked it gone");
+  const focusTitle = await page.locator('[data-testid="focus-toggle"]').getAttribute("title");
+  if (focusTitle !== "Enter focus mode (F11)") fail("focus toggle title should match 750, got " + focusTitle);
   const completedCopy = await page.locator("text=days completed").count();
   if (completedCopy) fail("homemade days-completed copy is still on the write page");
   const align = await page.locator(".write-top-inner").evaluate((el) => {

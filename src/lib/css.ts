@@ -17,8 +17,6 @@ export const ui = {
   menuList: "write-menu-list",
   menuLink: "menu-link",
   close: "write-close",
-  kebab: "write-kebab",
-  kebabSum: "write-kebab-sum",
   avatar: "cal-avatar",
   streak: "cal-streak",
   page: "write-page",

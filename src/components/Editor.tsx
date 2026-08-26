@@ -9,7 +9,7 @@ import { useWriteFocus } from "./WriteFocus";
 
 export function Editor() {
   const { entry, isToday, setText, settings, missedYesterday } = useApp();
-  const { focusMode, enterFocus, exitFocus } = useWriteFocus();
+  const { focusMode, enterFocus } = useWriteFocus();
   const locked = !isToday || (settings.lockEdits && entry.locked);
   const ref = useRef<HTMLTextAreaElement>(null);
   const [focused, setFocused] = useState(false);
@@ -92,25 +92,6 @@ export function Editor() {
         }}
         aria-label="Daily writing"
       />
-      <button
-        type="button"
-        className={ui.exitFocus}
-        data-testid="exit-focus"
-        aria-label="Exit focus mode"
-        title="Exit focus mode (F11 or ESC)"
-        onMouseDown={(e) => {
-          e.preventDefault();
-          exitFocus();
-          ref.current?.blur();
-        }}
-      >
-        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden>
-          <path
-            fill="currentColor"
-            d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"
-          />
-        </svg>
-      </button>
       <span className="sr-only" aria-live="polite">
         {words} {words === 1 ? "word" : "words"}
       </span>

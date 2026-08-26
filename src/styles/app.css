@@ -118,6 +118,9 @@
   flex: 1;
   min-height: 0;
 }
+.write-page .scrollable-content.focus-mode {
+  padding-top: 0;
+}
 
 .write-col {
   padding: 0;
@@ -144,8 +147,12 @@ html[data-write-focus="1"] .guest-kicker {
 
 html[data-write-focus="1"] .write-close,
 html.focus-mode-active #focus-close-btn,
-body.focus-mode-active #focus-close-btn {
+body.focus-mode-active #focus-close-btn,
+body:has(.focus-mode-active) #focus-close-btn {
   display: none !important;
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
 }
 
 html[data-write-focus="1"] .word-foot,
@@ -163,18 +170,27 @@ html.focus-mode-active .write-date {
   padding-bottom: 12px;
 }
 
+.exit-focus-btn,
+.focus-toggle-btn {
+  opacity: 0.6;
+}
+.exit-focus-btn:hover,
+.focus-toggle-btn:hover {
+  opacity: 1;
+}
+
 .exit-focus-btn {
-  display: none;
+  display: flex !important;
   align-items: center;
   justify-content: center;
   position: fixed;
   right: 20px;
   top: 20px;
   z-index: 9999;
-  width: 36px;
-  height: 36px;
-  min-height: 36px;
-  min-width: 36px;
+  width: 32px;
+  height: 32px;
+  min-height: 32px;
+  min-width: 32px;
   padding: 0;
   border: 0;
   border-radius: 50%;
@@ -184,22 +200,29 @@ html.focus-mode-active .write-date {
   line-height: 1;
   cursor: pointer;
   opacity: 0.9;
-}
-html[data-write-focus="1"] .exit-focus-btn {
-  display: flex;
   pointer-events: auto;
 }
-.exit-focus-btn:active {
-  transform: scale(0.97);
+html[data-write-focus="1"] .exit-focus-btn {
+  display: flex !important;
+  pointer-events: auto !important;
+  opacity: 0.9;
 }
-@media (hover: hover) and (pointer: fine) {
+.exit-focus-btn:hover {
+  opacity: 1;
+  transform: scale(1.05);
+}
+@media (prefers-reduced-motion: reduce) {
   .exit-focus-btn:hover {
-    opacity: 1;
-    transform: scale(1.05);
+    transform: none;
   }
 }
 @media (max-width: 800px) {
   .exit-focus-btn {
+    border-radius: 50%;
+    height: 36px;
+    width: 36px;
+    min-height: 36px;
+    min-width: 36px;
     right: 10px;
     top: 10px;
   }
@@ -259,34 +282,6 @@ html[data-write-focus="1"] .exit-focus-btn {
 .write-close:hover {
   color: var(--ink);
   background: var(--soft);
-}
-
-.write-kebab {
-  position: relative;
-  font-family: var(--font-sans-metadata);
-}
-
-.write-kebab-sum {
-  list-style: none;
-  appearance: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  padding: 0;
-  border: 1px solid var(--border-light);
-  border-radius: 4px;
-  background: var(--paper);
-  color: var(--muted);
-  cursor: pointer;
-}
-.write-kebab-sum::-webkit-details-marker {
-  display: none;
-}
-.write-kebab-sum:hover {
-  color: var(--ink);
-  border-color: var(--border-medium);
 }
 
 .write-menu {
@@ -401,6 +396,9 @@ html[data-write-focus="1"] .exit-focus-btn {
   align-items: center;
   gap: 8px;
   margin-left: auto;
+}
+.cal-meta .focus-toggle-btn {
+  margin-left: 0;
 }
 
 .cal-avatar {
@@ -673,13 +671,14 @@ a.subdued:hover {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
+  box-sizing: border-box;
+  width: auto;
   height: 24px;
   min-height: 24px;
   min-width: 24px;
-  margin: 0;
+  margin-left: 0;
   padding: 2px 6px;
-  border: 1px solid var(--border-light);
+  border: thin solid currentColor;
   border-radius: 4px;
   background: transparent;
   color: var(--ink);
@@ -688,8 +687,10 @@ a.subdued:hover {
   font-size: 12px;
   line-height: 1;
 }
-.focus-toggle-btn:hover,
-.focus-toggle-btn[aria-pressed="true"] {
+.cal-meta .focus-toggle-btn.ml-2 {
+  margin-left: 0;
+}
+.focus-toggle-btn:hover {
   opacity: 1;
 }
 .focus-toggle-btn:focus-visible {
