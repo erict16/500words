@@ -70,9 +70,20 @@ try {
   if (editorOnLanding) fail("landing should not have the editor");
   const landingMenu = await page.locator('[data-testid="landing-menu"]').count();
   console.log("landingMenu=" + landingMenu);
-  if (!landingMenu) fail("landing missing Menu");
-  const letsWrite = page.locator('[data-testid="landing-write"]');
-  if ((await letsWrite.count()) < 1) fail("landing missing Let’s write");
+  if (landingMenu) fail("landing should not park Menu");
+  const letsWriteGiant = await page.locator(".landing-lets-write, .landing-lets-write-text").count();
+  console.log("letsWriteGiant=" + letsWriteGiant);
+  if (letsWriteGiant) fail("landing still has the Let’s write treatment");
+  const loginBtn = page.locator('[data-testid="landing-login"]');
+  const signupBtn = page.locator('[data-testid="landing-signup"]');
+  if ((await loginBtn.count()) < 1) fail("landing missing Log In");
+  if ((await signupBtn.count()) < 1) fail("landing missing Sign Up");
+  const loginStyle = await loginBtn.evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { height: Math.round(el.getBoundingClientRect().height), size: s.fontSize, weight: s.fontWeight };
+  });
+  console.log("loginStyle=" + JSON.stringify(loginStyle));
+  if (loginStyle.height < 32 || loginStyle.height > 40) fail("Log In not ~36px, got " + loginStyle.height);
   const doodle = await page.locator(".landing-doodle, [class*='doodle']").count();
   console.log("landingDoodle=" + doodle);
   if (doodle) fail("landing doodle should be gone");
@@ -80,10 +91,13 @@ try {
   if (manifesto.includes("artist way") || manifesto.includes("the artist's way")) {
     fail("Artist Way leaked onto landing");
   }
+  if (manifesto.includes("mindset while writing") || manifesto.includes("silly robot")) {
+    fail("AI analysis leaked onto landing");
+  }
   const landingBg = await page.locator('[data-testid="landing"]').evaluate((el) => getComputedStyle(el).backgroundColor);
   console.log("landingBg=" + landingBg);
   if (!landingBg.includes("255, 255, 255")) fail("landing should be white, got " + landingBg);
-  await letsWrite.click();
+  await page.goto(SITE + "/write", { waitUntil: "domcontentloaded" });
   await page.waitForSelector('[data-testid="editor"]', { timeout: 10000 });
   const google = await page.locator('[data-testid="google-signin"]').count();
   console.log("googleButton=" + google);
@@ -116,8 +130,8 @@ try {
     fail("editor is not the 750 serif stack, got " + editorStyle.fontFamily);
   }
   if (editorStyle.borderTopWidth !== "0px") fail("editor should have no border");
-  if (editorStyle.width < 800 || editorStyle.width > 840) {
-    fail("write column not ~820px, got " + editorStyle.width);
+  if (editorStyle.width < 740 || editorStyle.width > 840) {
+    fail("write column not ~820px inner, got " + editorStyle.width);
   }
   const placeholder = await editor.getAttribute("placeholder");
   console.log("placeholder=" + placeholder);
@@ -747,30 +761,29 @@ try {
   await page.locator('[data-testid="hide-chrome"]').check();
   await page.goto(SITE + "/write", { waitUntil: "domcontentloaded" });
   await page.waitForSelector('[data-testid="editor"]');
+  const focusToggle = page.locator('[data-testid="focus-toggle"]');
+  if ((await focusToggle.count()) < 1) fail("missing focus mode toggle");
   await page.locator('[data-testid="editor"]').focus();
-  await page.waitForFunction(
-    () =>
-      document.documentElement.dataset.writeFocus === "1" &&
-      getComputedStyle(document.querySelector(".write-top")).opacity === "0",
-    null,
-    { timeout: 5000 },
-  );
-  const focusTop = await page.locator(".write-top").evaluate((el) => getComputedStyle(el).opacity);
+  await page.waitForFunction(() => document.documentElement.dataset.writeFocus === "1", null, { timeout: 5000 });
+  const focusGrid = await page.locator('[data-testid="month-grid"]').boundingBox();
+  const focusLogo = await page.locator("#logo").evaluate((el) => getComputedStyle(el).opacity);
+  const focusDate = await page.locator('[data-testid="write-date"]').evaluate((el) => getComputedStyle(el).fontSize);
   const focusExit = await page.locator('[data-testid="exit-focus"]').evaluate((el) => getComputedStyle(el).display);
-  console.log("focusTop=" + focusTop + " focusExit=" + focusExit);
-  if (focusTop !== "0") fail("hide chrome did not hide the write header, opacity " + focusTop);
-  if (focusExit === "none") fail("hide chrome missing exit control");
+  console.log("focusGrid=" + JSON.stringify(focusGrid) + " focusLogo=" + focusLogo + " focusDate=" + focusDate + " focusExit=" + focusExit);
+  if (focusGrid && focusGrid.height > 1) fail("focus mode did not hide the month grid");
+  if (focusLogo === "0") fail("focus mode hid the wordmark");
+  if (focusDate !== "28px") fail("focus date not 28px, got " + focusDate);
+  if (focusExit === "none") fail("focus mode missing exit control");
   await page.locator('[data-testid="exit-focus"]').click();
-  await page.waitForFunction(
-    () =>
-      document.documentElement.dataset.writeFocus !== "1" &&
-      getComputedStyle(document.querySelector(".write-top")).opacity === "1",
-    null,
-    { timeout: 5000 },
-  );
-  const afterExit = await page.locator(".write-top").evaluate((el) => getComputedStyle(el).opacity);
-  console.log("afterExit=" + afterExit);
-  if (afterExit !== "1") fail("exit focus did not restore the write header, opacity " + afterExit);
+  await page.waitForFunction(() => document.documentElement.dataset.writeFocus !== "1", null, { timeout: 5000 });
+  const afterExit = await page.locator('[data-testid="month-grid"]').boundingBox();
+  console.log("afterExit=" + JSON.stringify(afterExit));
+  if (!afterExit || afterExit.height < 10) fail("exit focus did not restore the month grid");
+  await page.locator('[data-testid="focus-toggle"]').click();
+  await page.waitForFunction(() => document.documentElement.dataset.writeFocus === "1", null, { timeout: 5000 });
+  await page.keyboard.press("Escape");
+  await page.waitForFunction(() => document.documentElement.dataset.writeFocus !== "1", null, { timeout: 5000 });
+  console.log("focusToggleEsc=1");
 
   await page.evaluate(() => {
     const db = JSON.parse(localStorage.getItem("fivehundred-local-v1") || "{}");

@@ -18,6 +18,6 @@ Live CSS and computed type: `docs/750-live/`. Prefer that over `docs/750-source.
 
 Sentinel SSm and Gotham Narrow are paid. Use **Bitter** and **Source Sans 3**.
 
-Guests see a one-screen white landing at `/` (type and air: wordmark, Menu, Let’s write). No doodle. Write page (`/write`) is 750-identical: no Menu; serif wordmark 20px/700; gray ×; 26px date; month nav; avatar + streak + ⋮; solid green checks; **three paper icons** filling toward 500 (not N/500). Inner pages later.
+Guests see 750’s logged-out chrome at `/` (serif wordmark, outlined Log In + Sign Up). No Menu. No doodle. No Let’s write. Write page (`/write`) is 750-identical: no Menu; fixed 64px bar; serif wordmark 20px/700; gray ×; 26px date; month nav; avatar + streak + focus + ⋮; 21px day cells; F11 focus mode; **three paper icons** filling toward 500 (not N/500). Inner pages later.
 
 Do not merge `750-parity` into main unless asked. Do not revive `feat/overnight-750-lock`.

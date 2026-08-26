@@ -1,0 +1,28 @@
+/* Recrawled 2026-08-26 from https://750words.com/_nuxt/entry.amQniMXz.css */
+
+--brand-green:#00c853;
+--brand-green-dark:#00a047;
+--brand-green-light:#69f0ae;
+--primitive-success:#4caf50;
+--primitive-black:#000;
+--primitive-white:#fff;
+--theme-primary:var(--brand-green);
+--theme-success:var(--primitive-success);
+--theme-text-primary:#1a1a1a;
+--theme-text-secondary:#4a4a4a;
+--theme-border-light:#e0e0e0;
+--theme-bg-primary:#fff;
+--theme-bg-secondary:#f8f9fa;
+--theme-calendar-bg-regular:var(--theme-bg-elevated);
+--theme-calendar-border-regular:var(--theme-border-light);
+--theme-calendar-border-selected:var(--theme-primary);
+--color-success:var(--theme-success,var(--primitive-success));
+--color-primary:var(--theme-primary,var(--brand-green));
+--spacing-1:4px;
+--spacing-3:12px;
+--spacing-4:16px;
+--font-size-sm:.875rem;
+--font-weight-medium:500;
+
+
+[data-theme=bunny]{--theme-name:"Bunny";--theme-description:"Gentle and approachable theme for comfortable daily writing";--theme-bg-secondary:#fbfbfb;--character-alice-accent:var(--character-alice-accent-accessible);--character-jo-accent:var(--character-jo-accent-accessible);--character-hamlet-accent:var(--character-hamlet-accent-accessible);--character-victor-accent:var(--character-victor-accent-accessible);--character-alice-accent-rgb:var(--character-alice-accent-accessible-rgb);--character-jo-accent-rgb:var(--character-jo-accent-accessible-rgb);--character-hamlet-accent-rgb:var(--character-hamlet-accent-accessible-rgb);--character-victor-accent-rgb:var(--character-victor-accent-accessible-rgb);--theme-surface-hover:rgba(0,200,83,.04);--theme-surface-focus:rgba(0,200,83,.08);--theme-surface-selected:rgba(0,200,83,.12);--theme-surface-pressed:rgba(0,200,83,.16);--theme-wmp-bar-paste:#7c4dff;--theme-button-danger-bg:#dc2626;--theme-button-danger-text:#fff;--theme-button-danger-bg-hover:#b91c1c;--theme-calendar-dot-has-writing:rgba(0,200,83,.6);--theme-calendar-dot-has-writing-hover:rgba(0,200,83,.8);--theme-calendar-dot-completed:#00c853;--theme-calendar-dot-completed-hover:#00a845;--theme-calendar-dot-completed-glow:rgba(0,200,83,.3);--theme-snackbar-success-bg:#22c55e;--theme-snackbar-success-text:#fff;--theme-snackbar-success-border:#16a34a;--theme-snackbar-error-bg:#ef4444;--theme-snackbar-error-text:#fff;--theme-snackbar-error-border:#dc2626;--theme-snackbar-celebration-bg:#00c853;--theme-snackbar-celebration-text:#fff;--theme-snackbar-celebration-border:#00a047;--theme-snackbar-celebration-shimmer:rgba(251,191,36,.15);--theme-snackbar-info-bg:var(--brand-green);--theme-snackbar-info-text:#fff;--theme-snackbar-info-border:var(--brand-green-dark);--text-primary:var(--theme-text-primary);--text-secondary:var(--theme-text-secondary);--text-disabled:var(--theme-text-disabled);--bg-primary:var(--theme-bg-primary);--bg-secondary:var(--theme-bg-secondary);--bg-elevated:var(--theme-bg-elevated);--divider:var(--theme-border-light);--background-overlay:hsla(0,0%,100%,.9);--theme-calendar-bg-regular:#fbfbfb;--theme-calendar-bg-future:#fbfbfb}

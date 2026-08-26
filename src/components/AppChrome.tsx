@@ -21,14 +21,15 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
         <a href="#write" className={ui.skip}>
           Skip to writing
         </a>
-        <header className={cx(ui.writeTop, "bg-[color:var(--paper)]/90")}>
-          <div className={cx(ui.writeTopInner, "flex w-full items-center justify-between px-4")}>
-            <Link href="/" className={cx(ui.mark, "font-serif text-[20px] font-bold leading-[30px]")} id="logo">
+        <header className={ui.writeTop} id="words-app-bar">
+          <div className={ui.writeTopInner}>
+            <Link href="/" className={cx(ui.mark, "font-serif")} id="logo" translate="no">
               500 Words
             </Link>
             <Link
               href={guest ? "/" : "/stats"}
-              className={cx(ui.close, "text-[color:var(--muted)] hover:text-[color:var(--ink)]")}
+              className={ui.close}
+              id="focus-close-btn"
               aria-label="Close"
               data-testid="write-close"
             >

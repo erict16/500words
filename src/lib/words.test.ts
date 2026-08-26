@@ -1,6 +1,15 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { countWords, markForWords, parseTags, basePointsForWords, filledPages, pageTooltipWords } from "./words.ts";
+import {
+  countWords,
+  markForWords,
+  parseTags,
+  basePointsForWords,
+  filledPages,
+  pageTooltipWords,
+  dayFillColor,
+  dayWordBand,
+} from "./words.ts";
 
 test("empty text is 0 words", () => {
   assert.equal(countWords(""), 0);
@@ -38,6 +47,17 @@ test("750-sized goal still yields three papers at the goal", () => {
   assert.equal(filledPages(250, 750), 1);
   assert.equal(filledPages(500, 750), 2);
   assert.equal(filledPages(750, 750), 3);
+});
+
+test("bunny day fill maps 500 words onto 750's completed green", () => {
+  assert.equal(dayFillColor(0), undefined);
+  assert.equal(dayWordBand(0), undefined);
+  assert.equal(dayWordBand(1), "low");
+  assert.equal(dayWordBand(167), "medium");
+  assert.equal(dayWordBand(500), "high");
+  const done = dayFillColor(500);
+  assert.ok(done && done.startsWith("#"));
+  assert.equal(done, dayFillColor(750, 750));
 });
 
 test("parses ALLCAPS tags", () => {

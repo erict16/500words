@@ -5,39 +5,32 @@ import { cx, ui } from "@/lib/css";
 import { countWords } from "@/lib/words";
 import { WORD_GOAL } from "@/lib/types";
 import { useApp } from "./AppProvider";
+import { useWriteFocus } from "./WriteFocus";
 
 export function Editor() {
   const { entry, isToday, setText, settings, missedYesterday } = useApp();
+  const { focusMode, enterFocus, exitFocus } = useWriteFocus();
   const locked = !isToday || (settings.lockEdits && entry.locked);
   const ref = useRef<HTMLTextAreaElement>(null);
   const [focused, setFocused] = useState(false);
-  const [paused, setPaused] = useState(false);
   const words = countWords(entry.text);
   const className = cx(ui.area, `font-${settings.font}`);
-  const hideChrome = settings.hideChrome && focused && !paused && words > 0;
+  const fontSize = focusMode ? Math.max(settings.fontSize, 20) : settings.fontSize;
 
   useEffect(() => {
-    if (hideChrome) document.documentElement.dataset.writeFocus = "1";
-    else delete document.documentElement.dataset.writeFocus;
-    return () => {
-      delete document.documentElement.dataset.writeFocus;
-    };
-  }, [hideChrome]);
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key !== "Escape" || !document.documentElement.dataset.writeFocus) return;
-      setPaused(true);
-      setFocused(false);
-      ref.current?.blur();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, []);
+    if (settings.hideChrome && focused && words > 0 && !focusMode) enterFocus();
+  }, [settings.hideChrome, focused, words, focusMode, enterFocus]);
 
   useEffect(() => {
     ref.current?.focus();
   }, [isToday, entry.date]);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${Math.max(400, el.scrollHeight)}px`;
+  }, [entry.text]);
 
   useEffect(() => {
     const el = ref.current;
@@ -84,10 +77,7 @@ export function Editor() {
         className={className}
         value={entry.text}
         onChange={(e) => setText(e.target.value)}
-        onFocus={() => {
-          setPaused(false);
-          setFocused(true);
-        }}
+        onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
         readOnly={locked}
         spellCheck
@@ -97,32 +87,30 @@ export function Editor() {
         placeholder={isToday ? "Write something here..." : ""}
         data-testid="editor"
         style={{
-          fontSize: `${settings.fontSize}px`,
+          fontSize: `${fontSize}px`,
           lineHeight: settings.lineHeight + settings.paragraphSpacing * 0.15,
         }}
         aria-label="Daily writing"
       />
-      {settings.hideChrome ? (
-        <button
-          type="button"
-          className={ui.exitFocus}
-          data-testid="exit-focus"
-          aria-label="Close"
-          onMouseDown={(e) => {
-            e.preventDefault();
-            setPaused(true);
-            setFocused(false);
-            ref.current?.blur();
-          }}
-        >
-          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden>
-            <path
-              fill="currentColor"
-              d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
-            />
-          </svg>
-        </button>
-      ) : null}
+      <button
+        type="button"
+        className={ui.exitFocus}
+        data-testid="exit-focus"
+        aria-label="Exit focus mode"
+        title="Exit focus mode (F11 or ESC)"
+        onMouseDown={(e) => {
+          e.preventDefault();
+          exitFocus();
+          ref.current?.blur();
+        }}
+      >
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden>
+          <path
+            fill="currentColor"
+            d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"
+          />
+        </svg>
+      </button>
       <span className="sr-only" aria-live="polite">
         {words} {words === 1 ? "word" : "words"}
       </span>

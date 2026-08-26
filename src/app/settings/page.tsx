@@ -138,7 +138,7 @@ export default function SettingsPage() {
           onChange={(e) => updateSettings({ hideChrome: e.target.checked })}
           data-testid="hide-chrome"
         />
-        Hide the header while typing
+        Focus mode while typing (F11 / Esc on the write page)
       </label>
 
       <label className={ui.check}>

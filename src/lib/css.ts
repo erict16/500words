@@ -31,6 +31,7 @@ export const ui = {
   calMonth: "cal-month",
   calSep: "cal-sep",
   calDone: "cal-done",
+  focusToggle: "focus-toggle-btn",
   monthGrid: "month-grid",
   dayBox: "day-box",
   dayCheck: "day-check",

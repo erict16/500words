@@ -13,4 +13,6 @@ test("write chrome names stay the e2e selectors", () => {
   assert.equal(ui.area, "write-area");
   assert.equal(ui.close, "write-close");
   assert.equal(ui.kebab, "write-kebab");
+  assert.equal(ui.focusToggle, "focus-toggle-btn");
+  assert.equal(ui.exitFocus, "exit-focus-btn");
 });
