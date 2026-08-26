@@ -12,10 +12,10 @@ This file overrides older “quiet Menu”, “wordmark 400”, “do not make i
 
 ```
 750 serif (paid):  Sentinel SSm A/B, Times New Roman, Times, serif
-we use:            Bitter (Google, legal slab in the same category), ui-serif, Georgia, Cambria, Times
+we use:            Zilla Slab default (closest slab silhouette, OFL), plus Merriweather and Bitter
 
 750 sans (paid):   Gotham Narrow A/B, Helvetica Neue, Helvetica, Arial, sans-serif
-we use:            Source Sans 3 (Google), ui-sans-serif, system-ui, Helvetica, Arial
+we use:            Barlow Semi Condensed default (closest to Gotham Narrow, OFL), plus Montserrat, Figtree, Source Sans 3
 ```
 
 | Surface | Size | Weight | Face |
