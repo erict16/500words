@@ -1,15 +1,24 @@
 import type { Metadata } from "next";
-import { Bitter } from "next/font/google";
+import { Bitter, Source_Sans_3 } from "next/font/google";
 import { AppProvider } from "@/components/AppProvider";
 import { Shell } from "@/components/Shell";
 import { ThemeSync } from "@/components/ThemeSync";
 import "./globals.css";
 import "@/styles/app.css";
 
+// 750 uses paid Sentinel SSm (serif) and Gotham Narrow (sans). Legal stand-ins:
 const serif = Bitter({
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-serif",
+  variable: "--font-bitter",
+  weight: ["300", "400", "600", "700"],
+});
+
+const sans = Source_Sans_3({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-source-sans",
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -28,8 +37,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`h-full ${serif.variable}`}>
-      <body className="min-h-full">
+    <html lang="en" className={`h-full ${serif.variable} ${sans.variable}`}>
+      <body className="min-h-full font-serif">
         <AppProvider>
           <ThemeSync />
           <Shell>{children}</Shell>

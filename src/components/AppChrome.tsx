@@ -4,16 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cx, ui } from "@/lib/css";
 import { isLocalUid } from "@/lib/identity";
+import { NAV_LINKS } from "@/lib/nav";
 import { useApp } from "./AppProvider";
-
-const LINKS = [
-  { href: "/", label: "Write" },
-  { href: "/stats", label: "Stats" },
-  { href: "/badges", label: "Badges" },
-  { href: "/challenge", label: "One month" },
-  { href: "/search", label: "Search" },
-  { href: "/settings", label: "Settings" },
-];
 
 export function AppChrome({ children }: { children: React.ReactNode }) {
   const { user, signOut, signIn, profile, configured } = useApp();
@@ -23,50 +15,30 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
 
   if (!user) return <>{children}</>;
 
-  const menu = (
-    <details className={ui.menu}>
-      <summary className={ui.menuSum}>Menu</summary>
-      <div className={ui.menuList} role="menu">
-        {LINKS.map((link) => (
-          <Link
-            key={link.href}
-            href={link.href}
-            role="menuitem"
-            className={cx(ui.menuLink, pathname === link.href && "active")}
-          >
-            {link.label}
-          </Link>
-        ))}
-        {profile && !guest ? (
-          <Link href={`/person/${profile.uid}`} role="menuitem" className={ui.menuLink} data-testid="you-link">
-            {profile.displayName}
-          </Link>
-        ) : null}
-        {guest && configured ? (
-          <button type="button" role="menuitem" className={ui.menuLink} data-testid="google-signin" onClick={() => void signIn()}>
-            Sign in
-          </button>
-        ) : (
-          <button type="button" role="menuitem" className={ui.menuLink} onClick={() => void signOut()}>
-            Sign out
-          </button>
-        )}
-      </div>
-    </details>
-  );
-
   if (onWrite) {
     return (
       <>
         <a href="#write" className={ui.skip}>
           Skip to writing
         </a>
-        <header className={ui.writeTop}>
-          <div className={cx(ui.col, ui.writeTopInner)}>
-            <Link href="/" className={ui.mark}>
+        <header className={cx(ui.writeTop, "bg-[color:var(--paper)]/90")}>
+          <div className={cx(ui.writeTopInner, "flex w-full items-center justify-between px-4")}>
+            <Link href="/" className={cx(ui.mark, "font-serif text-[20px] font-bold leading-[30px]")} id="logo">
               500 Words
             </Link>
-            {menu}
+            <Link
+              href="/stats"
+              className={cx(ui.close, "text-[color:var(--muted)] hover:text-[color:var(--ink)]")}
+              aria-label="Close"
+              data-testid="write-close"
+            >
+              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden>
+                <path
+                  fill="currentColor"
+                  d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                />
+              </svg>
+            </Link>
           </div>
         </header>
         {children}
@@ -85,7 +57,7 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
             500 Words
           </Link>
           <nav className={ui.barNav} aria-label="App">
-            {LINKS.map((link) => (
+            {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}

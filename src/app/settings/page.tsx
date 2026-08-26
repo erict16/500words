@@ -37,7 +37,7 @@ export default function SettingsPage() {
     <main className={cx(ui.innerPage, ui.col)}>
       <h1 className={ui.pageTitle}>Settings</h1>
       <p className={ui.subdued}>
-        {guest ? "Writing on this device. Sign in from Menu to sync." : `Signed in as ${profile?.email}`}
+        {guest ? "Writing on this device. Sign in from ⋮ to sync." : `Signed in as ${profile?.email}`}
       </p>
 
       <label className={ui.field}>

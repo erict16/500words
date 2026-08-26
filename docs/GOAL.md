@@ -1,9 +1,8 @@
-# Goal: 500 Words is 750 Words
+# Goal: 500 Words looks and works like current 750 Words
 
-Keep going until an independent check can sit down, sign in, type, hit 500, and see the same ritual as 750 Words. Stop only then.
+Keep going until an independent check can sit down, type, hit 500, and see the same write-page ritual as **today’s** https://750words.com — store name 500 Words, goal 500 words, no post-write AI.
 
-Repo: `/Users/youming/Github/500words`
-Live (must 200): `https://500words-ink.vercel.app` (also keep `500words-inky.vercel.app` aliased if Vercel will take it)
+Repo: this tree. Live (must 200): `https://500words-ink.vercel.app`
 Firebase: `simply-journal-474a1`
 
 ## Explicitly not in the product
@@ -11,38 +10,28 @@ Firebase: `simply-journal-474a1`
 - Marketing homepage / “what is this” essay
 - AI analysis (mood, theme, mindset, Silly Robot, Streak Fairy reading your prose)
 
-Everything else 750 Words has after login is in.
+Everything else 750 Words has after login is in, visually copied from the **current Nuxt product**, not original.750words.com bowling.
 
 ## The site must run
 
 1. Production URL returns HTTP 200, not `DEPLOYMENT_NOT_FOUND`.
-2. First paint is a sign-in screen, never an infinite “Loading…”.
+2. First paint is a writing page (or a sign-in that still lets you write), never an infinite “Loading…”.
 3. **Continue with Google** opens Google and lands on today’s page.
 4. If Google fails, **Write on this device** still opens the writing page (local save). The app is never a brick.
 5. Typing autosaves. Cmd-S flashes green “saved”. Reloading keeps the words.
 6. Font, size, and theme from Settings apply to the writing surface immediately.
 
-## Writing page (the original 750 ritual, 500 instead of 750)
+## Writing page (copy live 750, 500 instead of 750)
 
-This is the original bowling calendar (`original.750words.com`), not Nuxt V2 and not a green check-mark month view.
+Live CSS: `docs/750-live/`. Prefer that over screenshots and over old dumps.
 
-Live CSS tokens: `docs/750-source.md`. Prefer those over screenshots.
-
-- Header from original CSS: 800px, 30px bree/sniglet (Helvetica fallback) “500 Words”, black links (Write · Stats · Badges · One month · Search · Settings · Sign out). Do not copy 750words.com Nuxt teal/Vuetify.
-- Under that: month name on the left, month points on the right
-- **31 (or 28–31) boxes in a wrapping row.** Day number tiny in the top-left of each box.
-  - empty = blank box
-  - started (<100 words) = small center dot
-  - spare (100–499) = a single `/` drawn through the box
-  - strike (500+) = an `X` drawn through the box
-  - today = stronger border
-  - future days disabled
-- Click a past box to read that day (read-only). You cannot add words to a closed day.
-- Writing column: Georgia (default), ~21px, ~640px measure, typewriter-ish scroll as you type
-- Fonts in Settings: Georgia, Palatino, Times, Helvetica, Courier. Size slider. Paragraph spacing. Light / dark.
-- Live count bottom-left: `12 / 500`. At 500 it turns into a green stats link.
+- No “Menu”. Wordmark **500 Words** 20px / 700 serif, gray × to leave write.
+- Long date 26px / 700. Month `Jul | Aug`. Avatar + `N day streak` + ⋮.
+- Month squares 21px, empty gray ring, completed solid green + white check.
+- Writing column ~820px, Bitter (Sentinel stand-in), 19px, loose line-height.
+- Live count: `12 / 500`. At 500 it turns into a green stats link.
 - First time you hit 500 that day: confetti + “500. That’s a strike.”
-- Missed yesterday: banner to write 1000 today to keep the streak (makeup). Makeup marks yesterday repaired.
+- Missed yesterday: banner to write 1000 today to keep the streak (makeup).
 
 ## Scoring (750 FAQ, 500-word strike)
 
@@ -55,24 +44,21 @@ Live CSS tokens: `docs/750-source.md`. Prefer those over screenshots.
 
 ## Other pages (after login)
 
-- **Stats:** today’s words, time, pauses, WPM, points. This month bowling scorecard with points under each box, plus a words-per-day bar (counts only). All time. No mood/theme AI. Optional `MOOD: 7` style tags the user typed.
-- **Badges:** Tag Savage animals (egg, turkey, penguin, flamingo, albatross, phoenix, pterodactyl, spacebird, spirit versions, cheetah, hamster, early bird, night bat, oxalis, word-count animals, turquoise horse). Drawings, not stick-figure outlines.
-- **One month:** write 500 every day this month. Wall of awesomeness / wall of shame. Turquoise horse on a win. Join mid-month does not shame days before you joined.
-- **Search:** find your own writing by word or date. Click a hit to open that day read-only (today stays editable).
-- **Settings:** fonts, size, spacing, theme (light / dark / sepia), timezone, hide chrome while typing, lock today after 500, display name, export, print.
+- **Stats:** today’s words, time, pauses, WPM, points. Month view. All time. No mood/theme AI.
+- **Badges:** Tag Savage animals. Drawings if the PNG still 404s.
+- **One month:** write 500 every day this month.
+- **Search:** find your own writing by word or date.
+- **Settings:** fonts, size, spacing, theme, timezone, hide chrome, lock today after 500, display name, export, print.
 - **Public person page:** counts and badges only. Never the writing.
-- **Header:** Write · Stats · Badges · One month · Search · Settings · your name · Sign out
 
-## Login look
+Inner-page chrome can stay the 16px sans nav until a later pass. The write page must already match 750.
 
-Not a landing page. Same teal bar. Georgia title. One Google button. One quiet local fallback. No tagline, no “what is this”, no marketing copy.
-
-## Tests (must exist in this repo)
+## Tests
 
 - Unit: word count, spare/strike marks, bowling points, makeup streak, challenge join date
-- Playwright: sign-in screen (Google + Write on this device), 31-ish day boxes, type 500 words, today-box gets `strike`, banner “500. That’s a strike.”, Cmd-S flashes saved, reload keeps the words, font-size changes, no pageerror
+- Playwright: type-first write page, 28–31 day boxes, type 500 words, today-box gets a green check, banner, Cmd-S saved, reload keeps the words, no pageerror, no write-page “Menu”
 - `npm test`, `npm run e2e`, `npx tsc --noEmit`, `npm run build` green
 
 ## Done means
 
-A stranger can open the live URL, sign in (or write locally), fill a page, see the X, and not wonder if they landed on a different product than 750 Words.
+A stranger can open the live URL, type, fill a page, see the green check, and not wonder if they landed on a different product than 750 Words — except the name is 500, the goal is 500, and there is no AI report.

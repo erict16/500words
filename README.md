@@ -9,7 +9,7 @@ Live: [500words-ink.vercel.app](https://500words-ink.vercel.app)
 ## What you get
 
 - A blank page and a word count
-- Month grid: empty, a dot if you started, `/` spare (100+ words), `X` strike (500)
+- Month grid: empty gray squares, a filled green check when you hit 500
 - Points like bowling (spare adds yesterday, strike adds two days, turkey is 6)
 - Confetti at 500
 - Font, size, spacing, light/dark/sepia

@@ -1,60 +1,65 @@
 # 500 Words design guide
 
-Copied from live 750words.com CSS (`/_nuxt/entry`, `LoggedOutHomepage`, `LoggedOutHomepageV3`). Not screenshots. Not original.750words.com Sniglet.
+Visual and interaction: copy **current** 750words.com (the Nuxt product at https://750words.com), measured live. Store name is **500 Words**. Goal is **500 words**. Do not copy the post-write AI / mood / robot analysis.
 
-Loops: read this file first. Do not put the app nav on the write page. Do not set the wordmark to 700.
+Live tokens: `docs/750-live/`. `docs/750-source.md` and the old 1800-line `src/styles/app.css` are leftovers. Prefer live CSS + Tailwind on the write page.
 
-## Type (from `_nuxt/entry.amQniMXz.css`)
+This file overrides older “quiet Menu”, “wordmark 400”, “do not make it 750”, bowling/Sniglet, and original.750words.com write-page instructions.
+
+## Type
+
+750 uses paid Cloud.typography faces. We cannot hotlink them.
 
 ```
---font-serif-primary: Sentinel SSm A/B (Hoefler, Cloud.typography, paid)
-  fallback: ui-serif, Georgia, Cambria, Times
-  we use: Bitter (Google, legal slab in the same category)
---font-sans-metadata: ui-sans-serif, system-ui, …
---font-size-lg: 1.125rem   /* 18px editor */
+750 serif (paid):  Sentinel SSm A/B, Times New Roman, Times, serif
+we use:            Bitter (Google, legal slab in the same category), ui-serif, Georgia, Cambria, Times
+
+750 sans (paid):   Gotham Narrow A/B, Helvetica Neue, Helvetica, Arial, sans-serif
+we use:            Source Sans 3 (Google), ui-sans-serif, system-ui, Helvetica, Arial
 ```
 
-750’s editor is **Sentinel SSm** from Cloud.typography (`Sentinel SSm A`, `Sentinel SSm B`). Domain-locked; we cannot hotlink it. Source Serif 4 was the wrong category (old-style book serif, not a slab). Default “Serif” is **Bitter**, then `ui-serif` / Georgia. Do not put Georgia first. Do not put Source Serif 4 first.
+| Surface | Size | Weight | Face |
+| --- | --- | --- | --- |
+| Wordmark “500 Words” | 20px / 30px line | **700** | serif |
+| Write date | **26px** | **700** | serif |
+| Editor | **19px** | 400, line-height ~1.6 | serif |
+| Placeholder | 19px | 300, opacity 0.6 | serif |
+| Streak / chrome | 12px | 400 | sans |
+| Footer tagline | 14px | 400 | serif |
+| Inner nav | 16px | 400 | sans |
 
-On a Mac, `ui-serif` is New York. Body and wordmark are **400**. Headlines on the logged-out homepage are **600**. The write-page date is **700** at **1.5rem**. The editor is regular, not bold.
+Green: `#00c853` primary (today ring, links). Success checks `#4caf50`. Ink `#1a1a1a`. Secondary `#4a4a4a`.
 
-| Surface | Size | Weight |
-| --- | --- | --- |
-| Wordmark “500 Words” | 20px | 400 |
-| Write date | 1.5rem (24px) | 700 |
-| Editor | 1.125rem (18px) | 400, line-height 1.6 |
-| Landing h1 | serif | 600 |
-| Nav (inner pages only) | 16px sans | 400 |
+## Write page (`/`)
 
-Green: `#00c853` primary, `#4caf50` success checks. Ink `#1a1a1a`. Placeholder opacity ~0.3.
+Match the current 750 write overlay:
 
-## Write page (logged in, `/`)
-
-Match current 750 write overlay:
-
-- **No app header.** No Write / Stats / Badges row.
-- Wordmark top-left, weight 400. A quiet Menu on the right for the rest of the app.
-- Long date, month `Jul \| Aug`, empty 18px rounded squares, green check at 500.
+- **No “Menu”.** No Write / Stats / Badges row on this page.
+- Top: wordmark left (20px / 700 serif), **gray ×** right (close / exit to Stats).
+- Long date, **26px / 700**.
+- Under the date: left `◀ Jul \| Aug`; right **avatar + “N day streak” + square ⋮**.
+- Guests / no photo: empty 750-style (no avatar, no homemade “0 days completed”).
+- Month squares: **21px**, 2px border, ~20% radius. Empty = light gray border on `#fbfbfb`. Done = **solid `#4caf50` + white check**. Today not done = green ring, not a filled check.
 - Placeholder: `Write something here...`
-- Footer: `Private, unfiltered, spontaneous, daily`
+- Footer: `Private, unfiltered, spontaneous, daily` plus 500’s `saved` / `N/500`. Layout matches 750’s 820px footer.
 - Hitting 500: strike + confetti. **No AI analysis.** No mood, theme, Silly Robot, Streak Fairy.
 
-## Type first (750’s strategy)
+The ⋮ is the app menu (Write, Stats, Badges, One month, Search, Settings, Sign in / Sign out).
 
-You land on the writing page and type. Sign in is optional (Menu → Sign in). No gate. Guest data is local until Google.
+## Type first
 
-Landing is the write page plus one muted line: “Practice writing every day.” Not a marketing site. No pricing. No AI pitch.
+Land on the writing page and type. Sign in is optional (⋮ → Sign in). Guest data is local until Google.
 
-## Landing (logged out, `/`)
-
-Same URL as write. Wordmark 400, editor ready, Google behind Menu.
+Not a marketing site. No pricing. No AI pitch.
 
 ## Inner pages
 
-Keep 16px sans nav with a green active underline. Stats, badges, search, settings, person. Still no AI.
+Keep 16px sans nav with a green active underline until a later pass copies those 750 screens. Stats, badges, search, settings, person. Still no AI.
 
 ## Do not
 
 - Restore Sniglet, numbered bowling boxes, or a teal Materialize bar on the write page
-- Bold the wordmark
+- Put “Menu” on the write page
+- Set the wordmark to 400
 - Add AI when the day is done
+- Invent “0 days completed”

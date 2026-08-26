@@ -12,16 +12,28 @@
   --spare: #c8e6c9;
   --brand-green: #00c853;
   --brand-green-dark: #00a047;
-  --text-secondary: #666;
-  --text-muted: #888;
+  --text-secondary: #4a4a4a;
+  --text-muted: #6b6b6b;
   --border-light: #e0e0e0;
-  --border-medium: #ccc;
+  --border-medium: #bdbdbd;
   --radius-base: 4px;
-  --font-serif-primary: var(--font-serif), ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-  --font-sans-metadata: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  --font-serif-primary: var(--font-bitter), ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-sans-metadata: var(--font-source-sans), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
   --display: var(--font-serif-primary);
   --chrome: var(--font-sans-metadata);
+  --cal-empty-bg: #fbfbfb;
+  --line-height-content: 1.6;
+}
+
+@theme inline {
+  --font-serif: var(--font-serif-primary);
+  --font-sans: var(--font-sans-metadata);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-good: var(--good);
+  --color-brand: var(--brand-green);
+  --color-line: var(--line);
 }
 
 [data-theme="dark"] {
@@ -39,6 +51,7 @@
   --border-light: #3a3a3a;
   --border-medium: #3a3a3a;
   --brand-green: #7dcc8e;
+  --cal-empty-bg: #1c1c1c;
 }
 
 [data-theme="sepia"] {

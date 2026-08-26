@@ -24,8 +24,10 @@ export function WordFooter() {
 
   return (
     <footer className={cx(ui.foot, ui.wordFoot)}>
-      <div className={cx(ui.col, ui.writeFootBar)}>
-        <p className={ui.tagline}>Private, unfiltered, spontaneous, daily</p>
+      <div className={cx(ui.col, ui.writeFootBar, "flex items-center justify-between gap-4 py-4 text-sm")}>
+        <p className={cx(ui.tagline, "font-serif text-[14px] text-[color:var(--text-secondary)]")}>
+          Private, unfiltered, spontaneous, daily
+        </p>
         <div className={ui.wordFootInner}>
           {savedFlash ? (
             <p className={ui.savedFlash} aria-live="polite" data-testid="saved-flash">

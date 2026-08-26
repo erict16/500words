@@ -124,30 +124,43 @@ try {
   });
   console.log("mark=" + JSON.stringify(mark));
   if (!SERIF.test(mark.font)) fail("wordmark not serif, got " + mark.font);
-  if (!(mark.weight === "400" || mark.weight === "normal")) fail("wordmark should be 400, got " + mark.weight);
+  if (!(mark.weight === "700" || mark.weight === "bold")) fail("wordmark should be 700, got " + mark.weight);
+  const menuWord = await page.locator("header .write-menu-sum, header >> text=Menu").count();
+  console.log("writeMenuLabel=" + menuWord);
+  if (menuWord) fail("write page should not show Menu");
+  const closeBtn = page.locator('[data-testid="write-close"]');
+  if ((await closeBtn.count()) < 1) fail("missing write-page close x");
+  const kebab = page.locator('[data-testid="write-kebab"]');
+  if ((await kebab.count()) < 1) fail("missing write-page kebab");
+  const completedCopy = await page.locator("text=days completed").count();
+  if (completedCopy) fail("homemade days-completed copy is still on the write page");
   const align = await page.locator(".write-top-inner").evaluate((el) => {
     const markEl = el.querySelector(".site-mark");
-    const menuEl = el.querySelector(".write-menu-sum");
+    const closeEl = el.querySelector(".write-close");
     const dateEl = document.querySelector(".write-date");
     const calEl = document.querySelector(".cal-row");
     const a = markEl.getBoundingClientRect();
-    const b = menuEl.getBoundingClientRect();
+    const b = closeEl.getBoundingClientRect();
     const d = dateEl.getBoundingClientRect();
     const c = calEl.getBoundingClientRect();
     return {
-      markMenuDy: Math.abs(a.top + a.height / 2 - (b.top + b.height / 2)),
+      markCloseDy: Math.abs(a.top + a.height / 2 - (b.top + b.height / 2)),
       markLeft: Math.round(a.left),
+      closeRight: Math.round(window.innerWidth - b.right),
       dateLeft: Math.round(d.left),
       calLeft: Math.round(c.left),
-      menuSize: getComputedStyle(menuEl).fontSize,
+      closeSize: Math.round(b.width),
       dateSize: getComputedStyle(dateEl).fontSize,
+      dateWeight: getComputedStyle(dateEl).fontWeight,
     };
   });
   console.log("align=" + JSON.stringify(align));
-  if (align.markMenuDy > 2) fail("wordmark and Menu not vertically aligned, Δ " + align.markMenuDy);
-  if (Math.abs(align.markLeft - align.dateLeft) > 1) fail("wordmark and date left edges differ");
-  if (align.menuSize !== "14px") fail("Menu not 14px, got " + align.menuSize);
-  if (align.dateSize !== "24px") fail("date not 24px, got " + align.dateSize);
+  if (align.markCloseDy > 4) fail("wordmark and close x not vertically aligned, Δ " + align.markCloseDy);
+  if (align.markLeft > 24) fail("wordmark should sit at the left of the write header, left=" + align.markLeft);
+  if (align.closeRight > 40) fail("close x should sit at the right of the write header, inset=" + align.closeRight);
+  if (align.closeSize < 28 || align.closeSize > 36) fail("close x not ~32px, got " + align.closeSize);
+  if (align.dateSize !== "26px") fail("date not 26px, got " + align.dateSize);
+  if (!(align.dateWeight === "700" || align.dateWeight === "bold")) fail("date not 700, got " + align.dateWeight);
 
   const words = Array.from({ length: 500 }, (_, i) => "word" + i).join(" ");
   await editor.fill(words);

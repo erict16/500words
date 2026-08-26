@@ -11,4 +11,6 @@ test("write chrome names stay the e2e selectors", () => {
   assert.equal(ui.writeTop, "write-top");
   assert.equal(ui.date, "write-date");
   assert.equal(ui.area, "write-area");
+  assert.equal(ui.close, "write-close");
+  assert.equal(ui.kebab, "write-kebab");
 });

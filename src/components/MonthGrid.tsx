@@ -1,8 +1,10 @@
 "use client";
 
 import { cx, ui } from "@/lib/css";
+import { isLocalUid } from "@/lib/identity";
 import { monthAbbr, prettyLongDate, shiftMonth } from "@/lib/dates";
 import { useApp } from "./AppProvider";
+import { WriteKebab } from "./WriteKebab";
 
 export function DayCheck() {
   return (
@@ -20,16 +22,19 @@ export function DayCheck() {
 }
 
 export function MonthGrid() {
-  const { date, today, monthDays, setDate, lifetime } = useApp();
+  const { date, today, monthDays, setDate, lifetime, profile } = useApp();
   const prev = shiftMonth(date, -1);
-  const completed = lifetime?.completedEver ?? 0;
+  const guest = isLocalUid(profile?.uid);
+  const streak = lifetime?.currentStreak ?? 0;
+  const photo = !guest && profile?.photoURL ? profile.photoURL : "";
+  const initial = !guest ? (profile?.displayName || "?").trim().slice(0, 1) : "";
 
   return (
     <div className={ui.head}>
-      <h1 className={ui.date} data-testid="write-date">
+      <h1 className={cx(ui.date, "font-serif text-[26px] font-bold")} data-testid="write-date">
         {prettyLongDate(date)}
       </h1>
-      <div className={ui.calRow}>
+      <div className={cx(ui.calRow, "font-sans")}>
         <div className={ui.calMonths}>
           <button type="button" className={ui.calNav} aria-label="Previous month" onClick={() => setDate(prev)}>
             ◀
@@ -40,9 +45,21 @@ export function MonthGrid() {
           <span className={ui.calSep}>|</span>
           <span className={cx(ui.calMonth, "current")}>{monthAbbr(date)}</span>
         </div>
-        <p className={ui.calDone} data-testid="days-completed">
-          {completed} {completed === 1 ? "day" : "days"} completed
-        </p>
+        <div className="cal-meta">
+          {photo ? (
+            <img src={photo} alt="" className={ui.avatar} width={24} height={24} />
+          ) : initial ? (
+            <span className={cx(ui.avatar, "cal-avatar-fallback")} aria-hidden>
+              {initial}
+            </span>
+          ) : null}
+          {!guest ? (
+            <p className={ui.streak} data-testid="day-streak">
+              {streak} day streak
+            </p>
+          ) : null}
+          <WriteKebab />
+        </div>
       </div>
       <div className={ui.monthGrid} data-testid="month-grid">
         {monthDays.map((day) => {
@@ -62,6 +79,9 @@ export function MonthGrid() {
               className={cls}
               data-date={day.date}
               data-mark={day.mark}
+              data-word-count={
+                day.mark === "strike" ? "high" : day.mark === "spare" ? "medium" : day.mark === "dot" ? "low" : undefined
+              }
               data-testid={day.date === today ? "today-box" : undefined}
               disabled={future}
               title={future ? day.date : `${day.date}: ${day.wordCount} words`}

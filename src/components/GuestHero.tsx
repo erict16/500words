@@ -11,7 +11,7 @@ export function GuestHero() {
   if (entry.wordCount > 0) return null;
   return (
     <p className={ui.kicker} data-testid="landing-kicker">
-      Practice writing every day. Sign in from Menu when you want this on every device.
+      Practice writing every day. Sign in when you want this on every device.
     </p>
   );
 }
