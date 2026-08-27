@@ -1,15 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { cx, ui } from "@/lib/css";
 import { isLocalUid } from "@/lib/identity";
-import { NAV_LINKS, isWritePath } from "@/lib/nav";
+import { NAV_LINKS, isWritePath, markLeftWrite } from "@/lib/nav";
 import { useApp } from "./AppProvider";
 
 export function AppChrome({ children }: { children: React.ReactNode }) {
   const { user, signOut, signIn, profile, configured } = useApp();
   const pathname = usePathname();
+  const router = useRouter();
   const onWrite = isWritePath(pathname);
   const guest = isLocalUid(profile?.uid);
 
@@ -26,12 +27,17 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
             <Link href="/" className={cx(ui.mark, "font-serif")} id="logo" translate="no">
               500 Words
             </Link>
-            <Link
-              href={guest ? "/" : "/stats"}
+            <button
+              type="button"
               className={ui.close}
               id="focus-close-btn"
               aria-label="Close"
+              title="Close"
               data-testid="write-close"
+              onClick={() => {
+                markLeftWrite();
+                router.push("/");
+              }}
             >
               <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden>
                 <path
@@ -39,7 +45,7 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
                   d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
                 />
               </svg>
-            </Link>
+            </button>
           </div>
         </header>
         {children}

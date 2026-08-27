@@ -15,7 +15,7 @@ export function Editor() {
   const [focused, setFocused] = useState(false);
   const words = countWords(entry.text);
   const className = cx(ui.area, `font-${settings.font}`);
-  const fontSize = focusMode ? Math.max(settings.fontSize, 22) : settings.fontSize;
+  const fontSize = focusMode ? Math.max(settings.fontSize, 20) : settings.fontSize;
 
   useEffect(() => {
     if (settings.hideChrome && focused && words > 0 && !focusMode) enterFocus();

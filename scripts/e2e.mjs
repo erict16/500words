@@ -161,6 +161,14 @@ try {
   if (menuWord) fail("write page should not show Menu");
   const closeBtn = page.locator('[data-testid="write-close"]');
   if ((await closeBtn.count()) < 1) fail("missing write-page close x");
+  await closeBtn.click();
+  await page.waitForFunction(() => location.pathname !== "/write", null, { timeout: 8000 });
+  const afterClose = new URL(page.url()).pathname;
+  console.log("afterClose=" + afterClose);
+  if (afterClose === "/write") fail("close x stayed on /write");
+  await page.waitForSelector('[data-testid="landing"]', { timeout: 8000 });
+  await page.goto(SITE + "/write", { waitUntil: "domcontentloaded" });
+  await page.waitForSelector('[data-testid="editor"]', { timeout: 10000 });
   const kebab = page.locator('[data-testid="write-kebab"]');
   if (await kebab.count()) fail("write page still has kebab; Eric asked it gone");
   const focusTitle = await page.locator('[data-testid="focus-toggle"]').getAttribute("title");
@@ -205,7 +213,7 @@ try {
   if (align.markLeft > 24) fail("wordmark should sit at the left of the write header, left=" + align.markLeft);
   if (align.closeRight > 40) fail("close x should sit at the right of the write header, inset=" + align.closeRight);
   if (align.closeSize < 28 || align.closeSize > 36) fail("close x not ~32px, got " + align.closeSize);
-  if (align.dateSize !== "28px") fail("date not 28px, got " + align.dateSize);
+  if (align.dateSize !== "26px") fail("date not 26px, got " + align.dateSize);
   if (!(align.dateWeight === "700" || align.dateWeight === "bold")) fail("date not 700, got " + align.dateWeight);
 
   const words = Array.from({ length: 500 }, (_, i) => "word" + i).join(" ");
@@ -809,7 +817,7 @@ try {
   console.log("focusGrid=" + JSON.stringify(focusGrid) + " focusLogo=" + focusLogo + " focusDate=" + focusDate + " focusExit=" + focusExit);
   if (focusGrid && focusGrid.height > 1) fail("focus mode did not hide the month grid");
   if (focusLogo === "0") fail("focus mode hid the wordmark");
-  if (focusDate !== "30px") fail("focus date not 30px, got " + focusDate);
+  if (focusDate !== "28px") fail("focus date not 28px, got " + focusDate);
   if (focusExit === "none") fail("focus mode missing exit control");
   await page.locator('[data-testid="exit-focus"]').click();
   await page.waitForFunction(() => document.documentElement.dataset.writeFocus !== "1", null, { timeout: 5000 });

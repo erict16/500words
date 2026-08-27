@@ -12,7 +12,7 @@ This file overrides older “quiet Menu”, “wordmark 400”, “do not make i
 
 ```
 750 serif (paid):  Sentinel SSm A/B, Times New Roman, Times, serif
-we use:            Zilla Slab default (closest slab silhouette, OFL), plus Merriweather and Bitter
+we use:            Bitter default (text slab, OFL), plus Zilla Slab and Merriweather
 
 750 sans (paid):   Gotham Narrow A/B, Helvetica Neue, Helvetica, Arial, sans-serif
 we use:            Barlow Semi Condensed default (closest to Gotham Narrow, OFL), plus Montserrat, Figtree, Source Sans 3
@@ -20,18 +20,18 @@ we use:            Barlow Semi Condensed default (closest to Gotham Narrow, OFL)
 
 | Surface | Size | Weight | Face |
 | --- | --- | --- | --- |
-| Wordmark “500 Words” (write) | 22px / 32px line | **700** | serif |
-| Landing / inner wordmark | 20px / 30px line | **700** | serif |
+| Wordmark “500 Words” | 20px / 30px line | **700** | serif (Bitter) |
+| Landing wordmark | 20px / 30px line | **700** | serif |
 | Landing welcome | 32px | **600** | serif, `#00c853` |
-| Write date | **28px** (30px in focus) | **700** | serif |
-| Editor | **21px** (22px in focus) | 400, line-height ~1.6 | serif |
-| Placeholder | 21px | 300, opacity 0.6 | serif |
-| Streak / chrome | 12px | 400 | sans |
+| Write date | **26px** (28px in focus) | **700** | serif |
+| Editor | **19px** (20px in focus) | 400 roman, line-height ~1.6 | serif |
+| Placeholder | 19px | 300 roman, opacity 0.6 | serif |
+| Streak / notice / month nav | 12–14px | 400 | **sans** (Barlow) |
 | Footer | 14px | 400 | serif |
 | Inner nav | 16px | 400 | sans |
 | Landing Log In / Sign Up | 14px / 36px outlined | **500** | sans |
 
-Zilla Slab reads smaller than Sentinel SSm at the same CSS px. Write-page type is +2px vs live 750 so the optical size matches Eric’s 750 shot. Day cells stay **21×21**. Do not pirate Sentinel / Gotham.
+One serif owns editorial (mark, date, editor, footer). One sans owns chrome (streak, makeup notice, buttons, month nav). Do not pirate Sentinel / Gotham. Day cells stay **21×21**. Close × is a button that `router.push("/")` (live 750 `exitWriting`). Signed-in `/` does not bounce back to write after close.
 
 Green: `#00c853` primary (today ring, links, outlined header buttons). Success checks `#4caf50`. Ink `#1a1a1a`. Secondary `#4a4a4a`.
 
@@ -52,8 +52,8 @@ Guests see 750’s logged-out header: serif wordmark left, outlined **Log In** +
 Match the current 750 write overlay:
 
 - **No “Menu”.** No Write / Stats / Badges row on this page.
-- Top: **fixed 64px** bar, opacity 0.9, wordmark left (22px / 700 serif), **gray ×** right (close / exit). Close hides in focus mode.
-- Long date, **28px / 700**. In focus mode: **30px** with a light bottom rule.
+- Top: **fixed 64px** bar, opacity 0.9, wordmark left (20px / 700 serif), **gray ×** right (close / exit). Close is a button that leaves `/write` for `/` (750 `exitWriting`). Close hides in focus mode.
+- Long date, **26px / 700**. In focus mode: **28px** with a light bottom rule.
 - Under the date: left `◀ Jul \| Aug` (and `Sep ►` when that month is not the future); right **avatar + “N day streak” + `.focus-toggle-btn`**. **No ⋮ / kebab / Menu** on this page (Eric, 2026-08-26 — 750 still has a ⋮; ours stays gone).
 - **Focus toggle** is 750’s outlined `v-btn` small: height **24px**, padding **2px 6px**, min-width ~**52px** (a horizontal rectangle, not a 24×24 square), light gray outline, mdi-fullscreen, opacity 0.6. Guests may hide the streak; the focus tab always shows.
 - **Focus mode:** F11 or EntryBrowser `.focus-toggle-btn` (mdi-fullscreen, title `Enter focus mode (F11)`). Hides the month grid, streak row, close ×, and footer. Logo and date stay. Exit: F11, Esc, or fixed top-right `.exit-focus-btn` (mdi-fullscreen-exit, 36px on small screens).

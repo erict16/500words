@@ -50,11 +50,6 @@
   white-space: nowrap;
   flex-shrink: 0;
 }
-.write-top .site-mark {
-  /* Zilla Slab reads smaller than Sentinel at the same CSS px. */
-  font-size: 22px;
-  line-height: 32px;
-}
 .site-mark:hover {
   color: var(--ink);
   text-decoration: none;
@@ -169,7 +164,7 @@ html[data-write-focus="1"] .word-foot,
 
 html[data-write-focus="1"] .write-date,
 html.focus-mode-active .write-date {
-  font-size: 30px;
+  font-size: 28px;
   line-height: 1.2;
   border-bottom: 1px solid var(--border-light);
   margin-bottom: 32px;
@@ -270,6 +265,7 @@ html[data-write-focus="1"] .exit-focus-btn {
 }
 
 .write-close {
+  appearance: none;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -284,12 +280,16 @@ html[data-write-focus="1"] .exit-focus-btn {
   color: var(--muted);
   text-decoration: none;
   cursor: pointer;
+  position: relative;
+  z-index: 2;
+  pointer-events: auto;
 }
 .write-close svg {
   width: 20px;
   height: 20px;
   display: block;
   flex-shrink: 0;
+  pointer-events: none;
 }
 .write-close:hover {
   color: var(--ink);
@@ -367,8 +367,8 @@ html[data-write-focus="1"] .exit-focus-btn {
 
 .guest-kicker {
   margin: 8px 0 0;
-  font-family: var(--font-serif-primary);
-  font-size: 16px;
+  font-family: var(--font-sans-metadata);
+  font-size: 14px;
   font-weight: 400;
   color: var(--muted);
   line-height: 1.5;
@@ -381,7 +381,7 @@ html[data-write-focus="1"] .exit-focus-btn {
 .write-date,
 .title-input {
   font-family: var(--font-serif-primary);
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 700;
   line-height: 1.2;
   margin: 0 0 1rem;
@@ -764,6 +764,7 @@ span.day-box {
 .write-note {
   max-width: 770px;
   margin: 10px 0 0;
+  font-family: var(--font-sans-metadata);
   font-size: 13px;
   color: var(--muted);
   line-height: 1.45;
@@ -775,10 +776,12 @@ span.day-box {
   border-radius: var(--radius-base);
   padding: 16px;
   font-family: var(--font-sans-metadata);
-  font-size: 1rem;
+  font-size: 14px;
+  font-weight: 400;
+  font-style: normal;
   background: var(--paper);
   border: 1px solid var(--border-medium);
-  color: var(--ink);
+  color: var(--text-secondary);
   line-height: 1.5;
 }
 
@@ -797,19 +800,21 @@ span.day-box {
   margin: 0;
   display: block;
   caret-color: var(--ink);
-  font-size: 21px;
+  font-size: 19px;
   font-weight: 400;
+  font-style: normal;
   line-height: var(--line-height-content, 1.6);
   font-family: var(--font-serif-primary);
 }
 html[data-write-focus="1"] .write-area,
 .focus-mode-active .write-area {
-  font-size: 22px;
+  font-size: 20px;
 }
 .write-area::placeholder {
   color: var(--ink);
   opacity: 0.6;
   font-weight: 300;
+  font-style: normal;
   font-family: var(--font-serif-primary);
 }
 .write-area:focus-visible {

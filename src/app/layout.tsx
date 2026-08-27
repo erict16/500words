@@ -17,12 +17,13 @@ import "@/styles/app.css";
 
 // 750 uses paid Sentinel SSm (serif) and Gotham / Gotham Narrow (sans).
 // Legal Google Fonts / OFL stand-ins only — do not pirate Typography.com files.
-// Defaults: Zilla Slab (slab silhouette) + Barlow Semi Condensed (narrow sans).
+// Editorial default is Bitter (text slab, not a display poster). Chrome is Barlow Semi Condensed.
 const zillaSlab = Zilla_Slab({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-zilla-slab",
   weight: ["300", "400", "600", "700"],
+  preload: false,
 });
 
 const merriweather = Merriweather({
@@ -38,7 +39,6 @@ const bitter = Bitter({
   display: "swap",
   variable: "--font-bitter",
   weight: ["300", "400", "600", "700"],
-  preload: false,
 });
 
 const barlow = Barlow_Semi_Condensed({

@@ -3,14 +3,20 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ui } from "@/lib/css";
+import { isLocalUid } from "@/lib/identity";
 import { WRITE_HREF } from "@/lib/nav";
 import { useApp } from "./AppProvider";
 
 export function Landing() {
-  const { signIn, configured } = useApp();
+  const { signIn, configured, profile } = useApp();
   const router = useRouter();
+  const signedIn = Boolean(profile && !isLocalUid(profile.uid));
 
   const auth = () => {
+    if (signedIn) {
+      router.push(WRITE_HREF);
+      return;
+    }
     if (configured) void signIn();
     else router.push(WRITE_HREF);
   };
@@ -26,22 +32,30 @@ export function Landing() {
             500 Words
           </Link>
           <div className="landing-auth">
-            <button
-              type="button"
-              className="landing-auth-btn"
-              data-testid="landing-login"
-              onClick={auth}
-            >
-              Log In
-            </button>
-            <button
-              type="button"
-              className="landing-auth-btn"
-              data-testid="landing-signup"
-              onClick={auth}
-            >
-              Sign Up
-            </button>
+            {signedIn ? (
+              <Link href={WRITE_HREF} className="landing-auth-btn" data-testid="landing-write-header">
+                Write
+              </Link>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  className="landing-auth-btn"
+                  data-testid="landing-login"
+                  onClick={auth}
+                >
+                  Log In
+                </button>
+                <button
+                  type="button"
+                  className="landing-auth-btn"
+                  data-testid="landing-signup"
+                  onClick={auth}
+                >
+                  Sign Up
+                </button>
+              </>
+            )}
           </div>
         </div>
       </header>
@@ -52,13 +66,21 @@ export function Landing() {
           and no analysis of what you wrote.
         </p>
         <div className="landing-cta">
-          <button type="button" className="landing-cta-btn" onClick={auth}>
-            LOG IN
-          </button>
-          <span className="landing-cta-or">or</span>
-          <button type="button" className="landing-cta-btn" onClick={auth}>
-            SIGN UP
-          </button>
+          {signedIn ? (
+            <button type="button" className="landing-cta-btn" onClick={auth} data-testid="landing-write-cta">
+              WRITE
+            </button>
+          ) : (
+            <>
+              <button type="button" className="landing-cta-btn" onClick={auth}>
+                LOG IN
+              </button>
+              <span className="landing-cta-or">or</span>
+              <button type="button" className="landing-cta-btn" onClick={auth}>
+                SIGN UP
+              </button>
+            </>
+          )}
         </div>
         <p className="landing-guest">
           <Link href={WRITE_HREF} data-testid="landing-write">
