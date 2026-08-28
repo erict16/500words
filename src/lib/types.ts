@@ -7,7 +7,7 @@ export const WORDS_PER_PAGE = WORD_GOAL / PAGE_COUNT;
 
 export type DayMark = "none" | "dot" | "spare" | "strike";
 
-export type FontId = "georgia" | "palatino" | "times" | "helvetica" | "courier";
+export type FontId = "newsletter" | "georgia" | "palatino" | "times" | "helvetica" | "courier";
 
 export type ThemeId = "light" | "dark" | "sepia";
 
@@ -85,7 +85,7 @@ export type ChallengeEntrant = {
 };
 
 export const defaultSettings = (): Settings => ({
-  font: "georgia",
+  font: "newsletter",
   fontSize: 19,
   paragraphSpacing: 0,
   lineHeight: 1.6,

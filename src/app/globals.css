@@ -99,6 +99,9 @@ button {
   font: inherit;
 }
 
+.font-newsletter {
+  font-family: var(--font-newsreader), ui-serif, Georgia, serif;
+}
 .font-georgia {
   font-family: var(--font-serif-primary);
 }

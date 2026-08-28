@@ -764,8 +764,10 @@ span.day-box {
 .write-note {
   max-width: 770px;
   margin: 10px 0 0;
-  font-family: var(--font-sans-metadata);
-  font-size: 13px;
+  font-family: var(--font-newsreader), ui-serif, Georgia, serif;
+  font-size: 16px;
+  font-weight: 400;
+  font-style: normal;
   color: var(--muted);
   line-height: 1.45;
 }
@@ -804,7 +806,6 @@ span.day-box {
   font-weight: 400;
   font-style: normal;
   line-height: var(--line-height-content, 1.6);
-  font-family: var(--font-serif-primary);
 }
 html[data-write-focus="1"] .write-area,
 .focus-mode-active .write-area {
@@ -815,7 +816,6 @@ html[data-write-focus="1"] .write-area,
   opacity: 0.6;
   font-weight: 300;
   font-style: normal;
-  font-family: var(--font-serif-primary);
 }
 .write-area:focus-visible {
   box-shadow: none;

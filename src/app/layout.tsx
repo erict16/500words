@@ -5,6 +5,7 @@ import {
   Figtree,
   Merriweather,
   Montserrat,
+  Newsreader,
   Roboto_Mono,
   Source_Sans_3,
   Zilla_Slab,
@@ -48,6 +49,13 @@ const barlow = Barlow_Semi_Condensed({
   weight: ["300", "400", "500", "600", "700"],
 });
 
+// Variable face: no weight[] — that forces static files and can leave --font-newsreader unset.
+const newsreader = Newsreader({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-newsreader",
+});
+
 const montserrat = Montserrat({
   subsets: ["latin"],
   display: "swap",
@@ -84,6 +92,7 @@ const fontVariables = [
   merriweather.variable,
   bitter.variable,
   barlow.variable,
+  newsreader.variable,
   montserrat.variable,
   figtree.variable,
   sourceSans.variable,

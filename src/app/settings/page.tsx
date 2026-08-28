@@ -7,6 +7,7 @@ import { isLocalUid } from "@/lib/identity";
 import type { FontId, ThemeId } from "@/lib/types";
 
 const FONTS: { id: FontId; label: string }[] = [
+  { id: "newsletter", label: "Newsletter" },
   { id: "georgia", label: "Serif" },
   { id: "palatino", label: "Palatino" },
   { id: "times", label: "Times" },

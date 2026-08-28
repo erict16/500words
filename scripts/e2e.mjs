@@ -101,7 +101,7 @@ try {
   await page.waitForSelector('[data-testid="editor"]', { timeout: 10000 });
   const google = await page.locator('[data-testid="google-signin"]').count();
   console.log("googleButton=" + google);
-  if (!google) fail("missing optional Sign in");
+  if (google) fail("write page should not have header Sign in");
   const headerNav = await page.locator("header.site-bar .bar-nav").count();
   console.log("writeHeaderNav=" + headerNav);
   if (headerNav) fail("write page should not have the app header nav");
@@ -126,9 +126,28 @@ try {
     };
   });
   console.log("editorStyle=" + JSON.stringify(editorStyle));
-  if (!SERIF.test(editorStyle.fontFamily)) {
-    fail("editor is not the 750 serif stack, got " + editorStyle.fontFamily);
+  if (!/newsreader/i.test(editorStyle.fontFamily)) {
+    fail("editor is not Newsreader, got " + editorStyle.fontFamily);
   }
+  const pastDay = page.locator(".day-box:not(.today):not(.future)").first();
+  if ((await pastDay.count()) < 1) {
+    await page.locator(".cal-nav").first().click();
+  }
+  await page.locator(".day-box:not(.today):not(.future)").first().click();
+  await page.waitForSelector(".write-note", { timeout: 8000 });
+  const noteStyle = await page.locator(".write-note").evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { font: s.fontFamily, size: s.fontSize, weight: s.fontWeight, style: s.fontStyle };
+  });
+  console.log("writeNote=" + JSON.stringify(noteStyle));
+  if (!/newsreader/i.test(noteStyle.font)) fail("closed-day note is not Newsreader, got " + noteStyle.font);
+  if (noteStyle.size !== "16px") fail("closed-day note not 16px, got " + noteStyle.size);
+  if (noteStyle.weight !== "400" && noteStyle.weight !== "normal") {
+    fail("closed-day note not normal weight, got " + noteStyle.weight);
+  }
+  if (noteStyle.style !== "normal") fail("closed-day note should not be italic, got " + noteStyle.style);
+  await page.locator('[data-testid="today-box"]').click();
+  await page.waitForSelector('[data-testid="editor"]', { timeout: 8000 });
   if (editorStyle.borderTopWidth !== "0px") fail("editor should have no border");
   if (editorStyle.width < 740 || editorStyle.width > 840) {
     fail("write column not ~820px inner, got " + editorStyle.width);
@@ -337,14 +356,26 @@ try {
     const sample = el.querySelector(".font-sample-text");
     return {
       minHeight: Math.round(el.getBoundingClientRect().height),
+      title: title?.textContent?.trim() || "",
       titleSize: title ? getComputedStyle(title).fontSize : "",
+      titleFont: title ? getComputedStyle(title).fontFamily : "",
       sampleSize: sample ? getComputedStyle(sample).fontSize : "",
+      active: el.classList.contains("is-active"),
     };
   });
   console.log("fontItem=" + JSON.stringify(fontItem));
+  if (fontItem.title !== "Newsletter") fail("first font should be Newsletter, got " + fontItem.title);
+  if (!fontItem.active) fail("Newsletter should be the default selected font");
+  if (!/newsreader/i.test(fontItem.titleFont)) fail("Newsletter sample is not Newsreader, got " + fontItem.titleFont);
   if (fontItem.minHeight < 80) fail("font picker item shorter than 80px, got " + fontItem.minHeight);
   if (fontItem.titleSize !== "16px") fail("font title not 16px, got " + fontItem.titleSize);
   if (fontItem.sampleSize !== "14px") fail("font sample not 14px, got " + fontItem.sampleSize);
+  const fontLabels = await page.locator(".font-title").allTextContents();
+  console.log("fontLabels=" + JSON.stringify(fontLabels));
+  const expectedFonts = ["Newsletter", "Serif", "Palatino", "Times", "Helvetica", "Courier"];
+  if (fontLabels.join("|") !== expectedFonts.join("|")) {
+    fail("font picker labels mismatch, got " + JSON.stringify(fontLabels));
+  }
   if (themeActivator.radius !== "4px") fail("theme activator radius not 4px, got " + themeActivator.radius);
   if (!themeActivator.border.includes("204, 204, 204") && !themeActivator.border.includes("0, 200, 83")) {
     fail("theme activator border not #ccc, got " + themeActivator.border);
